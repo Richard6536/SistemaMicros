@@ -5,8 +5,6 @@ VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidMicros", "AndroidMicros\AndroidMicros.csproj", "{DA54E221-E960-4C50-92EA-5370908C5FAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrosForms", "..\..\..\..\Desktop\MicrosForms\MicrosForms\MicrosForms.csproj", "{A3BF69C2-B271-4F12-BD7F-9B06DC527272}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,10 +17,6 @@ Global
 		{DA54E221-E960-4C50-92EA-5370908C5FAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA54E221-E960-4C50-92EA-5370908C5FAE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DA54E221-E960-4C50-92EA-5370908C5FAE}.Release|Any CPU.Deploy.0 = Release|Any CPU
-		{A3BF69C2-B271-4F12-BD7F-9B06DC527272}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A3BF69C2-B271-4F12-BD7F-9B06DC527272}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A3BF69C2-B271-4F12-BD7F-9B06DC527272}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A3BF69C2-B271-4F12-BD7F-9B06DC527272}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
