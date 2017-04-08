@@ -52,6 +52,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Migrations\201704070124461_rutacoordenada.cs" />
+    <Compile Include="Migrations\201704070124461_rutacoordenada.Designer.cs">
+      <DependentUpon>201704070124461_rutacoordenada.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704070150145_CoordenadaFix.cs" />
+    <Compile Include="Migrations\201704070150145_CoordenadaFix.Designer.cs">
+      <DependentUpon>201704070150145_CoordenadaFix.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704070217000_Fix2.cs" />
+    <Compile Include="Migrations\201704070217000_Fix2.Designer.cs">
+      <DependentUpon>201704070217000_Fix2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\Coordenada.cs" />
+    <Compile Include="Model\Ruta.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -80,6 +94,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704050359442_test.resx">
       <DependentUpon>201704050359442_test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704070124461_rutacoordenada.resx">
+      <DependentUpon>201704070124461_rutacoordenada.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704070150145_CoordenadaFix.resx">
+      <DependentUpon>201704070150145_CoordenadaFix.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704070217000_Fix2.resx">
+      <DependentUpon>201704070217000_Fix2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

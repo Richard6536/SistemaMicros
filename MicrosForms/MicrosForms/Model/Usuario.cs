@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MicrosForms.Model
 {
     [Table("Usuario")]
-    class Usuario
+    public class Usuario
     {
 
         public enum RolUsuario { normal, chofer, admin }
@@ -24,9 +24,8 @@ namespace MicrosForms.Model
         public string Password { get; set; }
 
         [Required]
-        public float PosLatitud { get; set; }
-        [Required]
-        public float PosLongitud { get; set; }
+        public Coordenada Posicion { get; set; }
+
         [Required]
         public RolUsuario Rol { get; set; }
 

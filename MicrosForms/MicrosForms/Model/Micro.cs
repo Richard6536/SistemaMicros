@@ -9,9 +9,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MicrosForms.Model
 {
     [Table("Micro")]
-    class Micro
+    public class Micro
     {
-        [Key, ForeignKey("Usuario")]
+        [Key, ForeignKey("Chofer")]
         public int Id { get; set; }
 
         [Required, MaxLength(6), MinLength(6)]
@@ -20,13 +20,13 @@ namespace MicrosForms.Model
         [Required]
         public int Clasificacion { get; set; }
 
-        public int? UserId { get; set; }
+        public int? ChoferId { get; set; }
         public int? LineaId { get; set; }
         public int? SigParaderoId { get; set; }
 
 
-        [ForeignKey("UserId")]
-        public virtual Usuario Usuario { get; set; }
+        [ForeignKey("ChoferId")]
+        public virtual Usuario Chofer { get; set; }
         [ForeignKey("LineaId")]
         public virtual Linea Linea { get; set; }
         [ForeignKey("SigParaderoId")]

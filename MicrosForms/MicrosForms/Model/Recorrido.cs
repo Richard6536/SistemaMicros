@@ -9,16 +9,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MicrosForms.Model
 {
     [Table("Recorrido")]
-    class Recorrido
+    public class Recorrido
     {
         [Key]
         public int Id { get; set; }
 
-        [Required, MinLength(4), MaxLength(20)]
-        public string RutaIda { get; set; }
+        public int? LineaId { get; set; }
+        public int? RutaIdaId { get; set; }
+        public int? RutaVueltaId { get; set; }
 
-        [Required, MinLength(4), MaxLength(20)]
-        public string RutaVuelta { get; set; }
+        [ForeignKey("LineaId")]
+        public virtual Linea Linea { get; set; }
+        [ForeignKey("RutaIdaId")]
+        public virtual Ruta RutaIda { get; set; }
+        [ForeignKey("RutaVueltaId")]
+        public virtual Ruta RutaVuelta { get; set; }
 
         public virtual List<Paradero> Paraderos { get; set; }
     }

@@ -9,13 +9,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace MicrosForms.Model
 {
     [Table("Linea")]
-    class Linea
+    public class Linea
     {
-        [Key]
+        [Key, ForeignKey("Recorrido")]
         public int Id { get; set; }
 
         [Required]
         public int Numero { get; set; }
+
+        public int RecorridoId { get; set; }
+
+        [ForeignKey("RecorridoId")]
+        public virtual Recorrido Recorrido { get; set; }
 
         public virtual List<Micro> Micros { get; set; }
     }
