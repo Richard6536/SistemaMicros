@@ -14,13 +14,25 @@ namespace MicrosForms.Model
         [Key]
         public int Id { get; set; }
         [Required]
-        public float Latitud { get; set; }
+        public double Latitud { get; set; }
         [Required]
-        public float Longitud { get; set; }
+        public double Longitud { get; set; }
 
         public int? RutaId { get; set; }
 
         [ForeignKey("RutaId")]
         public virtual Ruta Ruta { get; set; }
+
+
+
+        public static Coordenada BuscarCoordenada(int _id)
+        {
+            var BD = new MicroSystemContext();
+            var coordenada = BD.Coordenadas.Where(
+                    coornedada =>
+                               coornedada.Id == _id).FirstOrDefault(); 
+            return coordenada;
+
+        }
     }
 }

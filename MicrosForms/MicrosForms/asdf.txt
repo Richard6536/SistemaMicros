@@ -1,0 +1,9 @@
+Ventanas admin
+
+-Login
+	-Creacion de primer usuario
+
+-Ventana principal (mapa, seleccion de ruta)
+-Administrar Micros
+-Administrar usuarios
+-Administrar Rutas (rutas y paraderos a parte??)
