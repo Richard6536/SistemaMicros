@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
 
+
 namespace MicrosForms.Model
 {
     class MicroSystemContext : DbContext
@@ -17,11 +18,15 @@ namespace MicrosForms.Model
         public DbSet<Linea> Lineas { get; set; }
         public DbSet<Recorrido> Recorridos { get; set; }
 
+        public DbSet<Coordenada> Coordenadas { get; set; }
+        public DbSet<Ruta> Rutas { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-
+            
+           
         }
 
     }

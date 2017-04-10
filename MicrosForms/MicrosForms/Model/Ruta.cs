@@ -8,17 +8,18 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MicrosForms.Model
 {
-    [Table("Paradero")]
-    public class Paradero
+    [Table("Ruta")]
+    public class Ruta
     {
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        public Coordenada Posicion { get; set; }
+        public int RecorridoId { get; set; }
 
-        public virtual List<Recorrido> Recorridos { get; set; }
-        public virtual List<Usuario> Usuarios { get; set; }
-        public virtual List<Micro> Micros { get; set; }
+        public virtual List<Coordenada> Vertices { get; set; }
+
+        [ForeignKey("RecorridoId")]
+        public virtual Recorrido Recorrido { get; set; }
+
     }
 }
