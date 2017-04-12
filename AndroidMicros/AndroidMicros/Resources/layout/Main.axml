@@ -5,7 +5,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center">
-
     <EditText
         android:id="@+id/editTextNombre"
         android:layout_width="fill_parent"
@@ -20,7 +19,7 @@
         android:layout_marginRight="16.0dp"
         android:layout_marginLeft="16.0dp"
         android:password="true"
-        android:hint="@string/main.editTextPassword.hint"/>
+        android:hint="@string/main.editTextPassword.hint" />
     <Button
         android:id="@+id/btnIngresar"
         android:layout_width="fill_parent"

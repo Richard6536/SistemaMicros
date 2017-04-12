@@ -14,6 +14,9 @@ namespace MicrosForms.Model
         [Key]
         public int Id { get; set; }
 
+        [Required, MaxLength(20), MinLength(4)]
+        public string Nombre { get; set; }
+
         public int RecorridoId { get; set; }
 
         public virtual List<Coordenada> Vertices { get; set; }

@@ -86,6 +86,10 @@
     <Compile Include="Migrations\201704101919046_primera2.Designer.cs">
       <DependentUpon>201704101919046_primera2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704121943026_nombreRutas.cs" />
+    <Compile Include="Migrations\201704121943026_nombreRutas.Designer.cs">
+      <DependentUpon>201704121943026_nombreRutas.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\Coordenada.cs" />
     <Compile Include="Model\Ruta.cs" />
     <Compile Include="Form1.cs">
@@ -103,11 +107,77 @@
     <Compile Include="Model\Usuario.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Ventanas\AdminLineas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\AdminLineas.Designer.cs">
+      <DependentUpon>AdminLineas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\AdminMicros.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\AdminMicros.Designer.cs">
+      <DependentUpon>AdminMicros.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\AdminRutas.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\AdminRutas.Designer.cs">
+      <DependentUpon>AdminRutas.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\AdminUsuarios.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\AdminUsuarios.Designer.cs">
+      <DependentUpon>AdminUsuarios.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\Creaciones\CrearAdmin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\Creaciones\CrearAdmin.Designer.cs">
+      <DependentUpon>CrearAdmin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\Creaciones\CrearChofer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\Creaciones\CrearChofer.Designer.cs">
+      <DependentUpon>CrearChofer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\Creaciones\CrearLinea.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\Creaciones\CrearLinea.Designer.cs">
+      <DependentUpon>CrearLinea.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\Creaciones\CrearMicro.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\Creaciones\CrearMicro.Designer.cs">
+      <DependentUpon>CrearMicro.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\Creaciones\CrearPrimerUsuario.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\Creaciones\CrearPrimerUsuario.Designer.cs">
+      <DependentUpon>CrearPrimerUsuario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\Ediciones\EditarMicro.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\Ediciones\EditarMicro.Designer.cs">
+      <DependentUpon>EditarMicro.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ventanas\Inicio.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Ventanas\Inicio.Designer.cs">
       <DependentUpon>Inicio.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\InicioReal.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\InicioReal.Designer.cs">
+      <DependentUpon>InicioReal.cs</DependentUpon>
     </Compile>
     <Compile Include="Ventanas\Login.cs">
       <SubType>Form</SubType>
@@ -118,6 +188,9 @@
     <EmbeddedResource Include="Migrations\201704101919046_primera2.resx">
       <DependentUpon>201704101919046_primera2.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704121943026_nombreRutas.resx">
+      <DependentUpon>201704121943026_nombreRutas.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -127,8 +200,29 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Ventanas\AdminLineas.resx">
+      <DependentUpon>AdminLineas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventanas\AdminMicros.resx">
+      <DependentUpon>AdminMicros.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventanas\AdminRutas.resx">
+      <DependentUpon>AdminRutas.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventanas\AdminUsuarios.resx">
+      <DependentUpon>AdminUsuarios.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventanas\Creaciones\CrearMicro.resx">
+      <DependentUpon>CrearMicro.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventanas\Ediciones\EditarMicro.resx">
+      <DependentUpon>EditarMicro.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Ventanas\Inicio.resx">
       <DependentUpon>Inicio.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventanas\InicioReal.resx">
+      <DependentUpon>InicioReal.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ventanas\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
@@ -150,6 +244,7 @@
   <ItemGroup>
     <Content Include="asdf.txt" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.0\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.0\build\net451\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
