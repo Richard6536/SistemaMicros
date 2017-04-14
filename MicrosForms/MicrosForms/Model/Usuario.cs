@@ -18,7 +18,7 @@ namespace MicrosForms.Model
         
         public enum RolUsuario { normal, chofer, admin }
 
-        [Key]
+        [Key, ForeignKey("UsuarioParadero")]
         public int Id { get; set; }
 
         [Required, StringLength(20), MinLength(4), Index("NombreIndex", IsUnique = true)]
@@ -29,20 +29,21 @@ namespace MicrosForms.Model
 
         [Required, StringLength(30), MinLength(4)]
         public string Email { get; set; }
-
-        [Required]
-        public Coordenada Posicion { get; set; }
-
+        
         [Required]
         public RolUsuario Rol { get; set; }
 
-        public int? MicroId { get; set; }
-        public int? ParaderoSelectedId { get; set; }
+        public double Latitud { get; set; }
+        public double Longitud { get; set; }
 
-        [ForeignKey("MicroId")]
-        public virtual Micro Micro { get; set; }
-        [ForeignKey("ParaderoSelectedId")]
-        public virtual Paradero ParaderoSelected { get; set; }
+        public int? UsuarioParaderoId { get; set; }
+        public int? MicroChoferId { get; set; }
+        
+        [ForeignKey("UsuarioParaderoId")]
+        public virtual UsuarioParadero UsuarioParadero { get; set; }
+
+        [ForeignKey("MicroChoferId")]
+        public virtual MicroChofer MicroChofer { get; set; }
 
 
         public static String CrearUsuario(String _nombre, RolUsuario _rol, String _password)
@@ -60,7 +61,7 @@ namespace MicrosForms.Model
                 nuevoUsuario.Password = _password;
                 //nuevoUsuario.Password = passEncriptada;
 
-                nuevoUsuario.Posicion = new Coordenada();
+                //nuevoUsuario.Posicion = new Coordenada();
 
                 String mensajeError = "";
 

@@ -17,12 +17,15 @@ namespace MicrosForms.Model
         [Required, MaxLength(20), MinLength(4)]
         public string Nombre { get; set; }
 
-        public int RecorridoId { get; set; }
+        public virtual List<Paradero> Paraderos { get; set; }
 
-        public virtual List<Coordenada> Vertices { get; set; }
+        public int InicioId { get; set; }
+        public int LineaId { get; set; }
 
-        [ForeignKey("RecorridoId")]
-        public virtual Recorrido Recorrido { get; set; }
+        [ForeignKey("InicioId")]
+        public virtual Coordenada Coordenada { get; set; }
+        [ForeignKey("LineaId")]
+        public virtual Linea Linea { get; set; }
 
     }
 }

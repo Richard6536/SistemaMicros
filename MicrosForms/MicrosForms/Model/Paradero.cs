@@ -14,11 +14,12 @@ namespace MicrosForms.Model
         [Key]
         public int Id { get; set; }
 
-        [Required]
-        public Coordenada Posicion { get; set; }
+        public double Latitud { get; set; }
+        public double Longitud { get; set; }
 
-        public virtual List<Recorrido> Recorridos { get; set; }
-        public virtual List<Usuario> Usuarios { get; set; }
-        public virtual List<Micro> Micros { get; set; }
+        public virtual List<Ruta> Rutas { get; set; }
+
+        public virtual List<UsuarioParadero> UsuariosParaderos { get; set; }
+        public virtual List<MicroParadero> MicrosParaderos { get; set; }
     }
 }

@@ -11,26 +11,29 @@ namespace MicrosForms.Model
     [Table("Micro")]
     public class Micro
     {
-        [Key, ForeignKey("Chofer")]
+        [Key]
         public int Id { get; set; }
 
         [Required, MaxLength(6), MinLength(6)]
         public string Patente { get; set; }
 
         [Required]
-        public int Clasificacion { get; set; }
-
-        public int? ChoferId { get; set; }
+        public int Calificacion { get; set; }
+        
         public int? LineaId { get; set; }
-        public int? SigParaderoId { get; set; }
 
+        public int? MicroParaderoId { get; set; }
+        public int? MicroChoferId { get; set; }
 
-        [ForeignKey("ChoferId")]
-        public virtual Usuario Chofer { get; set; }
+        
         [ForeignKey("LineaId")]
         public virtual Linea Linea { get; set; }
-        [ForeignKey("SigParaderoId")]
-        public virtual Paradero SigParadero { get; set; }
+
+        [ForeignKey("MicroParaderoId")]
+        public virtual MicroParadero MicroParadero { get; set; }
+
+        [ForeignKey("MicroChoferId")]
+        public virtual MicroChofer MicroChofer { get; set; }
 
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,17 +11,22 @@ namespace MicrosForms.Model
     [Table("Linea")]
     public class Linea
     {
-        [Key, ForeignKey("Recorrido")]
+        [Key]
         public int Id { get; set; }
 
         [Required]
-        public int Numero { get; set; }
-
-        public int RecorridoId { get; set; }
-
-        [ForeignKey("RecorridoId")]
-        public virtual Recorrido Recorrido { get; set; }
+        public string Nombre { get; set; }
 
         public virtual List<Micro> Micros { get; set; }
+
+        public int RutaInicioId { get; set; }
+        [ForeignKey("RutaInicioId")]
+        public virtual Ruta RutaInicio { get; set; }
+
+        public int RutaFinId { get; set; }
+        [ForeignKey("RutaFinId")]
+        public virtual Ruta RutaFin { get; set; }
+
+
     }
 }
