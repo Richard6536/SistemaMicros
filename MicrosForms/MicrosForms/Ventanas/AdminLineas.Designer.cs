@@ -38,6 +38,14 @@
             this.cmbRutaVuelta = new System.Windows.Forms.ComboBox();
             this.gmapController = new GMap.NET.WindowsForms.GMapControl();
             this.btnVerMicros = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.administrarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rutasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.microsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.usuariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cerrarSesiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -118,7 +126,7 @@
             this.gmapController.GrayScaleMode = false;
             this.gmapController.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
             this.gmapController.LevelsKeepInMemmory = 5;
-            this.gmapController.Location = new System.Drawing.Point(12, 22);
+            this.gmapController.Location = new System.Drawing.Point(12, 33);
             this.gmapController.MarkersEnabled = true;
             this.gmapController.MaxZoom = 2;
             this.gmapController.MinZoom = 2;
@@ -145,11 +153,71 @@
             this.btnVerMicros.Text = "Ver micros";
             this.btnVerMicros.UseVisualStyleBackColor = true;
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.administrarToolStripMenuItem,
+            this.cerrarSesiónToolStripMenuItem,
+            this.toolStripMenuItem1});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(757, 24);
+            this.menuStrip1.TabIndex = 10;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // administrarToolStripMenuItem
+            // 
+            this.administrarToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.rutasToolStripMenuItem,
+            this.microsToolStripMenuItem,
+            this.usuariosToolStripMenuItem});
+            this.administrarToolStripMenuItem.Name = "administrarToolStripMenuItem";
+            this.administrarToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+            this.administrarToolStripMenuItem.Text = "Administrar";
+            // 
+            // rutasToolStripMenuItem
+            // 
+            this.rutasToolStripMenuItem.Name = "rutasToolStripMenuItem";
+            this.rutasToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rutasToolStripMenuItem.Text = "Rutas";
+            this.rutasToolStripMenuItem.Click += new System.EventHandler(this.rutasToolStripMenuItem_Click);
+            // 
+            // microsToolStripMenuItem
+            // 
+            this.microsToolStripMenuItem.Name = "microsToolStripMenuItem";
+            this.microsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.microsToolStripMenuItem.Text = "Micros";
+            this.microsToolStripMenuItem.Click += new System.EventHandler(this.microsToolStripMenuItem_Click);
+            // 
+            // usuariosToolStripMenuItem
+            // 
+            this.usuariosToolStripMenuItem.Name = "usuariosToolStripMenuItem";
+            this.usuariosToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.usuariosToolStripMenuItem.Text = "Usuarios";
+            this.usuariosToolStripMenuItem.Click += new System.EventHandler(this.usuariosToolStripMenuItem_Click);
+            // 
+            // cerrarSesiónToolStripMenuItem
+            // 
+            this.cerrarSesiónToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.cerrarSesiónToolStripMenuItem.Name = "cerrarSesiónToolStripMenuItem";
+            this.cerrarSesiónToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
+            this.cerrarSesiónToolStripMenuItem.Text = "Cerrar sesión";
+            this.cerrarSesiónToolStripMenuItem.Click += new System.EventHandler(this.cerrarSesiónToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(109, 20);
+            this.toolStripMenuItem1.Text = "Ventana de inicio";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.VentanaInicioMenuItem1_Click);
+            // 
             // AdminLineas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(655, 380);
+            this.ClientSize = new System.Drawing.Size(757, 380);
+            this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.btnVerMicros);
             this.Controls.Add(this.gmapController);
             this.Controls.Add(this.label4);
@@ -162,6 +230,8 @@
             this.Controls.Add(this.button1);
             this.Name = "AdminLineas";
             this.Text = "AdminLineas";
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -179,5 +249,12 @@
         private System.Windows.Forms.ComboBox cmbRutaVuelta;
         private GMap.NET.WindowsForms.GMapControl gmapController;
         private System.Windows.Forms.Button btnVerMicros;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem administrarToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rutasToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem microsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem usuariosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cerrarSesiónToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
     }
 }

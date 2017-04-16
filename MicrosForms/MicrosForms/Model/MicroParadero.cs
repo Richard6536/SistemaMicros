@@ -21,5 +21,7 @@ namespace MicrosForms.Model
         public int MicroId { get; set; }
         [ForeignKey("MicroId")]
         public virtual Micro Micro { get; set; }
+
+        public MicroParadero() { }
     }
 }

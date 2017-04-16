@@ -22,5 +22,7 @@ namespace MicrosForms.Model
         public int ChoferId { get; set; }
         [ForeignKey("ChoferId")]
         public virtual Usuario Chofer { get; set; }
+
+        public MicroChofer() { }
     }
 }

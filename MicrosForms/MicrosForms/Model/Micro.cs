@@ -14,7 +14,7 @@ namespace MicrosForms.Model
         [Key]
         public int Id { get; set; }
 
-        [Required, MaxLength(6), MinLength(6)]
+        [Required, StringLength(6, ErrorMessage = "La patente debe tener un tamaño de 6 carácteres")]
         public string Patente { get; set; }
 
         [Required]
@@ -35,5 +35,6 @@ namespace MicrosForms.Model
         [ForeignKey("MicroChoferId")]
         public virtual MicroChofer MicroChofer { get; set; }
 
+        public Micro() { }
     }
 }

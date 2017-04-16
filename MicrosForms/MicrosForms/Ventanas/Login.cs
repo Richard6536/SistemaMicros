@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using MicrosForms.Model;
+using MicrosForms.Ventanas.Creaciones;
 using MicrosForms.Classes;
 
 namespace MicrosForms.Ventanas
@@ -29,21 +30,30 @@ namespace MicrosForms.Ventanas
 
             if(!ConnectionTester.IsConnectionActive())
             {
-                MessageBox.Show("Error conectando");
+                return;
             }
 
+            if(txtNombre.Text == "" || txtPassword.Text == "")
+            {
+                MessageBox.Show("No deje campos en blanco");
+                return;
+            }
 
             if (Usuario.VerificarExistenciaUsusuarios() == false)
             {
-                //abrir ventana de creacion de admin
-                
+                FormManager.CambiarForm(this, new CrearPrimerUsuario());
+
             }
             else
             {
                 if (Usuario.EsPasswordValida(nombre, pass))
                 {
-                    //enviar a ventana de control
-                }          
+                    FormManager.CambiarForm(this, new InicioReal());
+                }
+                else
+                {
+                    MessageBox.Show("Usuario/contraseña no válidos");
+                }
             }
 
         }

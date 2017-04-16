@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Validation;
+using System.Data.Entity.Infrastructure;
+
 
 namespace MicrosForms.Model
 {
@@ -23,5 +26,16 @@ namespace MicrosForms.Model
 
         [ForeignKey("SiguienteCoordenadaId")]
         public virtual Coordenada Siguiente { get; set; }
+
+        public Coordenada() { }
+
+        public Coordenada(double _lat, double _lng, Coordenada _sigVertice)
+        {
+            Latitud = _lat;
+            Longitud = _lng;
+            Siguiente = _sigVertice;
+        }
+
+
     }
 }

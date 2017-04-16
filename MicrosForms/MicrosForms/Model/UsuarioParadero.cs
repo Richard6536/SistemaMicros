@@ -21,5 +21,7 @@ namespace MicrosForms.Model
         public int UsuarioId { get; set; }
         [ForeignKey("UsuarioId")]
         public virtual Usuario Usuario { get; set; }
+
+        public UsuarioParadero() { }
     }
 }

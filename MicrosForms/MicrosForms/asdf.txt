@@ -1,10 +1,11 @@
-Ventanas admin
-
--Login
-	-Creacion de primer usuario
-
--Ventana principal (mapa, seleccion de ruta)
--Administrar Micros
--Administrar usuarios
--Administrar Rutas (rutas y paraderos a parte??)
--Administrar lineas 
+Admin rutas
+1- Cargar rutas combobox
+2- btnCrearNuevaRuta
+		bloquea combobox y edicion
+		cambiar label de botones y titulos
+		boton crear ruta, crea ruta con doble click (bloquea creacion de paraderos)
+		rehacer cancela la ultima accion
+		Aceptar guarda temporalmente la ruta
+		Boton paraderos permite agregar e interactuar con paraderos creados
+		Aceptar guarda temporalmente los paraderos
+		Guardar cambios guarda ruta y paraderos en base de datos

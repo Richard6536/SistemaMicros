@@ -3,7 +3,7 @@ namespace MicrosForms.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class version2 : DbMigration
+    public partial class verion22 : DbMigration
     {
         public override void Up()
         {
@@ -25,7 +25,7 @@ namespace MicrosForms.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Nombre = c.String(nullable: false),
+                        Nombre = c.String(nullable: false, maxLength: 20),
                         RutaInicioId = c.Int(nullable: false),
                         RutaFinId = c.Int(nullable: false),
                     })
@@ -73,9 +73,9 @@ namespace MicrosForms.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Nombre = c.String(nullable: false, maxLength: 20),
-                        Password = c.String(nullable: false, maxLength: 20),
-                        Email = c.String(nullable: false, maxLength: 30),
+                        Nombre = c.String(nullable: false, maxLength: 25),
+                        Password = c.String(nullable: false),
+                        Email = c.String(nullable: false, maxLength: 50),
                         Rol = c.Int(nullable: false),
                         Latitud = c.Double(nullable: false),
                         Longitud = c.Double(nullable: false),
@@ -132,7 +132,7 @@ namespace MicrosForms.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Nombre = c.String(nullable: false, maxLength: 20),
+                        Nombre = c.String(nullable: false, maxLength: 25),
                         InicioId = c.Int(nullable: false),
                         LineaId = c.Int(nullable: false),
                     })

@@ -30,27 +30,29 @@
         {
             this.gmapController = new GMap.NET.WindowsForms.GMapControl();
             this.label1 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cmbListaRutas = new System.Windows.Forms.ComboBox();
             this.btnEditarRuta = new System.Windows.Forms.Button();
             this.btnCrearNueva = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.btnConfirmarEdit = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.txtNombreEditRuta = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.btnRehacerRuta = new System.Windows.Forms.Button();
-            this.btnDeshacerEdit = new System.Windows.Forms.Button();
-            this.btnAceptarRutaEdit = new System.Windows.Forms.Button();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.btnAceptarRutaNueva = new System.Windows.Forms.Button();
-            this.btnDeshacerRutaNueva = new System.Windows.Forms.Button();
+            this.panelEditCreate = new System.Windows.Forms.Panel();
+            this.btnAceptarParaderos = new System.Windows.Forms.Button();
+            this.btnCrearParaderos = new System.Windows.Forms.Button();
+            this.btnCancelarRuta = new System.Windows.Forms.Button();
+            this.btnAceptarRuta = new System.Windows.Forms.Button();
+            this.btnDeshacer = new System.Windows.Forms.Button();
             this.btnCrearRuta = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtNombreNuevaRuta = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.btnConfirmarNuevaRuta = new System.Windows.Forms.Button();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
+            this.lblNombreRuta = new System.Windows.Forms.Label();
+            this.txtNombreEditRuta = new System.Windows.Forms.TextBox();
+            this.lblTituloPanel = new System.Windows.Forms.Label();
+            this.btnGuardarCambios = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.administrarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.líneasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.microsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.usuariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cerrarSesiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ventanaInicio = new System.Windows.Forms.ToolStripMenuItem();
+            this.panelEditCreate.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // gmapController
@@ -78,6 +80,10 @@
             this.gmapController.Size = new System.Drawing.Size(409, 329);
             this.gmapController.TabIndex = 0;
             this.gmapController.Zoom = 0D;
+            this.gmapController.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.gmapController_OnMarkerClick);
+            this.gmapController.OnMarkerEnter += new GMap.NET.WindowsForms.MarkerEnter(this.gmapController_OnMarkerEnter);
+            this.gmapController.OnMarkerLeave += new GMap.NET.WindowsForms.MarkerLeave(this.gmapController_OnMarkerLeave);
+            this.gmapController.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.gmapController_MouseDoubleClick);
             // 
             // label1
             // 
@@ -88,13 +94,15 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Seleccionar ruta";
             // 
-            // comboBox1
+            // cmbListaRutas
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(468, 71);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(226, 21);
-            this.comboBox1.TabIndex = 2;
+            this.cmbListaRutas.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbListaRutas.FormattingEnabled = true;
+            this.cmbListaRutas.Location = new System.Drawing.Point(468, 71);
+            this.cmbListaRutas.Name = "cmbListaRutas";
+            this.cmbListaRutas.Size = new System.Drawing.Size(226, 21);
+            this.cmbListaRutas.TabIndex = 2;
+            this.cmbListaRutas.SelectedIndexChanged += new System.EventHandler(this.cmbListaRutas_SelectedIndexChanged);
             // 
             // btnEditarRuta
             // 
@@ -104,6 +112,7 @@
             this.btnEditarRuta.TabIndex = 3;
             this.btnEditarRuta.Text = "Editar ruta";
             this.btnEditarRuta.UseVisualStyleBackColor = true;
+            this.btnEditarRuta.Click += new System.EventHandler(this.btnEditarRuta_Click);
             // 
             // btnCrearNueva
             // 
@@ -113,38 +122,93 @@
             this.btnCrearNueva.TabIndex = 4;
             this.btnCrearNueva.Text = "Crear nueva ruta";
             this.btnCrearNueva.UseVisualStyleBackColor = true;
+            this.btnCrearNueva.Click += new System.EventHandler(this.btnCrearNueva_Click);
             // 
-            // panel1
+            // panelEditCreate
             // 
-            this.panel1.Controls.Add(this.btnAceptarRutaEdit);
-            this.panel1.Controls.Add(this.btnDeshacerEdit);
-            this.panel1.Controls.Add(this.btnRehacerRuta);
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.txtNombreEditRuta);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.btnConfirmarEdit);
-            this.panel1.Location = new System.Drawing.Point(468, 131);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(384, 230);
-            this.panel1.TabIndex = 5;
+            this.panelEditCreate.Controls.Add(this.btnAceptarParaderos);
+            this.panelEditCreate.Controls.Add(this.btnCrearParaderos);
+            this.panelEditCreate.Controls.Add(this.btnCancelarRuta);
+            this.panelEditCreate.Controls.Add(this.btnAceptarRuta);
+            this.panelEditCreate.Controls.Add(this.btnDeshacer);
+            this.panelEditCreate.Controls.Add(this.btnCrearRuta);
+            this.panelEditCreate.Controls.Add(this.lblNombreRuta);
+            this.panelEditCreate.Controls.Add(this.txtNombreEditRuta);
+            this.panelEditCreate.Controls.Add(this.lblTituloPanel);
+            this.panelEditCreate.Controls.Add(this.btnGuardarCambios);
+            this.panelEditCreate.Location = new System.Drawing.Point(468, 131);
+            this.panelEditCreate.Name = "panelEditCreate";
+            this.panelEditCreate.Size = new System.Drawing.Size(384, 230);
+            this.panelEditCreate.TabIndex = 5;
             // 
-            // btnConfirmarEdit
+            // btnAceptarParaderos
             // 
-            this.btnConfirmarEdit.Location = new System.Drawing.Point(20, 179);
-            this.btnConfirmarEdit.Name = "btnConfirmarEdit";
-            this.btnConfirmarEdit.Size = new System.Drawing.Size(344, 38);
-            this.btnConfirmarEdit.TabIndex = 0;
-            this.btnConfirmarEdit.Text = "Confirmar";
-            this.btnConfirmarEdit.UseVisualStyleBackColor = true;
+            this.btnAceptarParaderos.Location = new System.Drawing.Point(297, 74);
+            this.btnAceptarParaderos.Name = "btnAceptarParaderos";
+            this.btnAceptarParaderos.Size = new System.Drawing.Size(67, 99);
+            this.btnAceptarParaderos.TabIndex = 11;
+            this.btnAceptarParaderos.Text = "Aceptar";
+            this.btnAceptarParaderos.UseVisualStyleBackColor = true;
+            this.btnAceptarParaderos.Click += new System.EventHandler(this.btnAceptarParaderos_Click);
             // 
-            // label2
+            // btnCrearParaderos
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(17, 13);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(42, 13);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Edición";
+            this.btnCrearParaderos.Location = new System.Drawing.Point(196, 74);
+            this.btnCrearParaderos.Name = "btnCrearParaderos";
+            this.btnCrearParaderos.Size = new System.Drawing.Size(95, 99);
+            this.btnCrearParaderos.TabIndex = 10;
+            this.btnCrearParaderos.Text = "Crear paraderos";
+            this.btnCrearParaderos.UseVisualStyleBackColor = true;
+            this.btnCrearParaderos.Click += new System.EventHandler(this.btnCrearParaderos_Click);
+            // 
+            // btnCancelarRuta
+            // 
+            this.btnCancelarRuta.Location = new System.Drawing.Point(16, 179);
+            this.btnCancelarRuta.Name = "btnCancelarRuta";
+            this.btnCancelarRuta.Size = new System.Drawing.Size(161, 38);
+            this.btnCancelarRuta.TabIndex = 9;
+            this.btnCancelarRuta.Text = "Cancelar";
+            this.btnCancelarRuta.UseVisualStyleBackColor = true;
+            this.btnCancelarRuta.Click += new System.EventHandler(this.btnCancelarRuta_Click);
+            // 
+            // btnAceptarRuta
+            // 
+            this.btnAceptarRuta.Location = new System.Drawing.Point(108, 126);
+            this.btnAceptarRuta.Name = "btnAceptarRuta";
+            this.btnAceptarRuta.Size = new System.Drawing.Size(69, 47);
+            this.btnAceptarRuta.TabIndex = 8;
+            this.btnAceptarRuta.Text = "Aceptar";
+            this.btnAceptarRuta.UseVisualStyleBackColor = true;
+            this.btnAceptarRuta.Click += new System.EventHandler(this.btnAceptarRuta_Click);
+            // 
+            // btnDeshacer
+            // 
+            this.btnDeshacer.Location = new System.Drawing.Point(108, 74);
+            this.btnDeshacer.Name = "btnDeshacer";
+            this.btnDeshacer.Size = new System.Drawing.Size(69, 46);
+            this.btnDeshacer.TabIndex = 7;
+            this.btnDeshacer.Text = "Deshacer";
+            this.btnDeshacer.UseVisualStyleBackColor = true;
+            this.btnDeshacer.Click += new System.EventHandler(this.btnDeshacer_Click);
+            // 
+            // btnCrearRuta
+            // 
+            this.btnCrearRuta.Location = new System.Drawing.Point(16, 74);
+            this.btnCrearRuta.Name = "btnCrearRuta";
+            this.btnCrearRuta.Size = new System.Drawing.Size(86, 99);
+            this.btnCrearRuta.TabIndex = 6;
+            this.btnCrearRuta.Text = "Crear ruta";
+            this.btnCrearRuta.UseVisualStyleBackColor = true;
+            this.btnCrearRuta.Click += new System.EventHandler(this.btnCrearRuta_Click);
+            // 
+            // lblNombreRuta
+            // 
+            this.lblNombreRuta.AutoSize = true;
+            this.lblNombreRuta.Location = new System.Drawing.Point(161, 16);
+            this.lblNombreRuta.Name = "lblNombreRuta";
+            this.lblNombreRuta.Size = new System.Drawing.Size(114, 13);
+            this.lblNombreRuta.TabIndex = 3;
+            this.lblNombreRuta.Text = "Nombre/Editar nombre";
             // 
             // txtNombreEditRuta
             // 
@@ -153,135 +217,102 @@
             this.txtNombreEditRuta.Size = new System.Drawing.Size(200, 20);
             this.txtNombreEditRuta.TabIndex = 2;
             // 
-            // label3
+            // lblTituloPanel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(161, 16);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(72, 13);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Editar nombre";
+            this.lblTituloPanel.AutoSize = true;
+            this.lblTituloPanel.Location = new System.Drawing.Point(17, 13);
+            this.lblTituloPanel.Name = "lblTituloPanel";
+            this.lblTituloPanel.Size = new System.Drawing.Size(33, 13);
+            this.lblTituloPanel.TabIndex = 1;
+            this.lblTituloPanel.Text = "Titulo";
             // 
-            // btnRehacerRuta
+            // btnGuardarCambios
             // 
-            this.btnRehacerRuta.Location = new System.Drawing.Point(20, 74);
-            this.btnRehacerRuta.Name = "btnRehacerRuta";
-            this.btnRehacerRuta.Size = new System.Drawing.Size(157, 99);
-            this.btnRehacerRuta.TabIndex = 6;
-            this.btnRehacerRuta.Text = "Rehacer ruta";
-            this.btnRehacerRuta.UseVisualStyleBackColor = true;
+            this.btnGuardarCambios.Location = new System.Drawing.Point(183, 179);
+            this.btnGuardarCambios.Name = "btnGuardarCambios";
+            this.btnGuardarCambios.Size = new System.Drawing.Size(181, 38);
+            this.btnGuardarCambios.TabIndex = 0;
+            this.btnGuardarCambios.Text = "Guardar cambios";
+            this.btnGuardarCambios.UseVisualStyleBackColor = true;
+            this.btnGuardarCambios.Click += new System.EventHandler(this.btnGuardarCambios_Click);
             // 
-            // btnDeshacerEdit
+            // menuStrip1
             // 
-            this.btnDeshacerEdit.Location = new System.Drawing.Point(183, 74);
-            this.btnDeshacerEdit.Name = "btnDeshacerEdit";
-            this.btnDeshacerEdit.Size = new System.Drawing.Size(71, 46);
-            this.btnDeshacerEdit.TabIndex = 7;
-            this.btnDeshacerEdit.Text = "Deshacer";
-            this.btnDeshacerEdit.UseVisualStyleBackColor = true;
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.administrarToolStripMenuItem,
+            this.cerrarSesiónToolStripMenuItem,
+            this.ventanaInicio});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(875, 24);
+            this.menuStrip1.TabIndex = 11;
+            this.menuStrip1.Text = "menuStrip1";
             // 
-            // btnAceptarRutaEdit
+            // administrarToolStripMenuItem
             // 
-            this.btnAceptarRutaEdit.Location = new System.Drawing.Point(183, 126);
-            this.btnAceptarRutaEdit.Name = "btnAceptarRutaEdit";
-            this.btnAceptarRutaEdit.Size = new System.Drawing.Size(71, 47);
-            this.btnAceptarRutaEdit.TabIndex = 8;
-            this.btnAceptarRutaEdit.Text = "Aceptar";
-            this.btnAceptarRutaEdit.UseVisualStyleBackColor = true;
+            this.administrarToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.líneasToolStripMenuItem,
+            this.microsToolStripMenuItem,
+            this.usuariosToolStripMenuItem});
+            this.administrarToolStripMenuItem.Name = "administrarToolStripMenuItem";
+            this.administrarToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+            this.administrarToolStripMenuItem.Text = "Administrar";
             // 
-            // panel2
+            // líneasToolStripMenuItem
             // 
-            this.panel2.Controls.Add(this.btnAceptarRutaNueva);
-            this.panel2.Controls.Add(this.btnDeshacerRutaNueva);
-            this.panel2.Controls.Add(this.btnCrearRuta);
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.txtNombreNuevaRuta);
-            this.panel2.Controls.Add(this.label5);
-            this.panel2.Controls.Add(this.btnConfirmarNuevaRuta);
-            this.panel2.Location = new System.Drawing.Point(470, 364);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(384, 230);
-            this.panel2.TabIndex = 9;
+            this.líneasToolStripMenuItem.Name = "líneasToolStripMenuItem";
+            this.líneasToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.líneasToolStripMenuItem.Text = "Líneas";
+            this.líneasToolStripMenuItem.Click += new System.EventHandler(this.líneasToolStripMenuItem_Click);
             // 
-            // btnAceptarRutaNueva
+            // microsToolStripMenuItem
             // 
-            this.btnAceptarRutaNueva.Location = new System.Drawing.Point(183, 126);
-            this.btnAceptarRutaNueva.Name = "btnAceptarRutaNueva";
-            this.btnAceptarRutaNueva.Size = new System.Drawing.Size(71, 47);
-            this.btnAceptarRutaNueva.TabIndex = 8;
-            this.btnAceptarRutaNueva.Text = "Aceptar";
-            this.btnAceptarRutaNueva.UseVisualStyleBackColor = true;
+            this.microsToolStripMenuItem.Name = "microsToolStripMenuItem";
+            this.microsToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.microsToolStripMenuItem.Text = "Micros";
+            this.microsToolStripMenuItem.Click += new System.EventHandler(this.microsToolStripMenuItem_Click);
             // 
-            // btnDeshacerRutaNueva
+            // usuariosToolStripMenuItem
             // 
-            this.btnDeshacerRutaNueva.Location = new System.Drawing.Point(183, 74);
-            this.btnDeshacerRutaNueva.Name = "btnDeshacerRutaNueva";
-            this.btnDeshacerRutaNueva.Size = new System.Drawing.Size(71, 46);
-            this.btnDeshacerRutaNueva.TabIndex = 7;
-            this.btnDeshacerRutaNueva.Text = "Deshacer";
-            this.btnDeshacerRutaNueva.UseVisualStyleBackColor = true;
+            this.usuariosToolStripMenuItem.Name = "usuariosToolStripMenuItem";
+            this.usuariosToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
+            this.usuariosToolStripMenuItem.Text = "Usuarios";
+            this.usuariosToolStripMenuItem.Click += new System.EventHandler(this.usuariosToolStripMenuItem_Click);
             // 
-            // btnCrearRuta
+            // cerrarSesiónToolStripMenuItem
             // 
-            this.btnCrearRuta.Location = new System.Drawing.Point(20, 74);
-            this.btnCrearRuta.Name = "btnCrearRuta";
-            this.btnCrearRuta.Size = new System.Drawing.Size(157, 99);
-            this.btnCrearRuta.TabIndex = 6;
-            this.btnCrearRuta.Text = "Crear/Rehacer ruta";
-            this.btnCrearRuta.UseVisualStyleBackColor = true;
+            this.cerrarSesiónToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.cerrarSesiónToolStripMenuItem.Name = "cerrarSesiónToolStripMenuItem";
+            this.cerrarSesiónToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
+            this.cerrarSesiónToolStripMenuItem.Text = "Cerrar sesión";
+            this.cerrarSesiónToolStripMenuItem.Click += new System.EventHandler(this.cerrarSesiónToolStripMenuItem_Click);
             // 
-            // label4
+            // ventanaInicio
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(161, 16);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(80, 13);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Nombre de ruta";
-            // 
-            // txtNombreNuevaRuta
-            // 
-            this.txtNombreNuevaRuta.Location = new System.Drawing.Point(164, 32);
-            this.txtNombreNuevaRuta.Name = "txtNombreNuevaRuta";
-            this.txtNombreNuevaRuta.Size = new System.Drawing.Size(200, 20);
-            this.txtNombreNuevaRuta.TabIndex = 2;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(17, 13);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(60, 13);
-            this.label5.TabIndex = 1;
-            this.label5.Text = "Nueva ruta";
-            // 
-            // btnConfirmarNuevaRuta
-            // 
-            this.btnConfirmarNuevaRuta.Location = new System.Drawing.Point(20, 179);
-            this.btnConfirmarNuevaRuta.Name = "btnConfirmarNuevaRuta";
-            this.btnConfirmarNuevaRuta.Size = new System.Drawing.Size(344, 38);
-            this.btnConfirmarNuevaRuta.TabIndex = 0;
-            this.btnConfirmarNuevaRuta.Text = "Confirmar";
-            this.btnConfirmarNuevaRuta.UseVisualStyleBackColor = true;
+            this.ventanaInicio.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.ventanaInicio.Name = "ventanaInicio";
+            this.ventanaInicio.Size = new System.Drawing.Size(109, 20);
+            this.ventanaInicio.Text = "Ventana de inicio";
+            this.ventanaInicio.Click += new System.EventHandler(this.ventanaInicio_Click);
             // 
             // AdminRutas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(875, 606);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.menuStrip1);
+            this.Controls.Add(this.panelEditCreate);
             this.Controls.Add(this.btnCrearNueva);
             this.Controls.Add(this.btnEditarRuta);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.cmbListaRutas);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.gmapController);
             this.Name = "AdminRutas";
             this.Text = "AdminRutas";
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.panelEditCreate.ResumeLayout(false);
+            this.panelEditCreate.PerformLayout();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -291,24 +322,26 @@
 
         private GMap.NET.WindowsForms.GMapControl gmapController;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cmbListaRutas;
         private System.Windows.Forms.Button btnEditarRuta;
         private System.Windows.Forms.Button btnCrearNueva;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button btnAceptarRutaEdit;
-        private System.Windows.Forms.Button btnDeshacerEdit;
-        private System.Windows.Forms.Button btnRehacerRuta;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txtNombreEditRuta;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button btnConfirmarEdit;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Button btnAceptarRutaNueva;
-        private System.Windows.Forms.Button btnDeshacerRutaNueva;
+        private System.Windows.Forms.Panel panelEditCreate;
+        private System.Windows.Forms.Button btnAceptarRuta;
+        private System.Windows.Forms.Button btnDeshacer;
         private System.Windows.Forms.Button btnCrearRuta;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox txtNombreNuevaRuta;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Button btnConfirmarNuevaRuta;
+        private System.Windows.Forms.Label lblNombreRuta;
+        private System.Windows.Forms.TextBox txtNombreEditRuta;
+        private System.Windows.Forms.Label lblTituloPanel;
+        private System.Windows.Forms.Button btnGuardarCambios;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem administrarToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem líneasToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem microsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem usuariosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cerrarSesiónToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ventanaInicio;
+        private System.Windows.Forms.Button btnCancelarRuta;
+        private System.Windows.Forms.Button btnAceptarParaderos;
+        private System.Windows.Forms.Button btnCrearParaderos;
     }
 }

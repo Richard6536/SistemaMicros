@@ -17,9 +17,22 @@ namespace MicrosForms.Model
         public double Latitud { get; set; }
         public double Longitud { get; set; }
 
-        public virtual List<Ruta> Rutas { get; set; }
+        public int RutaId { get; set; }
+
+        [ForeignKey("RutaId")]
+        public virtual Ruta Ruta { get; set; }
 
         public virtual List<UsuarioParadero> UsuariosParaderos { get; set; }
         public virtual List<MicroParadero> MicrosParaderos { get; set; }
+
+        public Paradero() { }
+
+        public Paradero(double _lat, double _lng)
+        {
+            Latitud = _lat;
+            Longitud = _lng;
+        }
+
+        
     }
 }

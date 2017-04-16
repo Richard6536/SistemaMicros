@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.Windows.Forms;
+
 using MicrosForms.Model;
 
 namespace MicrosForms.Classes
@@ -23,6 +25,7 @@ namespace MicrosForms.Classes
             }
             catch (Exception)
             {
+                MessageBox.Show("Error conectado a la base de datos.");
                 return false;
             }
                      

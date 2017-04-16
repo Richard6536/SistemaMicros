@@ -9,6 +9,9 @@ using System.Data.Entity.Validation;
 using System.Data.Entity.Infrastructure;
 
 using System.Diagnostics;
+using MicrosForms.Classes;
+
+using System.Windows.Forms;
 
 namespace MicrosForms.Model
 {
@@ -21,13 +24,15 @@ namespace MicrosForms.Model
         [Key, ForeignKey("UsuarioParadero")]
         public int Id { get; set; }
 
-        [Required, StringLength(20), MinLength(4), Index("NombreIndex", IsUnique = true)]
+        [Required, StringLength(25, MinimumLength = 3, ErrorMessage = "El nombre de usuario debe tener un mínimo de 3 carácteres y máximo de 25"), 
+            Index("NombreIndex", IsUnique = true)]
         public string Nombre { get; set; }
 
-        [Required, StringLength(20), MinLength(4)]
+        [Required]
         public string Password { get; set; }
 
-        [Required, StringLength(30), MinLength(4)]
+        [Required, StringLength(50, MinimumLength = 3, ErrorMessage = "El email debe tener un mínimo de 3 carácteres y un máximo de 25")]
+        [EmailAddress]
         public string Email { get; set; }
         
         [Required]
@@ -45,8 +50,10 @@ namespace MicrosForms.Model
         [ForeignKey("MicroChoferId")]
         public virtual MicroChofer MicroChofer { get; set; }
 
+        public Usuario() { }
 
-        public static String CrearUsuario(String _nombre, RolUsuario _rol, String _password)
+
+        public static bool CrearUsuario(string _nombre, string _email, RolUsuario _rol, string _password)
         {
             try
             {
@@ -54,16 +61,12 @@ namespace MicrosForms.Model
 
                 Usuario nuevoUsuario = new Usuario();
 
-                //String passEncriptada = PasswordHash.CreateHash(_password.Trim());
+                string passEncriptada = PasswordHash.CreateHash(_password.Trim());
 
                 nuevoUsuario.Nombre = _nombre;
                 nuevoUsuario.Rol = _rol;
-                nuevoUsuario.Password = _password;
-                //nuevoUsuario.Password = passEncriptada;
-
-                //nuevoUsuario.Posicion = new Coordenada();
-
-                String mensajeError = "";
+                nuevoUsuario.Email = _email;
+                nuevoUsuario.Password = passEncriptada;
 
                 BD.Usuarios.Add(nuevoUsuario);
 
@@ -73,24 +76,39 @@ namespace MicrosForms.Model
                 }
                 catch (DbEntityValidationException ex)
                 {
-                    mensajeError = ex.EntityValidationErrors.First().ValidationErrors.First().ErrorMessage;
+                    //mensajeError = ex.EntityValidationErrors.First().ValidationErrors.First().ErrorMessage;
+
+                    string mensaje = "errores \n";
+
+                    foreach (var error in ex.EntityValidationErrors.First().ValidationErrors)
+                    {
+                        mensaje += error.ErrorMessage + "\n";
+                    }
+
+                    MessageBox.Show(mensaje);
+
+                    return false;
                 }
                 catch (DbUpdateException ex)
                 {
-                    mensajeError = "El nombre de usuario ya existe";
+                    //mensajeError = "El nombre de usuario ya existe";
+                    MessageBox.Show("El nombre de usuario ya existe");
+                    return false;
                 }
                 catch (Exception ex)
                 {
-                    mensajeError = "Imposible completar su solicitud. Intente más tarde";
+                    //mensajeError = "Imposible completar su solicitud. Intente más tarde";
+                    Debug.WriteLine("Imposible completar operación");
+                    return false;
                 }
 
-                return mensajeError;
+                return true;
 
             }
             catch (Exception)
             {
                 Debug.WriteLine("Error creando usuario");
-                throw;
+                return false;
             }
 
         }
@@ -102,16 +120,11 @@ namespace MicrosForms.Model
             {
                 var BD = new MicroSystemContext();
 
-                var usuarioSeleccionado = BD.Usuarios.Where(
-                    usuario =>
-                               usuario.Nombre == _nombre).FirstOrDefault();
+                var usuarioSeleccionado = BD.Usuarios.Where(u => u.Nombre == _nombre).FirstOrDefault();
 
-                String resultPass = usuarioSeleccionado.Password;
+                bool resultPass = PasswordHash.ValidatePassword(_pass, usuarioSeleccionado.Password);
 
-                if (resultPass != _pass)
-                    return false;
-                
-                return true;
+                return resultPass;
             }
             catch (Exception)
             {
@@ -164,6 +177,19 @@ namespace MicrosForms.Model
 
             return usuarioSeleccionado;
 
+        }
+
+        public static bool ExisteYaUsuario(string _nombre)
+        {
+            bool yaExiste = true;
+
+            var BD = new MicroSystemContext();
+            var usuarioSeleccionado = BD.Usuarios.Where(u => u.Nombre == _nombre).FirstOrDefault();
+
+            if (usuarioSeleccionado == null)
+                yaExiste = false;
+
+            return yaExiste;
         }
 
         public static void ActualizarUsuario(int _id, String _pass, RolUsuario _rol)

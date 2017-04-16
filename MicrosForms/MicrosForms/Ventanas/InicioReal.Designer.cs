@@ -35,7 +35,15 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.administrarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.líneasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.microsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.usuariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.rutasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cerrarSesiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarZoom)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // gMapControl1
@@ -114,6 +122,64 @@
             this.comboBox2.Size = new System.Drawing.Size(228, 21);
             this.comboBox2.TabIndex = 6;
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.administrarToolStripMenuItem,
+            this.cerrarSesiónToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(764, 24);
+            this.menuStrip1.TabIndex = 7;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // administrarToolStripMenuItem
+            // 
+            this.administrarToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.líneasToolStripMenuItem,
+            this.rutasToolStripMenuItem,
+            this.microsToolStripMenuItem,
+            this.usuariosToolStripMenuItem});
+            this.administrarToolStripMenuItem.Name = "administrarToolStripMenuItem";
+            this.administrarToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
+            this.administrarToolStripMenuItem.Text = "Administrar";
+            // 
+            // líneasToolStripMenuItem
+            // 
+            this.líneasToolStripMenuItem.Name = "líneasToolStripMenuItem";
+            this.líneasToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.líneasToolStripMenuItem.Text = "Líneas";
+            this.líneasToolStripMenuItem.Click += new System.EventHandler(this.líneasToolStripMenuItem_Click);
+            // 
+            // microsToolStripMenuItem
+            // 
+            this.microsToolStripMenuItem.Name = "microsToolStripMenuItem";
+            this.microsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.microsToolStripMenuItem.Text = "Micros";
+            this.microsToolStripMenuItem.Click += new System.EventHandler(this.microsToolStripMenuItem_Click);
+            // 
+            // usuariosToolStripMenuItem
+            // 
+            this.usuariosToolStripMenuItem.Name = "usuariosToolStripMenuItem";
+            this.usuariosToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.usuariosToolStripMenuItem.Text = "Usuarios";
+            this.usuariosToolStripMenuItem.Click += new System.EventHandler(this.usuariosToolStripMenuItem_Click);
+            // 
+            // rutasToolStripMenuItem
+            // 
+            this.rutasToolStripMenuItem.Name = "rutasToolStripMenuItem";
+            this.rutasToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rutasToolStripMenuItem.Text = "Rutas";
+            this.rutasToolStripMenuItem.Click += new System.EventHandler(this.rutasToolStripMenuItem_Click);
+            // 
+            // cerrarSesiónToolStripMenuItem
+            // 
+            this.cerrarSesiónToolStripMenuItem.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+            this.cerrarSesiónToolStripMenuItem.Name = "cerrarSesiónToolStripMenuItem";
+            this.cerrarSesiónToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
+            this.cerrarSesiónToolStripMenuItem.Text = "Cerrar sesión";
+            this.cerrarSesiónToolStripMenuItem.Click += new System.EventHandler(this.cerrarSesiónToolStripMenuItem_Click);
+            // 
             // InicioReal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -126,9 +192,12 @@
             this.Controls.Add(this.lblZoom);
             this.Controls.Add(this.trackBarZoom);
             this.Controls.Add(this.gMapControl1);
+            this.Controls.Add(this.menuStrip1);
             this.Name = "InicioReal";
             this.Text = "InicioReal";
             ((System.ComponentModel.ISupportInitialize)(this.trackBarZoom)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -143,5 +212,12 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox comboBox2;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem administrarToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem líneasToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem microsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem usuariosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem rutasToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cerrarSesiónToolStripMenuItem;
     }
 }

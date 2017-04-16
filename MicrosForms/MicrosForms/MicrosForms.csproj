@@ -84,9 +84,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\ConnectionTester.cs" />
-    <Compile Include="Migrations\201704142013104_version2.cs" />
-    <Compile Include="Migrations\201704142013104_version2.Designer.cs">
-      <DependentUpon>201704142013104_version2.cs</DependentUpon>
+    <Compile Include="Classes\FormManager.cs" />
+    <Compile Include="Classes\PasswordHash.cs" />
+    <Compile Include="Migrations\201704150546307_verion22.cs" />
+    <Compile Include="Migrations\201704150546307_verion22.Designer.cs">
+      <DependentUpon>201704150546307_verion22.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704160045085_rutaParadero.cs" />
+    <Compile Include="Migrations\201704160045085_rutaParadero.Designer.cs">
+      <DependentUpon>201704160045085_rutaParadero.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704160056342_asdf.cs" />
+    <Compile Include="Migrations\201704160056342_asdf.Designer.cs">
+      <DependentUpon>201704160056342_asdf.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Coordenada.cs" />
     <Compile Include="Model\MicroParadero.cs" />
@@ -185,8 +195,14 @@
     <Compile Include="Ventanas\Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Migrations\201704142013104_version2.resx">
-      <DependentUpon>201704142013104_version2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201704150546307_verion22.resx">
+      <DependentUpon>201704150546307_verion22.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704160045085_rutaParadero.resx">
+      <DependentUpon>201704160045085_rutaParadero.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704160056342_asdf.resx">
+      <DependentUpon>201704160056342_asdf.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -211,6 +227,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Ventanas\Creaciones\CrearMicro.resx">
       <DependentUpon>CrearMicro.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventanas\Creaciones\CrearPrimerUsuario.resx">
+      <DependentUpon>CrearPrimerUsuario.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ventanas\Ediciones\EditarMicro.resx">
       <DependentUpon>EditarMicro.cs</DependentUpon>
