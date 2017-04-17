@@ -7,13 +7,13 @@ namespace MicrosForms.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class rutaParadero : IMigrationMetadata
+    public sealed partial class postAdminRuta : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(rutaParadero));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(postAdminRuta));
         
         string IMigrationMetadata.Id
         {
-            get { return "201704160045085_rutaParadero"; }
+            get { return "201704170554033_postAdminRuta"; }
         }
         
         string IMigrationMetadata.Source

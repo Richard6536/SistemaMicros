@@ -22,6 +22,10 @@ namespace MicrosForms.Ventanas
 {
     public partial class AdminRutas : Form
     {
+        bool editarMapaExistente = false;
+        bool rehacerPresionado = false;
+        Ruta rutaAEditar;
+
         bool editandoMapa = false;
         bool editandoParaderos = false;
 
@@ -32,6 +36,7 @@ namespace MicrosForms.Ventanas
         GMapOverlay otrosMarkersOverlay;
 
         List<GMarkerGoogle> markParaderos;
+        List<GMarkerGoogle> otrosMarkersList;
 
         List<PointLatLng> posVertices;
         List<PointLatLng> puntosClickeados;
@@ -51,6 +56,7 @@ namespace MicrosForms.Ventanas
             markParaderos = new List<GMarkerGoogle>();
             posVertices = new List<PointLatLng>();
             puntosClickeados = new List<PointLatLng>();
+            otrosMarkersList = new List<GMarkerGoogle>();
 
             previewOverlay = new GMapOverlay("preview");
             completeOverlay = new GMapOverlay("complete");
@@ -114,9 +120,12 @@ namespace MicrosForms.Ventanas
         //EDITAR
         private void btnEditarRuta_Click(object sender, EventArgs e)
         {
+            editarMapaExistente = true;
+
             panelEditCreate.Visible = true;
 
             btnEditarRuta.Enabled = false;
+            btnEliminarRuta.Enabled = false;
             btnCrearNueva.Enabled = false;
             cmbListaRutas.Enabled = false;
 
@@ -131,9 +140,18 @@ namespace MicrosForms.Ventanas
             btnCrearParaderos.Text = "Editar paraderos";
 
             markParaderos = new List<GMarkerGoogle>();
+            otrosMarkersList = new List<GMarkerGoogle>();
             fragmentosDeRuta = new List<GMapRoute>();
 
-            //CARGAR RUTA DEL COMBOBOX
+            previewOverlay.Clear();
+            completeOverlay.Clear();
+            paraderosOverlay.Clear();
+            otrosMarkersOverlay.Clear();
+
+            rutaAEditar = Ruta.BuscarPorId(Convert.ToInt32(cmbListaRutas.SelectedValue));
+            txtNombreEditRuta.Text = rutaAEditar.Nombre;
+
+            CargarRutaEnMapa(rutaAEditar);
         }
         //CREAR
         private void btnCrearNueva_Click(object sender, EventArgs e)
@@ -141,6 +159,7 @@ namespace MicrosForms.Ventanas
             panelEditCreate.Visible = true;
 
             btnEditarRuta.Enabled = false;
+            btnEliminarRuta.Enabled = false;
             btnCrearNueva.Enabled = false;
             cmbListaRutas.Enabled = false;
 
@@ -157,6 +176,7 @@ namespace MicrosForms.Ventanas
             txtNombreEditRuta.Text = "";
 
             markParaderos = new List<GMarkerGoogle>();
+            otrosMarkersList = new List<GMarkerGoogle>();
             fragmentosDeRuta = new List<GMapRoute>();
 
             previewOverlay.Clear();
@@ -178,14 +198,13 @@ namespace MicrosForms.Ventanas
 
 
 
-
-
         #region EDICION RUTA
         
         private void btnCrearRuta_Click(object sender, EventArgs e)
         {
-            //CREAR/DESHACER RUTA DEPENDIENDO DEL BOTÓN PRESIONADO
+            //CREAR/REHACER RUTA DEPENDIENDO DEL BOTÓN PRESIONADO
             editandoMapa = true;
+            rehacerPresionado = true;
 
             btnCrearRuta.Enabled = false;
             btnGuardarCambios.Enabled = false;
@@ -199,7 +218,7 @@ namespace MicrosForms.Ventanas
             posVertices = new List<PointLatLng>();
             puntosClickeados = new List<PointLatLng>();
 
-
+            otrosMarkersOverlay.Clear();
             previewOverlay.Clear();
 
             RefreshMap();
@@ -216,7 +235,7 @@ namespace MicrosForms.Ventanas
                 {
                     puntoInicioFragmentos = new GMarkerGoogle(new PointLatLng(_lat, _lng), GMarkerGoogleType.yellow_small);
                     puntoInicioFragmentos.ToolTipText = "Punto de inico";
-                    markParaderos.Add(puntoInicioFragmentos);
+                    otrosMarkersList.Add(puntoInicioFragmentos);
                     otrosMarkersOverlay.Markers.Add(puntoInicioFragmentos);
                 }
 
@@ -250,7 +269,6 @@ namespace MicrosForms.Ventanas
                 btnDeshacer.Enabled = true;
             }
         }
-
 
         private void btnDeshacer_Click(object sender, EventArgs e)
         {
@@ -411,17 +429,18 @@ namespace MicrosForms.Ventanas
         {
             if (editandoParaderos)
             {
-                item.ToolTipMode = MarkerTooltipMode.OnMouseOver;
-                item.ToolTipText = "Click para borrar";
+                GMarkerGoogle m = markParaderos.Find(mp => mp.Position.Lat == item.Position.Lat && mp.Position.Lng == item.Position.Lng);
+
+                if (m != null)
+                {
+                    item.ToolTipMode = MarkerTooltipMode.OnMouseOver;
+                    item.ToolTipText = "Click para borrar";
+                }
             }
         }
 
         private void gmapController_OnMarkerLeave(GMapMarker item)
         {
-            if (editandoParaderos)
-            {
-                item.ToolTipMode = MarkerTooltipMode.Never;
-            }
         }
 
         #endregion
@@ -442,14 +461,88 @@ namespace MicrosForms.Ventanas
 
             RefreshMap();
 
-            btnEditarRuta.Enabled = true;
+            if(cmbListaRutas.SelectedValue +"" != "")
+            {
+                btnEditarRuta.Enabled = true;
+                cmbListaRutas.Enabled = true;
+                btnEliminarRuta.Enabled = true;
+            }           
+
             btnCrearNueva.Enabled = true;
-            cmbListaRutas.Enabled = true;
+            
 
             panelEditCreate.Visible = false;
+
+            editarMapaExistente = false;
+            rehacerPresionado = false;
+
+            CargarCombobox();
         }
         //GUARDAR CAMBIOS EN BASE DE DATOS
         private void btnGuardarCambios_Click(object sender, EventArgs e)
+        {
+            if(editarMapaExistente)
+            {
+                GuardarCambiosEdicion();
+            }
+            else
+            {
+                GuardarCambiosCreacion();
+            }
+
+
+        }
+
+        void GuardarCambiosEdicion()
+        {
+            List<Coordenada> vertices = new List<Coordenada>() ;
+            List<Paradero> paraderos = CrearParaderos();
+
+            bool resultado;
+
+            if (rehacerPresionado)
+            {
+                vertices = CrearVertices();
+
+                if (vertices.Count < 2)
+                {
+                    MessageBox.Show("No puede guardar una ruta vacía.");
+                    return;
+                }
+
+                resultado = Ruta.EditarRuta(rutaAEditar, txtNombreEditRuta.Text, vertices, paraderos, true);
+            }
+
+            resultado = Ruta.EditarRuta(rutaAEditar, txtNombreEditRuta.Text, vertices, paraderos, false);
+
+            if (resultado)
+            {
+                panelEditCreate.Visible = false;
+
+                btnEditarRuta.Enabled = true;
+                btnCrearNueva.Enabled = true;
+                cmbListaRutas.Enabled = true;
+
+                MessageBox.Show("Ruta \"" + txtNombreEditRuta.Text + "\" editada correctamente");
+
+                CargarCombobox();
+
+                for (int i = 0; i < cmbListaRutas.Items.Count; i++)
+                {
+                    cmbListaRutas.SelectedIndex = i;
+
+                    if (cmbListaRutas.Text == txtNombreEditRuta.Text)
+                        break;
+                }
+
+
+                editarMapaExistente = false;
+                rehacerPresionado = false;
+            }
+
+        }
+
+        void GuardarCambiosCreacion()
         {
             List<Coordenada> vertices = CrearVertices();
             List<Paradero> paraderos = CrearParaderos();
@@ -460,7 +553,7 @@ namespace MicrosForms.Ventanas
                 return;
             }
 
-            if(Ruta.BuscarRutaPorNombre(txtNombreEditRuta.Text) != null)
+            if (Ruta.BuscarRutaPorNombre(txtNombreEditRuta.Text) != null)
             {
                 MessageBox.Show("El nombre de esa ruta ya existe.");
                 return;
@@ -477,28 +570,21 @@ namespace MicrosForms.Ventanas
                 btnCrearNueva.Enabled = true;
                 cmbListaRutas.Enabled = true;
 
-                MessageBox.Show("Ruta \""+txtNombreEditRuta.Text+"\" creada exitósamente");
+                MessageBox.Show("Ruta \"" + txtNombreEditRuta.Text + "\" creada exitósamente");
+
+                CargarCombobox();
+                cmbListaRutas.SelectedIndex = cmbListaRutas.Items.Count - 1;
+
+
+                editarMapaExistente = false;
+                rehacerPresionado = false;
             }
 
-            CargarCombobox();
-            cmbListaRutas.SelectedIndex = cmbListaRutas.Items.Count - 1;
 
         }
 
-        //void TestOrdenRuta()
-        //{
-        //    markersOverlay = new GMapOverlay("marcadores");
 
-        //    for (int i = 0; i < vertices.Count; i++)
-        //    {
-        //        GMarkerGoogle marker = new GMarkerGoogle(new PointLatLng(vertices[i].Latitud, vertices[i].Longitud), GMarkerGoogleType.blue_dot);
-        //        marker.ToolTipMode = MarkerTooltipMode.OnMouseOver;
-        //        marker.ToolTipText = i + "\n"+ vertices[i].Latitud+","+ vertices[i].Longitud;
 
-        //        markersOverlay.Markers.Add(marker);
-        //    }
-        //    gmapController.Overlays.Add(markersOverlay);
-        //}
 
         void RefreshMap()
         {
@@ -521,6 +607,13 @@ namespace MicrosForms.Ventanas
                 //cargar mapa
                 Ruta ruta = Ruta.BuscarPorId(Convert.ToInt32(cmbListaRutas.SelectedValue));
                 CargarRutaEnMapa(ruta);
+                btnEditarRuta.Enabled = true;
+                btnEliminarRuta.Enabled = true;
+            }
+            else
+            {
+                btnEditarRuta.Enabled = false;
+                btnEliminarRuta.Enabled = false;
             }
         }
 
@@ -551,6 +644,9 @@ namespace MicrosForms.Ventanas
             paraderosOverlay.Clear();
             otrosMarkersOverlay.Clear();
 
+            markParaderos.Clear();
+            otrosMarkersList.Clear();
+
            
             List<Paradero> paraderos = Ruta.ObtenerParaderosDeRuta(_ruta);
             List<Coordenada> vertices = Ruta.ObtenerVerticesDeInicioAFin(_ruta);
@@ -577,7 +673,7 @@ namespace MicrosForms.Ventanas
                     gmapController.Position = new PointLatLng(actual.Latitud, actual.Longitud);
                     GMarkerGoogle InicioMarker = new GMarkerGoogle(new PointLatLng(actual.Latitud, actual.Longitud), GMarkerGoogleType.yellow_small);
                     InicioMarker.ToolTipText = "Inicio";
-                    markParaderos.Add(InicioMarker);
+                    otrosMarkersList.Add(InicioMarker);
                     otrosMarkersOverlay.Markers.Add(InicioMarker);
                 }
 
@@ -585,7 +681,7 @@ namespace MicrosForms.Ventanas
                 {
                     GMarkerGoogle FinalMarker = new GMarkerGoogle(new PointLatLng(siguiente.Latitud, siguiente.Longitud), GMarkerGoogleType.yellow_small);
                     FinalMarker.ToolTipText = "Final";
-                    markParaderos.Add(FinalMarker);
+                    otrosMarkersList.Add(FinalMarker);
                     otrosMarkersOverlay.Markers.Add(FinalMarker);
                 }
 
@@ -605,6 +701,28 @@ namespace MicrosForms.Ventanas
 
         }
 
+        private void btnEliminarRuta_Click(object sender, EventArgs e)
+        {
+            //MENSAJE DE CONFIRMACION DE BORRADO
+            //NO PERMITIR BORRAR SI LA RUTA ESTÄ ASOCIADA A UNA LINEA
 
+            int idRuta = Convert.ToInt32(cmbListaRutas.SelectedValue);
+            bool resultado = Ruta.EliminarRuta(idRuta);
+
+            if(resultado)
+            {
+                MessageBox.Show("Ruta borrada exitosamente");
+
+                otrosMarkersOverlay.Clear();
+                previewOverlay.Clear();
+                paraderosOverlay.Clear();
+
+                CargarCombobox();
+            }
+            else
+            {
+                MessageBox.Show("Algun error");
+            }
+        }
     }
 }

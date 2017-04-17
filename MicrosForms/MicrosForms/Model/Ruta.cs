@@ -29,7 +29,7 @@ namespace MicrosForms.Model
         public int? LineaId { get; set; }
 
         [ForeignKey("InicioId")]
-        public virtual Coordenada Coordenada { get; set; }
+        public virtual Coordenada Inicio { get; set; }
         [ForeignKey("LineaId")]
         public virtual Linea Linea { get; set; }
 
@@ -49,7 +49,7 @@ namespace MicrosForms.Model
             }
 
             nuevaRuta.Nombre = _nombre;
-            nuevaRuta.Coordenada = _vertices[0];
+            nuevaRuta.Inicio = _vertices[0];
             nuevaRuta.Paraderos = _paraderos;
 
             for (int i = 1; i < _vertices.Count; i++)
@@ -131,7 +131,7 @@ namespace MicrosForms.Model
 
             List<Coordenada> vertices = new List<Coordenada>();
 
-            Coordenada actual = _ruta.Coordenada;
+            Coordenada actual = _ruta.Inicio;
 
             vertices.Add(actual);
 
@@ -142,6 +142,134 @@ namespace MicrosForms.Model
             }
 
             return vertices;
+        }
+
+        public static bool EditarRuta(Ruta _ruta, string _nombre, List<Coordenada> _vertices, List<Paradero> _paraderos, bool sobreEscribirVertices)
+        {
+            var BD = new MicroSystemContext();
+
+            Ruta _rutaBD = BD.Rutas.Where(r => r.Id == _ruta.Id).FirstOrDefault();
+
+            
+            if (sobreEscribirVertices)
+            {
+                //Se registra el inicio antiguo y se asocian los nuevos vertices con la ruta
+                Coordenada inicioAntiguo = _rutaBD.Inicio;
+                _rutaBD.Inicio = _vertices[0];
+
+                for (int i = 1; i < _vertices.Count; i++)
+                {
+                    BD.Coordenadas.Add(_vertices[i]);
+                }
+
+                //Se borran las coordenadas antiguas
+                List<Coordenada> aBorrar = new List<Coordenada>();
+                Coordenada actual = BD.Coordenadas.Where(c => c.Id == inicioAntiguo.Id).FirstOrDefault();
+
+                while (actual != null)
+                {
+                    aBorrar.Add(actual);
+                    actual = actual.Siguiente;
+                }
+
+                foreach (Coordenada c in aBorrar)
+                {
+                    BD.Coordenadas.Remove(c);
+                }
+
+            }
+
+            #region BORRAR PARADEROS ANTIGUOS
+
+            List<Paradero> paraderosAntiguos = new List<Paradero>();
+            foreach (Paradero p in _rutaBD.Paraderos)
+            {
+                paraderosAntiguos.Add(p);
+            }
+            foreach (Paradero pa in paraderosAntiguos)
+            {
+                BD.Paraderos.Remove(pa);
+            }
+
+            #endregion
+
+
+            foreach (Paradero p in _paraderos)
+            {
+                p.Ruta = _rutaBD;
+                BD.Paraderos.Add(p);
+            }
+            _rutaBD.Nombre = _nombre;
+
+
+            try
+            {
+                BD.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                string mensaje = "errores \n";
+
+                foreach (var error in ex.EntityValidationErrors.First().ValidationErrors)
+                {
+                    mensaje += error.ErrorMessage + "\n";
+                }
+                MessageBox.Show(mensaje);
+
+                return false;
+            }
+            catch (DbUpdateException ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+
+            return true;
+
+        }
+
+        public static bool EliminarRuta(int _id)
+        {
+            try
+            {
+                var BD = new MicroSystemContext();
+
+                Ruta rutaABorrar = BD.Rutas.Where(r => r.Id == _id).FirstOrDefault();
+
+                #region BORRADO DE COORDENADAS
+
+                List<Coordenada> aBorrar = new List<Coordenada>();
+                Coordenada actual = BD.Coordenadas.Where(c => c.Id == rutaABorrar.InicioId).FirstOrDefault();
+
+                while (actual != null)
+                {
+                    aBorrar.Add(actual);
+                    actual = actual.Siguiente;
+                }
+
+                foreach (Coordenada c in aBorrar)
+                {
+                    BD.Coordenadas.Remove(c);
+                }
+                #endregion
+
+                BD.Rutas.Remove(rutaABorrar);
+
+                BD.SaveChanges();
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+
+            
         }
 
     }

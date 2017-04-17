@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+using System.Windows.Forms;
+
 namespace MicrosForms.Model
 {
     [Table("Paradero")]
@@ -33,6 +35,15 @@ namespace MicrosForms.Model
             Longitud = _lng;
         }
 
+
+        public static Paradero BuscarPorId(int _id)
+        {
+            var BD = new MicroSystemContext();
+
+            Paradero paraderoBuscado = BD.Paraderos.Where(p => p.Id == _id).FirstOrDefault();
+
+            return paraderoBuscado;
+        }
         
     }
 }

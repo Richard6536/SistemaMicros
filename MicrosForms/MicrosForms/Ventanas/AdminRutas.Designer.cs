@@ -51,6 +51,7 @@
             this.usuariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cerrarSesiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ventanaInicio = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnEliminarRuta = new System.Windows.Forms.Button();
             this.panelEditCreate.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -108,9 +109,9 @@
             // 
             this.btnEditarRuta.Location = new System.Drawing.Point(468, 98);
             this.btnEditarRuta.Name = "btnEditarRuta";
-            this.btnEditarRuta.Size = new System.Drawing.Size(226, 27);
+            this.btnEditarRuta.Size = new System.Drawing.Size(118, 27);
             this.btnEditarRuta.TabIndex = 3;
-            this.btnEditarRuta.Text = "Editar ruta";
+            this.btnEditarRuta.Text = "Editar";
             this.btnEditarRuta.UseVisualStyleBackColor = true;
             this.btnEditarRuta.Click += new System.EventHandler(this.btnEditarRuta_Click);
             // 
@@ -295,11 +296,22 @@
             this.ventanaInicio.Text = "Ventana de inicio";
             this.ventanaInicio.Click += new System.EventHandler(this.ventanaInicio_Click);
             // 
+            // btnEliminarRuta
+            // 
+            this.btnEliminarRuta.Location = new System.Drawing.Point(592, 98);
+            this.btnEliminarRuta.Name = "btnEliminarRuta";
+            this.btnEliminarRuta.Size = new System.Drawing.Size(102, 27);
+            this.btnEliminarRuta.TabIndex = 12;
+            this.btnEliminarRuta.Text = "Eliminar";
+            this.btnEliminarRuta.UseVisualStyleBackColor = true;
+            this.btnEliminarRuta.Click += new System.EventHandler(this.btnEliminarRuta_Click);
+            // 
             // AdminRutas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(875, 606);
+            this.Controls.Add(this.btnEliminarRuta);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.panelEditCreate);
             this.Controls.Add(this.btnCrearNueva);
@@ -343,5 +355,6 @@
         private System.Windows.Forms.Button btnCancelarRuta;
         private System.Windows.Forms.Button btnAceptarParaderos;
         private System.Windows.Forms.Button btnCrearParaderos;
+        private System.Windows.Forms.Button btnEliminarRuta;
     }
 }

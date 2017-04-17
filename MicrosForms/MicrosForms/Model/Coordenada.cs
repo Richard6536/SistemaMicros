@@ -8,6 +8,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity.Validation;
 using System.Data.Entity.Infrastructure;
 
+using System.Diagnostics;
+
 
 namespace MicrosForms.Model
 {
@@ -36,6 +38,15 @@ namespace MicrosForms.Model
             Siguiente = _sigVertice;
         }
 
+        public static void BorrarCadenaDeCoordenadas(Coordenada _coordenada)
+        {
+            var BD = new MicroSystemContext();
+
+
+
+
+            BD.SaveChanges();
+        }
 
     }
 }

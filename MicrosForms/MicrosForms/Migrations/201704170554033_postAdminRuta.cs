@@ -3,7 +3,7 @@ namespace MicrosForms.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class verion22 : DbMigration
+    public partial class postAdminRuta : DbMigration
     {
         public override void Up()
         {
@@ -110,8 +110,11 @@ namespace MicrosForms.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         Latitud = c.Double(nullable: false),
                         Longitud = c.Double(nullable: false),
+                        RutaId = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Ruta", t => t.RutaId, cascadeDelete: true)
+                .Index(t => t.RutaId);
             
             CreateTable(
                 "dbo.MicroParadero",
@@ -134,26 +137,13 @@ namespace MicrosForms.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         Nombre = c.String(nullable: false, maxLength: 25),
                         InicioId = c.Int(nullable: false),
-                        LineaId = c.Int(nullable: false),
+                        LineaId = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Coordenada", t => t.InicioId, cascadeDelete: true)
-                .ForeignKey("dbo.Linea", t => t.LineaId, cascadeDelete: true)
+                .ForeignKey("dbo.Linea", t => t.LineaId)
                 .Index(t => t.InicioId)
                 .Index(t => t.LineaId);
-            
-            CreateTable(
-                "dbo.RutaParaderoes",
-                c => new
-                    {
-                        Ruta_Id = c.Int(nullable: false),
-                        Paradero_Id = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => new { t.Ruta_Id, t.Paradero_Id })
-                .ForeignKey("dbo.Ruta", t => t.Ruta_Id, cascadeDelete: true)
-                .ForeignKey("dbo.Paradero", t => t.Paradero_Id, cascadeDelete: true)
-                .Index(t => t.Ruta_Id)
-                .Index(t => t.Paradero_Id);
             
         }
         
@@ -168,8 +158,7 @@ namespace MicrosForms.Migrations
             DropForeignKey("dbo.Usuario", "UsuarioParaderoId", "dbo.UsuarioParadero");
             DropForeignKey("dbo.UsuarioParadero", "UsuarioId", "dbo.Usuario");
             DropForeignKey("dbo.UsuarioParadero", "ParaderoId", "dbo.Paradero");
-            DropForeignKey("dbo.RutaParaderoes", "Paradero_Id", "dbo.Paradero");
-            DropForeignKey("dbo.RutaParaderoes", "Ruta_Id", "dbo.Ruta");
+            DropForeignKey("dbo.Paradero", "RutaId", "dbo.Ruta");
             DropForeignKey("dbo.Ruta", "LineaId", "dbo.Linea");
             DropForeignKey("dbo.Ruta", "InicioId", "dbo.Coordenada");
             DropForeignKey("dbo.MicroParadero", "ParaderoId", "dbo.Paradero");
@@ -177,12 +166,11 @@ namespace MicrosForms.Migrations
             DropForeignKey("dbo.Usuario", "MicroChoferId", "dbo.MicroChofer");
             DropForeignKey("dbo.Micro", "LineaId", "dbo.Linea");
             DropForeignKey("dbo.Coordenada", "SiguienteCoordenadaId", "dbo.Coordenada");
-            DropIndex("dbo.RutaParaderoes", new[] { "Paradero_Id" });
-            DropIndex("dbo.RutaParaderoes", new[] { "Ruta_Id" });
             DropIndex("dbo.Ruta", new[] { "LineaId" });
             DropIndex("dbo.Ruta", new[] { "InicioId" });
             DropIndex("dbo.MicroParadero", new[] { "MicroId" });
             DropIndex("dbo.MicroParadero", new[] { "ParaderoId" });
+            DropIndex("dbo.Paradero", new[] { "RutaId" });
             DropIndex("dbo.UsuarioParadero", new[] { "UsuarioId" });
             DropIndex("dbo.UsuarioParadero", new[] { "ParaderoId" });
             DropIndex("dbo.Usuario", new[] { "MicroChoferId" });
@@ -196,7 +184,6 @@ namespace MicrosForms.Migrations
             DropIndex("dbo.Linea", new[] { "RutaFinId" });
             DropIndex("dbo.Linea", new[] { "RutaInicioId" });
             DropIndex("dbo.Coordenada", new[] { "SiguienteCoordenadaId" });
-            DropTable("dbo.RutaParaderoes");
             DropTable("dbo.Ruta");
             DropTable("dbo.MicroParadero");
             DropTable("dbo.Paradero");
