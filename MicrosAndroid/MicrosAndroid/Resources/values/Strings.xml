@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="Hello">Hello World, Click Me!</string>
+  <string name="ApplicationName">MicrosAndroid</string>
+  <string name="openDrawer">Richard</string>
+  <string name="closeDrawer">¡Busca la micro más cercana!</string>
+  <string name="main.editTextNombre.hint">Ingrese Nombre</string>
+  <string name="main.editTextPassword.hint">Ingrese Contraseña</string>
+  <string name="GoogleMapKey">AIzaSyCSDK7jq7TRsdRHDalTaY5Bj3HDp5ebfKE</string>
+</resources>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:text="Latitude" />
+    <TextView
+        android:id="@+id/txtLatitude" />
+    <TextView
+        android:text="Longitude" />
+    <TextView
+        android:id="@+id/txtLongitude" />
+    <Button
+        android:id="@+id/btnGPS"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Obtener Locación GPS"
+        android:layout_marginRight="16.0dp"
+        android:layout_marginLeft="16.0dp"
+        android:onClick="Button_OnClicked" />
+</LinearLayout>

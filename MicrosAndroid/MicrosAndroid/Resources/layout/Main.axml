@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="25px"
+    android:minHeight="25px">
+    <EditText
+        android:id="@+id/editTextNombre"
+        android:layout_width="fill_parent"
+        android:layout_marginRight="16.0dp"
+        android:layout_marginLeft="16.0dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/main.editTextNombre.hint" />
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16.0dp"
+        android:layout_marginLeft="16.0dp"
+        android:password="true"
+        android:hint="@string/main.editTextPassword.hint" />
+    <Button
+        android:id="@+id/btnIngresar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Ingresar"
+        android:layout_marginRight="16.0dp"
+        android:layout_marginLeft="16.0dp" />
+</LinearLayout>
