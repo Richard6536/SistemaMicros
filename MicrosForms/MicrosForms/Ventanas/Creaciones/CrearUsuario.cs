@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace MicrosForms.Ventanas.Creaciones
 {
-    public partial class CrearChofer : Form
+    public partial class CrearUsuario : Form
     {
-        public CrearChofer()
+        public CrearUsuario()
         {
             InitializeComponent();
         }

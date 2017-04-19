@@ -23,7 +23,7 @@ namespace MicrosForms.Classes
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 MessageBox.Show("Error conectado a la base de datos.");
                 return false;

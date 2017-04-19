@@ -3,7 +3,7 @@ namespace MicrosForms.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class postAdminRuta : DbMigration
+    public partial class please2 : DbMigration
     {
         public override void Up()
         {
@@ -32,6 +32,7 @@ namespace MicrosForms.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Ruta", t => t.RutaFinId)
                 .ForeignKey("dbo.Ruta", t => t.RutaInicioId)
+                .Index(t => t.Nombre, unique: true, name: "NombreIndex")
                 .Index(t => t.RutaInicioId)
                 .Index(t => t.RutaFinId);
             
@@ -135,7 +136,6 @@ namespace MicrosForms.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
-                        Nombre = c.String(nullable: false, maxLength: 25),
                         InicioId = c.Int(nullable: false),
                         LineaId = c.Int(),
                     })
@@ -183,6 +183,7 @@ namespace MicrosForms.Migrations
             DropIndex("dbo.Micro", new[] { "LineaId" });
             DropIndex("dbo.Linea", new[] { "RutaFinId" });
             DropIndex("dbo.Linea", new[] { "RutaInicioId" });
+            DropIndex("dbo.Linea", "NombreIndex");
             DropIndex("dbo.Coordenada", new[] { "SiguienteCoordenadaId" });
             DropTable("dbo.Ruta");
             DropTable("dbo.MicroParadero");

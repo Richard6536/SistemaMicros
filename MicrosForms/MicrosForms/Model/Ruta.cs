@@ -20,48 +20,45 @@ namespace MicrosForms.Model
         [Key]
         public int Id { get; set; }
 
-        [Required, StringLength(25, MinimumLength = 3,ErrorMessage ="El nombre debe tener un mínimo de 3 carácteres y máximo de 25")]
-        public string Nombre { get; set; }
-
-        public virtual List<Paradero> Paraderos { get; set; }
-
         public int InicioId { get; set; }
         public int? LineaId { get; set; }
 
+        public virtual List<Paradero> Paraderos { get; set; }
+
         [ForeignKey("InicioId")]
         public virtual Coordenada Inicio { get; set; }
+
         [ForeignKey("LineaId")]
         public virtual Linea Linea { get; set; }
 
         public Ruta() { }
 
-        public static bool CrearRuta(string _nombre, List<Coordenada> _vertices, List<Paradero> _paraderos)
-        {
 
+        public static int CrearRuta(List<Coordenada> _coordenadas, List<Paradero> _paraderos)
+        {
             var BD = new MicroSystemContext();
 
-            Ruta nuevaRuta = new Ruta();
+            Ruta ruta = new Ruta();
+            ruta.Paraderos = _paraderos;
 
-            foreach (Paradero p in _paraderos)
+            for (int i = 0; i < _coordenadas.Count; i++)
             {
-                p.Ruta = nuevaRuta;
-                BD.Paraderos.Add(p);
+                BD.Coordenadas.Add(_coordenadas[i]);
             }
 
-            nuevaRuta.Nombre = _nombre;
-            nuevaRuta.Inicio = _vertices[0];
-            nuevaRuta.Paraderos = _paraderos;
-
-            for (int i = 1; i < _vertices.Count; i++)
+            for (int i = 0; i < _coordenadas.Count - 1; i++)
             {
-                BD.Coordenadas.Add(_vertices[i]);
+                _coordenadas[i].Siguiente = _coordenadas[i + 1];
             }
 
-            BD.Rutas.Add(nuevaRuta);
+            ruta.Inicio = _coordenadas[0];
+
+            BD.Rutas.Add(ruta);
 
             try
             {
                 BD.SaveChanges();
+                return ruta.Id;
             }
             catch (DbEntityValidationException ex)
             {
@@ -71,29 +68,49 @@ namespace MicrosForms.Model
                 {
                     mensaje += error.ErrorMessage + "\n";
                 }
+
                 MessageBox.Show(mensaje);
 
-                return false;
+                return -1;
             }
             catch (DbUpdateException ex)
             {
-                MessageBox.Show(ex.Message);
-                return false;
+                MessageBox.Show(ex.Message);    
+
+                return -1;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
-                return false;
+                Debug.WriteLine("Imposible completar operación");
+                return -1;
             }
 
-            return true;
         }
+
+     
 
         public static List<Ruta> BuscarTodasLasRutas()
         {
             var BD = new MicroSystemContext();
 
             List<Ruta> rutas = BD.Rutas.ToList();
+
+            return rutas;
+        }
+
+        public static List<Ruta> BuscarTodasLasRutasSinLinea()
+        {
+            var BD = new MicroSystemContext();
+
+            List<Ruta> rutas = new List<Ruta>();
+
+            foreach(Ruta r in BD.Rutas.ToList())
+            {
+                if(r.Linea == null)
+                {
+                    rutas.Add(r);
+                }
+            }
 
             return rutas;
         }
@@ -107,23 +124,6 @@ namespace MicrosForms.Model
             return ruta;
         }
 
-        public static Ruta BuscarRutaPorNombre(string _nombre)
-        {
-            var BD = new MicroSystemContext();
-
-            Ruta ruta = BD.Rutas.Where(r => r.Nombre == _nombre).FirstOrDefault();
-
-            return ruta;
-        }
-
-        public static List<Paradero> ObtenerParaderosDeRuta(Ruta _ruta)
-        {
-            var BD = new MicroSystemContext();
-
-            List<Paradero> paraderos = _ruta.Paraderos.ToList();
-
-            return paraderos;
-        }
 
         public static List<Coordenada> ObtenerVerticesDeInicioAFin(Ruta _ruta)
         {
@@ -144,7 +144,18 @@ namespace MicrosForms.Model
             return vertices;
         }
 
-        public static bool EditarRuta(Ruta _ruta, string _nombre, List<Coordenada> _vertices, List<Paradero> _paraderos, bool sobreEscribirVertices)
+        public static List<Paradero> ObtenerParaderosRuta(Ruta _ruta)
+        {
+            var DB = new MicroSystemContext();
+
+            Ruta ruta = DB.Rutas.Where(r => r.Id == _ruta.Id).FirstOrDefault();
+
+            List<Paradero> paraderos = ruta.Paraderos;
+
+            return paraderos;
+        }
+
+        public static bool EditarRuta(Ruta _ruta, List<Coordenada> _vertices, bool sobreEscribirVertices)
         {
             var BD = new MicroSystemContext();
 
@@ -178,29 +189,6 @@ namespace MicrosForms.Model
                 }
 
             }
-
-            #region BORRAR PARADEROS ANTIGUOS
-
-            List<Paradero> paraderosAntiguos = new List<Paradero>();
-            foreach (Paradero p in _rutaBD.Paraderos)
-            {
-                paraderosAntiguos.Add(p);
-            }
-            foreach (Paradero pa in paraderosAntiguos)
-            {
-                BD.Paraderos.Remove(pa);
-            }
-
-            #endregion
-
-
-            foreach (Paradero p in _paraderos)
-            {
-                p.Ruta = _rutaBD;
-                BD.Paraderos.Add(p);
-            }
-            _rutaBD.Nombre = _nombre;
-
 
             try
             {

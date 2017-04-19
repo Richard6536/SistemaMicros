@@ -29,19 +29,18 @@
         private void InitializeComponent()
         {
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.Nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Email = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Rol = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.VerMicro = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.btnCrearAdmin = new System.Windows.Forms.Button();
-            this.btnCrearChofer = new System.Windows.Forms.Button();
+            this.btnCrearUsuario = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.administrarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.líneasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.rutasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.microsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cerrarSesiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ventanaInicio = new System.Windows.Forms.ToolStripMenuItem();
+            this.Nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Email = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Rol = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.VerMicro = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.AsignarMicro = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -53,51 +52,21 @@
             this.Nombre,
             this.Email,
             this.Rol,
-            this.VerMicro});
+            this.VerMicro,
+            this.AsignarMicro});
             this.dataGridView1.Location = new System.Drawing.Point(12, 71);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(457, 290);
+            this.dataGridView1.Size = new System.Drawing.Size(567, 290);
             this.dataGridView1.TabIndex = 0;
             // 
-            // Nombre
+            // btnCrearUsuario
             // 
-            this.Nombre.HeaderText = "Nombre";
-            this.Nombre.Name = "Nombre";
-            // 
-            // Email
-            // 
-            this.Email.HeaderText = "E-Mail";
-            this.Email.Name = "Email";
-            // 
-            // Rol
-            // 
-            this.Rol.HeaderText = "Rol";
-            this.Rol.Name = "Rol";
-            this.Rol.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Rol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // VerMicro
-            // 
-            this.VerMicro.HeaderText = "Ver micro";
-            this.VerMicro.Name = "VerMicro";
-            // 
-            // btnCrearAdmin
-            // 
-            this.btnCrearAdmin.Location = new System.Drawing.Point(531, 71);
-            this.btnCrearAdmin.Name = "btnCrearAdmin";
-            this.btnCrearAdmin.Size = new System.Drawing.Size(163, 40);
-            this.btnCrearAdmin.TabIndex = 1;
-            this.btnCrearAdmin.Text = "Crear nuevo administrador";
-            this.btnCrearAdmin.UseVisualStyleBackColor = true;
-            // 
-            // btnCrearChofer
-            // 
-            this.btnCrearChofer.Location = new System.Drawing.Point(531, 140);
-            this.btnCrearChofer.Name = "btnCrearChofer";
-            this.btnCrearChofer.Size = new System.Drawing.Size(163, 40);
-            this.btnCrearChofer.TabIndex = 2;
-            this.btnCrearChofer.Text = "Crear nuevo chofer";
-            this.btnCrearChofer.UseVisualStyleBackColor = true;
+            this.btnCrearUsuario.Location = new System.Drawing.Point(609, 71);
+            this.btnCrearUsuario.Name = "btnCrearUsuario";
+            this.btnCrearUsuario.Size = new System.Drawing.Size(163, 40);
+            this.btnCrearUsuario.TabIndex = 2;
+            this.btnCrearUsuario.Text = "Crear nuevo usuario";
+            this.btnCrearUsuario.UseVisualStyleBackColor = true;
             // 
             // menuStrip1
             // 
@@ -107,7 +76,7 @@
             this.ventanaInicio});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(734, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(818, 24);
             this.menuStrip1.TabIndex = 11;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -115,7 +84,6 @@
             // 
             this.administrarToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.líneasToolStripMenuItem,
-            this.rutasToolStripMenuItem,
             this.microsToolStripMenuItem});
             this.administrarToolStripMenuItem.Name = "administrarToolStripMenuItem";
             this.administrarToolStripMenuItem.Size = new System.Drawing.Size(81, 20);
@@ -124,21 +92,14 @@
             // líneasToolStripMenuItem
             // 
             this.líneasToolStripMenuItem.Name = "líneasToolStripMenuItem";
-            this.líneasToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.líneasToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.líneasToolStripMenuItem.Text = "Líneas";
             this.líneasToolStripMenuItem.Click += new System.EventHandler(this.líneasToolStripMenuItem_Click);
-            // 
-            // rutasToolStripMenuItem
-            // 
-            this.rutasToolStripMenuItem.Name = "rutasToolStripMenuItem";
-            this.rutasToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.rutasToolStripMenuItem.Text = "Rutas";
-            this.rutasToolStripMenuItem.Click += new System.EventHandler(this.rutasToolStripMenuItem_Click);
             // 
             // microsToolStripMenuItem
             // 
             this.microsToolStripMenuItem.Name = "microsToolStripMenuItem";
-            this.microsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.microsToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.microsToolStripMenuItem.Text = "Micros";
             this.microsToolStripMenuItem.Click += new System.EventHandler(this.microsToolStripMenuItem_Click);
             // 
@@ -158,14 +119,49 @@
             this.ventanaInicio.Text = "Ventana de inicio";
             this.ventanaInicio.Click += new System.EventHandler(this.ventanaInicio_Click);
             // 
+            // Nombre
+            // 
+            this.Nombre.HeaderText = "Nombre";
+            this.Nombre.Name = "Nombre";
+            // 
+            // Email
+            // 
+            this.Email.HeaderText = "E-Mail";
+            this.Email.Name = "Email";
+            // 
+            // Rol
+            // 
+            this.Rol.HeaderText = "Rol";
+            this.Rol.Name = "Rol";
+            this.Rol.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Rol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Rol.ToolTipText = "Rol actual del usuario. Permite también editar el rol del mismo.";
+            // 
+            // VerMicro
+            // 
+            this.VerMicro.HeaderText = "Micro asignada";
+            this.VerMicro.Name = "VerMicro";
+            this.VerMicro.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.VerMicro.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.VerMicro.ToolTipText = "Patente de la micro asignada a este usuario si esque hay.";
+            // 
+            // AsignarMicro
+            // 
+            this.AsignarMicro.HeaderText = "Asignar diferente micro";
+            this.AsignarMicro.Name = "AsignarMicro";
+            this.AsignarMicro.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.AsignarMicro.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.AsignarMicro.Text = "Asignar micro";
+            this.AsignarMicro.ToolTipText = "Asigna una micro a tal usuario, lo que tambien actualizaría su rol a \"chofer\".";
+            this.AsignarMicro.Width = 105;
+            // 
             // AdminUsuarios
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(734, 373);
+            this.ClientSize = new System.Drawing.Size(818, 373);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.btnCrearChofer);
-            this.Controls.Add(this.btnCrearAdmin);
+            this.Controls.Add(this.btnCrearUsuario);
             this.Controls.Add(this.dataGridView1);
             this.Name = "AdminUsuarios";
             this.Text = "AdminUsuarios";
@@ -180,18 +176,17 @@
         #endregion
 
         private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Nombre;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Email;
-        private System.Windows.Forms.DataGridViewComboBoxColumn Rol;
-        private System.Windows.Forms.DataGridViewButtonColumn VerMicro;
-        private System.Windows.Forms.Button btnCrearAdmin;
-        private System.Windows.Forms.Button btnCrearChofer;
+        private System.Windows.Forms.Button btnCrearUsuario;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem administrarToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem líneasToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem rutasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem microsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cerrarSesiónToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ventanaInicio;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Nombre;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Email;
+        private System.Windows.Forms.DataGridViewComboBoxColumn Rol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn VerMicro;
+        private System.Windows.Forms.DataGridViewButtonColumn AsignarMicro;
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using MicrosForms.Ventanas;
+using MicrosForms.Ventanas.Creaciones;
 
 namespace MicrosForms
 {
@@ -18,7 +19,7 @@ namespace MicrosForms
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new AdminRutas());
+            Application.Run(new AdminLineas());
         }
     }
 }

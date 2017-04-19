@@ -40,10 +40,6 @@ namespace MicrosForms.Ventanas
             FormManager.CambiarForm(this, new AdminUsuarios());
         }
 
-        private void rutasToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            FormManager.CambiarForm(this, new AdminRutas());
-        }
 
         private void cerrarSesiónToolStripMenuItem_Click(object sender, EventArgs e)
         {
