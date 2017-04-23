@@ -22,8 +22,6 @@ namespace MicrosForms.Ventanas
 {
     public partial class AdminLineas : Form
     {
-        public enum TipoRuta { ida, vuelta}
-
 
         Linea lineaActual;
 
@@ -54,7 +52,7 @@ namespace MicrosForms.Ventanas
             gmapController.Position = new PointLatLng(latOsorno, lngOsorno);
 
             gmapController.MinZoom = 4;
-            gmapController.MaxZoom = 18;
+            gmapController.MaxZoom = 19;
             gmapController.Zoom = 14;
 
             gmapController.IgnoreMarkerOnMouseWheel = true;
@@ -97,23 +95,17 @@ namespace MicrosForms.Ventanas
 
         private void btnCrearLinea_Click(object sender, EventArgs e)
         {
-            this.Enabled = false;
-
             var forms = new CrearLineaV2();
-            forms.ShowDialog();
+            FormManager.MostrarShowDialog(this, forms);
 
-            this.Enabled = true;
 
             if (forms.DialogResult == DialogResult.OK)
             {
                 CargarComboboxLineas();
             }
-
         }
 
-
-
-        void CargarRutaEnMapa(Ruta _ruta, TipoRuta _tipoRuta)
+        void CargarRutaEnMapa(Ruta _ruta)
         {
             if (!ConnectionTester.IsConnectionActive())
                 return;
@@ -144,7 +136,7 @@ namespace MicrosForms.Ventanas
                 if (i == 0)
                 {
                     //Crea marcador al inicio de la ruta
-                    if (_tipoRuta == TipoRuta.ida)
+                    if (_ruta.TipoDeRuta == Ruta.TipoRuta.ida)
                     {
                         gmapController.Position = new PointLatLng(actual.Latitud, actual.Longitud); //enfoca el mapa en el inicio
                         iconoMarcador = GMarkerGoogleType.red_small; //icono ida
@@ -166,7 +158,7 @@ namespace MicrosForms.Ventanas
                 {
                     //Crea marcador al final de la ruta
                     //solo en la de ruta de vuelta
-                    if (_tipoRuta == TipoRuta.vuelta)
+                    if (_ruta.TipoDeRuta == Ruta.TipoRuta.vuelta)
                     {
                         
                         iconoMarcador = GMarkerGoogleType.blue_small; //icono ida
@@ -184,15 +176,13 @@ namespace MicrosForms.Ventanas
                 puntos.Add(new PointLatLng(actual.Latitud, actual.Longitud));
                 puntos.Add(new PointLatLng(siguiente.Latitud, siguiente.Longitud));
 
-                //GMapPolygon polygon = new GMapPolygon(puntos, "mypolygon");
                 GMapRoute ruta = new GMapRoute(puntos, "asdf");
 
-                if (_tipoRuta == TipoRuta.ida)
+                if (_ruta.TipoDeRuta == Ruta.TipoRuta.ida)
                     ruta.Stroke = new Pen(Color.Red, 4);
-                if (_tipoRuta == TipoRuta.vuelta)
+                if (_ruta.TipoDeRuta == Ruta.TipoRuta.vuelta)
                     ruta.Stroke = new Pen(Color.Blue, 4);
 
-                //previewOverlay.Polygons.Add(polygon);
                 previewOverlay.Routes.Add(ruta);
             }
 
@@ -231,11 +221,10 @@ namespace MicrosForms.Ventanas
 
             lineaActual = Linea.BuscarLinea(Convert.ToInt32(cmbLinea.SelectedValue));
 
-            Ruta rIda = Ruta.BuscarPorId(lineaActual.RutaInicioId);
-            Ruta rVuelta = Ruta.BuscarPorId(lineaActual.RutaFinId);
-
-            CargarRutaEnMapa(rIda, TipoRuta.ida);
-            CargarRutaEnMapa(rVuelta, TipoRuta.vuelta);
+            if (lineaActual != null)
+            {
+                CargarLineaActual();
+            }
 
         }
 
@@ -249,13 +238,7 @@ namespace MicrosForms.Ventanas
                 paraderosOverlay.Clear();
                 otrosMarkersOverlay.Clear();
 
-                lineaActual = Linea.BuscarLinea(Convert.ToInt32(cmbLinea.SelectedValue));
-
-                Ruta rIda = Ruta.BuscarPorId( lineaActual.RutaInicioId);
-                Ruta rVuelta = Ruta.BuscarPorId(lineaActual.RutaFinId);
-
-                CargarRutaEnMapa(rIda, TipoRuta.ida);
-                CargarRutaEnMapa(rVuelta, TipoRuta.vuelta);
+                CargarLineaActual();
             }
             catch
             {
@@ -263,7 +246,6 @@ namespace MicrosForms.Ventanas
                 return;
             }
         }
-
 
         private void btnBorrar_Click(object sender, EventArgs e)
         {
@@ -274,5 +256,99 @@ namespace MicrosForms.Ventanas
         {
 
         }
+
+        void CargarLineaActual()
+        {
+            lineaActual = Linea.BuscarLinea(Convert.ToInt32(cmbLinea.SelectedValue));
+
+            Ruta rIda = Ruta.BuscarPorId(lineaActual.RutaIdaId.Value);
+            Ruta rVuelta = Ruta.BuscarPorId(lineaActual.RutaVueltaId.Value);
+
+            CargarRutaEnMapa(rIda);
+            CargarRutaEnMapa(rVuelta);
+
+            lblRutaIda.Text = "Ruta de ida actual: " + rIda.Nombre;
+            lblRutaVuelta.Text = "Ruta de vuelta actual: " + rVuelta.Nombre;
+
+            List<Ruta> rutasIda = Linea.ObtenerRutasPorTipo(lineaActual.Id, Ruta.TipoRuta.ida);
+            List<Ruta> rutasVuelta = Linea.ObtenerRutasPorTipo(lineaActual.Id, Ruta.TipoRuta.vuelta);
+
+            cmbRutaIda.DataSource = rutasIda;
+            cmbRutaIda.ValueMember = "Id";
+            cmbRutaIda.DisplayMember = "Nombre";
+            cmbRutaIda.SelectedValue = lineaActual.RutaIdaId;
+
+            cmbRutaVuelta.DataSource = rutasVuelta;
+            cmbRutaVuelta.ValueMember = "Id";
+            cmbRutaVuelta.DisplayMember = "Nombre";
+            cmbRutaVuelta.SelectedValue = lineaActual.RutaVueltaId;
+        }
+
+        private void btnCrearIda_Click(object sender, EventArgs e)
+        {
+            if(lineaActual != null)
+            {
+                var form = new CrearRutaIda(lineaActual.Id);
+                FormManager.MostrarShowDialog(this, form);
+
+                if(form.DialogResult == DialogResult.OK)
+                {
+                    int idLinea = lineaActual.Id;
+                    CargarComboboxLineas();
+                    cmbLinea.SelectedValue = idLinea;
+                }
+            }
+        }
+
+        private void btnAsignarIda_Click(object sender, EventArgs e)
+        {
+            if (lineaActual != null)
+            {
+                Ruta rutaIda = Ruta.BuscarPorId((int)cmbRutaIda.SelectedValue);
+
+                int idLinea = lineaActual.Id;
+                rutaIda.AsignarRutaComoUsable();
+
+                CargarComboboxLineas();
+                cmbLinea.SelectedValue = idLinea;
+
+                MessageBox.Show("Ruta " + rutaIda.Nombre + " asignada como la ruta a usar.");
+            }
+        }
+
+        bool cmbIdaSwitch = false;
+
+        private void cmbRutaIda_Click(object sender, EventArgs e)
+        {
+            cmbIdaSwitch = true;
+        }
+        private void cmbRutaIda_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (cmbIdaSwitch == true)
+                {
+                    previewOverlay.Clear();
+                    completeOverlay.Clear();
+                    paraderosOverlay.Clear();
+                    otrosMarkersOverlay.Clear();
+
+                    Ruta rutaIda = Ruta.BuscarPorId((int)cmbRutaIda.SelectedValue);
+                    Ruta rVuelta = Ruta.BuscarPorId(lineaActual.RutaVueltaId.Value);
+
+                    CargarRutaEnMapa(rutaIda);
+                    CargarRutaEnMapa(rVuelta);
+
+                    cmbIdaSwitch = false;
+                }
+            }
+            catch
+            {
+
+                return;
+            }
+        }
+
+
     }
 }

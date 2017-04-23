@@ -21,18 +21,35 @@ namespace MicrosForms.Classes
                 {
                     current.Hide();
                     existe = true;
+                    f.StartPosition = FormStartPosition.CenterScreen;
+                    f.BringToFront();
                     f.Show();
-                    f.Focus();
+
                 }
             }
             if (existe == false)
             {
                 current.Hide();
+
+                next.StartPosition = FormStartPosition.CenterScreen;
+                next.BringToFront();
                 next.Show();
-                next.Focus();
+
             }
         }
 
+        public static DialogResult MostrarShowDialog(Form current, Form next)
+        {
+            current.Enabled = false;
+
+            next.StartPosition = FormStartPosition.CenterScreen;
+            next.MaximizeBox = false;
+            next.MinimizeBox = false;
+            next.FormBorderStyle = FormBorderStyle.FixedDialog;
+            next.ShowDialog();
+            current.Enabled = true;
+            return next.DialogResult;
+        }
 
         //ShowDialog
         //this.Enabled = false;

@@ -24,5 +24,25 @@ namespace MicrosForms.Model
         public virtual Usuario Chofer { get; set; }
 
         public MicroChofer() { }
+
+        public static Micro GetMicro(int _MicroChoferId)
+        {
+            var BD = new MicroSystemContext();
+
+            MicroChofer microChofer = BD.MicroChoferes.Where(mc => mc.Id == _MicroChoferId).FirstOrDefault();
+
+            Micro micro = BD.Micros.Where(m => m.Id == microChofer.MicroId).FirstOrDefault();
+
+            return micro;
+        }
+
+        public static Usuario GetChofer(int _MicroChoferId)
+        {
+            var BD = new MicroSystemContext();
+            MicroChofer microChofer = BD.MicroChoferes.Where(mc => mc.Id == _MicroChoferId).FirstOrDefault();
+            Usuario chofer = BD.Usuarios.Where(u => u.Id == microChofer.ChoferId).FirstOrDefault();
+
+            return chofer;
+        }
     }
 }

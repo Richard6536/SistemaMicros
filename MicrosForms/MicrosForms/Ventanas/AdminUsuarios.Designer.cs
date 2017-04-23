@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGridUsuarios = new System.Windows.Forms.DataGridView();
             this.btnCrearUsuario = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.administrarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -38,35 +38,39 @@
             this.ventanaInicio = new System.Windows.Forms.ToolStripMenuItem();
             this.Nombre = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Email = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Rol = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.Rol = new System.Windows.Forms.DataGridViewButtonColumn();
             this.VerMicro = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.AsignarMicro = new System.Windows.Forms.DataGridViewButtonColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridUsuarios)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // dataGridView1
+            // dataGridUsuarios
             // 
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridUsuarios.AllowUserToAddRows = false;
+            this.dataGridUsuarios.AllowUserToDeleteRows = false;
+            this.dataGridUsuarios.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridUsuarios.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Nombre,
             this.Email,
             this.Rol,
             this.VerMicro,
             this.AsignarMicro});
-            this.dataGridView1.Location = new System.Drawing.Point(12, 71);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(567, 290);
-            this.dataGridView1.TabIndex = 0;
+            this.dataGridUsuarios.Location = new System.Drawing.Point(12, 71);
+            this.dataGridUsuarios.Name = "dataGridUsuarios";
+            this.dataGridUsuarios.Size = new System.Drawing.Size(580, 290);
+            this.dataGridUsuarios.TabIndex = 0;
+            this.dataGridUsuarios.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridUsuarios_CellContentClick);
             // 
             // btnCrearUsuario
             // 
-            this.btnCrearUsuario.Location = new System.Drawing.Point(609, 71);
+            this.btnCrearUsuario.Location = new System.Drawing.Point(630, 71);
             this.btnCrearUsuario.Name = "btnCrearUsuario";
             this.btnCrearUsuario.Size = new System.Drawing.Size(163, 40);
             this.btnCrearUsuario.TabIndex = 2;
             this.btnCrearUsuario.Text = "Crear nuevo usuario";
             this.btnCrearUsuario.UseVisualStyleBackColor = true;
+            this.btnCrearUsuario.Click += new System.EventHandler(this.btnCrearUsuario_Click);
             // 
             // menuStrip1
             // 
@@ -76,7 +80,7 @@
             this.ventanaInicio});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(818, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(873, 24);
             this.menuStrip1.TabIndex = 11;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -123,11 +127,13 @@
             // 
             this.Nombre.HeaderText = "Nombre";
             this.Nombre.Name = "Nombre";
+            this.Nombre.ReadOnly = true;
             // 
             // Email
             // 
             this.Email.HeaderText = "E-Mail";
             this.Email.Name = "Email";
+            this.Email.ReadOnly = true;
             // 
             // Rol
             // 
@@ -135,12 +141,12 @@
             this.Rol.Name = "Rol";
             this.Rol.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.Rol.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            this.Rol.ToolTipText = "Rol actual del usuario. Permite también editar el rol del mismo.";
             // 
             // VerMicro
             // 
             this.VerMicro.HeaderText = "Micro asignada";
             this.VerMicro.Name = "VerMicro";
+            this.VerMicro.ReadOnly = true;
             this.VerMicro.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.VerMicro.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.VerMicro.ToolTipText = "Patente de la micro asignada a este usuario si esque hay.";
@@ -159,13 +165,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(818, 373);
+            this.ClientSize = new System.Drawing.Size(873, 373);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.btnCrearUsuario);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.dataGridUsuarios);
             this.Name = "AdminUsuarios";
             this.Text = "AdminUsuarios";
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridUsuarios)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -175,7 +181,7 @@
 
         #endregion
 
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dataGridUsuarios;
         private System.Windows.Forms.Button btnCrearUsuario;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem administrarToolStripMenuItem;
@@ -185,7 +191,7 @@
         private System.Windows.Forms.ToolStripMenuItem ventanaInicio;
         private System.Windows.Forms.DataGridViewTextBoxColumn Nombre;
         private System.Windows.Forms.DataGridViewTextBoxColumn Email;
-        private System.Windows.Forms.DataGridViewComboBoxColumn Rol;
+        private System.Windows.Forms.DataGridViewButtonColumn Rol;
         private System.Windows.Forms.DataGridViewTextBoxColumn VerMicro;
         private System.Windows.Forms.DataGridViewButtonColumn AsignarMicro;
     }

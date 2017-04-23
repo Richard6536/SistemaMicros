@@ -17,13 +17,21 @@ namespace MicrosForms.Model
     [Table("Ruta")]
     public class Ruta
     {
+        public enum TipoRuta { ida, vuelta }
+
         [Key]
         public int Id { get; set; }
 
-        public int InicioId { get; set; }
-        public int? LineaId { get; set; }
+        [Required, StringLength(30, MinimumLength = 3, ErrorMessage = "El email debe tener un mínimo de 3 carácteres y un máximo de 30")]
+        public string Nombre { get; set; }
+
+        [Required]
+        public TipoRuta TipoDeRuta { get; set; }
 
         public virtual List<Paradero> Paraderos { get; set; }
+
+        public int InicioId { get; set; }
+        public int LineaId { get; set; }
 
         [ForeignKey("InicioId")]
         public virtual Coordenada Inicio { get; set; }
@@ -34,12 +42,17 @@ namespace MicrosForms.Model
         public Ruta() { }
 
 
-        public static int CrearRuta(List<Coordenada> _coordenadas, List<Paradero> _paraderos)
+        public static Ruta CrearRuta(int _idLinea, string _nombre, TipoRuta _tipo, List<Coordenada> _coordenadas, List<Paradero> _paraderos)
         {
             var BD = new MicroSystemContext();
+            Linea linea = BD.Lineas.Where(l => l.Id == _idLinea).FirstOrDefault();
 
             Ruta ruta = new Ruta();
+            ruta.Nombre = _nombre;
             ruta.Paraderos = _paraderos;
+            ruta.TipoDeRuta = _tipo;
+            ruta.Linea = linea;
+
 
             for (int i = 0; i < _coordenadas.Count; i++)
             {
@@ -58,7 +71,7 @@ namespace MicrosForms.Model
             try
             {
                 BD.SaveChanges();
-                return ruta.Id;
+                return ruta;
             }
             catch (DbEntityValidationException ex)
             {
@@ -71,23 +84,40 @@ namespace MicrosForms.Model
 
                 MessageBox.Show(mensaje);
 
-                return -1;
+                return null;
             }
             catch (DbUpdateException ex)
             {
                 MessageBox.Show(ex.Message);    
 
-                return -1;
+                return null;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Imposible completar operación");
-                return -1;
+                return null;
             }
 
         }
 
-     
+        public void AsignarRutaComoUsable()
+        {
+            var BD = new MicroSystemContext();
+
+            Ruta ruta = BD.Rutas.Where(r => r.Id == Id).FirstOrDefault();
+            Linea linea = BD.Lineas.Where(l => l.Id == ruta.LineaId).FirstOrDefault();
+
+            if(ruta.TipoDeRuta == TipoRuta.ida)
+            {
+                linea.RutaIda = ruta;
+            }
+            else if(ruta.TipoDeRuta == TipoRuta.vuelta)
+            {
+                linea.RutaVuelta = ruta;
+            }
+
+            BD.SaveChanges();
+        }
 
         public static List<Ruta> BuscarTodasLasRutas()
         {
@@ -120,6 +150,15 @@ namespace MicrosForms.Model
             var BD = new MicroSystemContext();
 
             Ruta ruta = BD.Rutas.Where(r => r.Id == _id).FirstOrDefault();
+
+            return ruta;
+        }
+
+        public static Ruta BuscarPorNombre(string _nombre)
+        {
+            var BD = new MicroSystemContext();
+
+            Ruta ruta = BD.Rutas.Where(r => r.Nombre == _nombre).FirstOrDefault();
 
             return ruta;
         }

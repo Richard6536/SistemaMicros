@@ -28,18 +28,22 @@ namespace MicrosForms.Model
 
         public virtual List<Micro> Micros { get; set; }
 
-        public int RutaInicioId { get; set; }
-        [ForeignKey("RutaInicioId")]
-        public virtual Ruta RutaInicio { get; set; }
 
-        public int RutaFinId { get; set; }
-        [ForeignKey("RutaFinId")]
-        public virtual Ruta RutaFin { get; set; }
+        public int? RutaIdaId { get; set; }
+        public int? RutaVueltaId { get; set; }
+
+        [ForeignKey("RutaIdaId")]
+        public virtual Ruta RutaIda { get; set; }
+        [ForeignKey("RutaVueltaId")]
+        public virtual Ruta RutaVuelta { get; set; }
+
+        public virtual List<Ruta> Rutas { get; set; }
+
 
         public Linea() { }
 
 
-        public static bool CrearLinea(string _nombre, int _idaID, int _vueltaID)
+        public static Linea CrearLinea(string _nombre)
         {
             try
             {
@@ -49,22 +53,15 @@ namespace MicrosForms.Model
 
                 nuevaLinea.Nombre = _nombre;
                 nuevaLinea.Micros = new List<Micro>();
+                nuevaLinea.Rutas = new List<Ruta>();
 
-                Ruta rutaIda = BD.Rutas.Where(r => r.Id == _idaID).FirstOrDefault();
-                Ruta rutaVuelta = BD.Rutas.Where(r => r.Id == _vueltaID).FirstOrDefault();
-
-                nuevaLinea.RutaInicio = rutaIda;
-                nuevaLinea.RutaFin = rutaVuelta;
 
                 BD.Lineas.Add(nuevaLinea);
 
                 try
                 {
                     BD.SaveChanges();
-                    nuevaLinea.RutaInicio.Linea = nuevaLinea;
-                    nuevaLinea.RutaFin.Linea = nuevaLinea;
-                    BD.SaveChanges();
-                    return true;
+                    return nuevaLinea;
                 }
                 catch (DbEntityValidationException ex)
                 {
@@ -77,19 +74,19 @@ namespace MicrosForms.Model
 
                     MessageBox.Show(mensaje);
 
-                    return false;
+                    return null;
                 }
                 catch (DbUpdateException ex)
                 {
                     //MessageBox.Show("El nombre de línea ya existe.");
                     MessageBox.Show(ex.Message);
                     
-                    return false;
+                    return null;
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine("Imposible completar operación");
-                    return false;
+                    return null;
                 }
 
             }
@@ -97,7 +94,7 @@ namespace MicrosForms.Model
             {
                 Debug.WriteLine("Error creando la línea");
                 MessageBox.Show(ex.Message);
-                return false;
+                return null;
             }
         }
 
@@ -127,6 +124,26 @@ namespace MicrosForms.Model
             Linea linea = BD.Lineas.Where(l => l.Nombre == _nombre).FirstOrDefault();
 
             return linea;
+        }
+
+        public static List<Ruta> ObtenerRutasPorTipo(int _idLinea, Ruta.TipoRuta _tipo)
+        {
+            var BD = new MicroSystemContext();
+
+            Linea linea = BD.Lineas.Where(l => l.Id == _idLinea).FirstOrDefault();
+            List<Ruta> rutasPorTipo = new List<Ruta>();
+
+            foreach(Ruta r in linea.Rutas)
+            {
+                if(r.TipoDeRuta == _tipo)
+                {
+                    rutasPorTipo.Add(r);
+                }
+            }
+
+            rutasPorTipo.OrderBy(r => r.Nombre);
+            return rutasPorTipo;
+
         }
 
 

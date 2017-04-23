@@ -3,7 +3,7 @@ namespace MicrosForms.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class please2 : DbMigration
+    public partial class asdfasd : DbMigration
     {
         public override void Up()
         {
@@ -26,15 +26,15 @@ namespace MicrosForms.Migrations
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Nombre = c.String(nullable: false, maxLength: 20),
-                        RutaInicioId = c.Int(nullable: false),
-                        RutaFinId = c.Int(nullable: false),
+                        RutaIdaId = c.Int(),
+                        RutaVueltaId = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.Ruta", t => t.RutaFinId)
-                .ForeignKey("dbo.Ruta", t => t.RutaInicioId)
+                .ForeignKey("dbo.Ruta", t => t.RutaIdaId)
+                .ForeignKey("dbo.Ruta", t => t.RutaVueltaId)
                 .Index(t => t.Nombre, unique: true, name: "NombreIndex")
-                .Index(t => t.RutaInicioId)
-                .Index(t => t.RutaFinId);
+                .Index(t => t.RutaIdaId)
+                .Index(t => t.RutaVueltaId);
             
             CreateTable(
                 "dbo.Micro",
@@ -136,8 +136,10 @@ namespace MicrosForms.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        Nombre = c.String(nullable: false, maxLength: 30),
+                        TipoDeRuta = c.Int(nullable: false),
                         InicioId = c.Int(nullable: false),
-                        LineaId = c.Int(),
+                        LineaId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Coordenada", t => t.InicioId, cascadeDelete: true)
@@ -149,8 +151,8 @@ namespace MicrosForms.Migrations
         
         public override void Down()
         {
-            DropForeignKey("dbo.Linea", "RutaInicioId", "dbo.Ruta");
-            DropForeignKey("dbo.Linea", "RutaFinId", "dbo.Ruta");
+            DropForeignKey("dbo.Linea", "RutaVueltaId", "dbo.Ruta");
+            DropForeignKey("dbo.Linea", "RutaIdaId", "dbo.Ruta");
             DropForeignKey("dbo.Micro", "MicroParaderoId", "dbo.MicroParadero");
             DropForeignKey("dbo.Micro", "MicroChoferId", "dbo.MicroChofer");
             DropForeignKey("dbo.MicroChofer", "MicroId", "dbo.Micro");
@@ -181,8 +183,8 @@ namespace MicrosForms.Migrations
             DropIndex("dbo.Micro", new[] { "MicroChoferId" });
             DropIndex("dbo.Micro", new[] { "MicroParaderoId" });
             DropIndex("dbo.Micro", new[] { "LineaId" });
-            DropIndex("dbo.Linea", new[] { "RutaFinId" });
-            DropIndex("dbo.Linea", new[] { "RutaInicioId" });
+            DropIndex("dbo.Linea", new[] { "RutaVueltaId" });
+            DropIndex("dbo.Linea", new[] { "RutaIdaId" });
             DropIndex("dbo.Linea", "NombreIndex");
             DropIndex("dbo.Coordenada", new[] { "SiguienteCoordenadaId" });
             DropTable("dbo.Ruta");

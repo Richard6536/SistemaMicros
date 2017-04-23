@@ -41,7 +41,12 @@ namespace MicrosForms.Ventanas
 
             if (Usuario.VerificarExistenciaUsusuarios() == false)
             {
-                FormManager.CambiarForm(this, new CrearPrimerUsuario());
+                this.Enabled = false;
+                var form = new CrearPrimerUsuario();
+
+                form.ShowDialog();
+
+                this.Enabled = true;
 
             }
             else

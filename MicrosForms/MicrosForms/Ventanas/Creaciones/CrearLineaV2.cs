@@ -76,7 +76,7 @@ namespace MicrosForms.Ventanas.Creaciones
             gmapController.Position = new PointLatLng(latOsorno, lngOsorno);
 
             gmapController.MinZoom = 4; 
-            gmapController.MaxZoom = 30;  //18
+            gmapController.MaxZoom = 19;  //19
             gmapController.Zoom = 14;
 
             gmapController.IgnoreMarkerOnMouseWheel = true;
@@ -368,8 +368,8 @@ namespace MicrosForms.Ventanas.Creaciones
             previewIdaOverlay.Clear();
             previewVueltaOverlay.Clear();
 
-            CargarPuntosEnMapa(posVerticesIda, markParaderosIda, AdminLineas.TipoRuta.ida);
-            CargarPuntosEnMapa(posVerticesVuelta, markParaderosVuelta, AdminLineas.TipoRuta.vuelta);
+            CargarPuntosEnMapa(posVerticesIda, markParaderosIda, Ruta.TipoRuta.ida);
+            CargarPuntosEnMapa(posVerticesVuelta, markParaderosVuelta, Ruta.TipoRuta.vuelta);
 
         }
 
@@ -382,8 +382,6 @@ namespace MicrosForms.Ventanas.Creaciones
 
 
         #region Creacion paraderos
-
-
 
         void CrearPosicionParadero(double _lat, double _lng)
         {
@@ -410,7 +408,7 @@ namespace MicrosForms.Ventanas.Creaciones
 
        
 
-        void CargarPuntosEnMapa(List<PointLatLng> _vertices, List<GMarkerGoogle> _paraderos, AdminLineas.TipoRuta _tipoRuta)
+        void CargarPuntosEnMapa(List<PointLatLng> _vertices, List<GMarkerGoogle> _paraderos, Ruta.TipoRuta _tipoRuta)
         {
             //al apretar aceptarRuta, se redibujan las 2 rutas de nuevo para comprobar errores
 
@@ -442,7 +440,7 @@ namespace MicrosForms.Ventanas.Creaciones
                 if (i == 0)
                 {
                     //Crea marcador al inicio de la ruta
-                    if (_tipoRuta == AdminLineas.TipoRuta.ida)
+                    if (_tipoRuta == Ruta.TipoRuta.ida)
                     {
                         gmapController.Position = new PointLatLng(actual.Lat, actual.Lng); //enfoca el mapa en el inicio
                         iconoMarcador = GMarkerGoogleType.red_small; //icono ida
@@ -464,7 +462,7 @@ namespace MicrosForms.Ventanas.Creaciones
                 {
                     //Crea marcador al final de la ruta
                     //solo en la de ruta de vuelta
-                    if (_tipoRuta == AdminLineas.TipoRuta.vuelta)
+                    if (_tipoRuta == Ruta.TipoRuta.vuelta)
                     {
                         gmapController.Position = new PointLatLng(actual.Lat, actual.Lng); //enfoca el mapa en el inicio
                         iconoMarcador = GMarkerGoogleType.blue_small; //icono ida
@@ -485,13 +483,13 @@ namespace MicrosForms.Ventanas.Creaciones
                 //GMapPolygon polygon = new GMapPolygon(puntos, "mypolygon");
                 GMapRoute ruta = new GMapRoute(puntos, "asdf");
 
-                if (_tipoRuta == AdminLineas.TipoRuta.ida)
+                if (_tipoRuta == Ruta.TipoRuta.ida)
                 {
                     ruta.Stroke = new Pen(Color.Red, 4);
                     previewIdaOverlay.Routes.Add(ruta);
                 }
                     
-                if (_tipoRuta == AdminLineas.TipoRuta.vuelta)
+                if (_tipoRuta == Ruta.TipoRuta.vuelta)
                 {
                     ruta.Stroke = new Pen(Color.Blue, 4);
                     previewVueltaOverlay.Routes.Add(ruta);
@@ -547,19 +545,20 @@ namespace MicrosForms.Ventanas.Creaciones
             List<Paradero> paraderosIda = CrearParaderos(markParaderosIda);
             List<Paradero> paraderosVuelta = CrearParaderos(markParaderosVuelta);
 
-            int idaID = Ruta.CrearRuta(verticesIda, paraderosIda);
-            int vueltaID = Ruta.CrearRuta(verticesVuelta, paraderosVuelta);
 
-            bool resultado = Linea.CrearLinea(txtNombreLinea.Text, idaID, vueltaID);
+            Linea nuevaLinea = Linea.CrearLinea(txtNombreLinea.Text);
 
+            Ruta rutaIda = Ruta.CrearRuta(nuevaLinea.Id,txtNombreLinea.Text+"_ida1", Ruta.TipoRuta.ida, verticesIda, paraderosIda);
+            Ruta rutaVuelta = Ruta.CrearRuta(nuevaLinea.Id, txtNombreLinea.Text+"_vuelta1", Ruta.TipoRuta.vuelta, verticesVuelta, paraderosVuelta);
 
-
-            if (resultado)
+            if(nuevaLinea != null && rutaIda != null && rutaVuelta != null)
             {
+                rutaIda.AsignarRutaComoUsable();
+                rutaVuelta.AsignarRutaComoUsable();
+
                 MessageBox.Show("Linea creada correctamente");
                 this.DialogResult = DialogResult.OK;
             }
-
         }
 
 

@@ -38,19 +38,19 @@ namespace MicrosForms.Ventanas.Creaciones
             string email = txtEmail.Text;
             string pass = txtPassword.Text;
 
-            bool creacionExitosa = Usuario.CrearUsuario(nombre, email, Usuario.RolUsuario.admin, pass);
+            bool creacionExitosa = Usuario.CrearUsuario(nombre, email, Usuario.RolUsuario.Admin, pass);
 
             if(creacionExitosa)
             {
                 MessageBox.Show("Creación de primer administrador exitosa.");
-                FormManager.CambiarForm(this, new Login());
+                this.DialogResult = DialogResult.OK;
             }
 
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)
         {
-            FormManager.CambiarForm(this, new Login());
+            this.DialogResult = DialogResult.Cancel;
         }
     }
 }

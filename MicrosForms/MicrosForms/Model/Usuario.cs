@@ -19,7 +19,7 @@ namespace MicrosForms.Model
     public class Usuario
     {
         
-        public enum RolUsuario { normal, chofer, admin }
+        public enum RolUsuario { Normal, Chofer, Admin, Bloqueado }
 
         [Key, ForeignKey("UsuarioParadero")]
         public int Id { get; set; }
@@ -31,7 +31,7 @@ namespace MicrosForms.Model
         [Required]
         public string Password { get; set; }
 
-        [Required, StringLength(50, MinimumLength = 3, ErrorMessage = "El email debe tener un mínimo de 3 carácteres y un máximo de 25")]
+        [Required, StringLength(50, MinimumLength = 3, ErrorMessage = "El email debe tener un mínimo de 3 carácteres y un máximo de 50")]
         [EmailAddress]
         public string Email { get; set; }
         
@@ -78,11 +78,11 @@ namespace MicrosForms.Model
                 {
                     //mensajeError = ex.EntityValidationErrors.First().ValidationErrors.First().ErrorMessage;
 
-                    string mensaje = "errores \n";
+                    string mensaje = "Se encontraron los siguientes errores:";
 
                     foreach (var error in ex.EntityValidationErrors.First().ValidationErrors)
                     {
-                        mensaje += error.ErrorMessage + "\n";
+                        mensaje += "\n-"+error.ErrorMessage;
                     }
 
                     MessageBox.Show(mensaje);
@@ -113,6 +113,92 @@ namespace MicrosForms.Model
 
         }
 
+        public static bool EditarUsuario(int _id, string _nuevoNombre, string _nuevoEmail, RolUsuario _nuevoRol, string _nuevaPassword)
+        {
+            var BD = new MicroSystemContext();
+
+            Usuario user = BD.Usuarios.Where(u => u.Id == _id).FirstOrDefault();
+
+            user.Nombre = _nuevoNombre;
+            user.Rol = _nuevoRol;
+            user.Email = _nuevoEmail;
+            user.Password = _nuevaPassword;
+
+            try
+            {
+                BD.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
+        public static bool AsignarMicro(int _idUser, Micro _micro)
+        {
+            var BD = new MicroSystemContext();
+
+            Usuario user = BD.Usuarios.Where(u => u.Id == _idUser).FirstOrDefault();
+
+            if (user.MicroChoferId == null && _micro == null)
+            {
+                return true;
+            }         
+
+            Micro microAntigua;
+            Micro microNueva;
+
+            if(user.MicroChoferId == null && _micro != null)
+            {
+                //crear microchofer y asignar
+                microNueva = BD.Micros.Where(m => m.Patente == _micro.Patente).FirstOrDefault();
+                MicroChofer mc = new MicroChofer();
+                BD.MicroChoferes.Add(mc);
+                mc.Micro = microNueva;
+                mc.Chofer = user;
+                user.MicroChofer = mc;
+                microNueva.MicroChofer = mc;             
+            }
+
+            if(user.MicroChoferId != null && _micro == null)
+            {
+                //borrar microchofer
+                MicroChofer mc = user.MicroChofer;
+                microAntigua = user.MicroChofer.Micro;
+
+                microAntigua.MicroChofer = null;
+                user.MicroChofer = null;
+
+                BD.MicroChoferes.Remove(mc);
+            }
+
+            if(user.MicroChoferId != null && _micro != null)
+            {
+                //borrar de la micro antigua la relacion con microchofer
+                //asignar con la nueva micro
+                MicroChofer mc = user.MicroChofer;
+                microAntigua = user.MicroChofer.Micro;
+                microNueva = BD.Micros.Where(m => m.Patente == _micro.Patente).FirstOrDefault();
+
+                microAntigua.MicroChofer = null;
+                microNueva.MicroChofer = mc;
+                mc.Micro = microNueva;
+            }
+
+            try
+            {
+                BD.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+        }
+
         public static bool EsPasswordValida(String _nombre, String _pass)
         {
 
@@ -139,6 +225,23 @@ namespace MicrosForms.Model
             var BD = new MicroSystemContext();
             var usuariosSeleccionados = BD.Usuarios.ToList();
 
+
+            return usuariosSeleccionados;
+        }
+
+        public static List<Usuario> BuscarTodosLosUsuariosPorRol(Usuario.RolUsuario _rol)
+        {
+            var BD = new MicroSystemContext();
+            List<Usuario> usuariosSeleccionados = new List<Usuario>();
+            var todosLosUsuarios = BD.Usuarios.ToList();
+
+            for (int i = 0; i < todosLosUsuarios.Count; i++)
+            {
+                if(todosLosUsuarios[i].Rol == _rol)
+                {
+                    usuariosSeleccionados.Add(todosLosUsuarios[i]);
+                }
+            }
 
             return usuariosSeleccionados;
         }
@@ -179,7 +282,18 @@ namespace MicrosForms.Model
 
         }
 
-        public static bool ExisteYaUsuario(string _nombre)
+        public static Usuario BuscarUsuarioPorNombre(string _nombre)
+        {
+            var BD = new MicroSystemContext();
+            var usuarioSeleccionado = BD.Usuarios.Where(
+                    usuario =>
+                               usuario.Nombre == _nombre).FirstOrDefault();
+
+            return usuarioSeleccionado;
+
+        }
+
+        public static bool yaExisteUsuario(string _nombre)
         {
             bool yaExiste = true;
 

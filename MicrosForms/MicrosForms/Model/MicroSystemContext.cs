@@ -47,21 +47,11 @@ namespace MicrosForms.Model
                 .WithMany()
                 .HasForeignKey(m => m.MicroParaderoId);
 
-
-
-            modelBuilder.Entity<Linea>()
-                .HasRequired(l => l.RutaInicio)
-                .WithMany()
+            modelBuilder.Entity<Ruta>()
+                .HasRequired(r => r.Linea)
+                .WithMany(l => l.Rutas)
+                .HasForeignKey(r => r.LineaId)
                 .WillCascadeOnDelete(false);
-
-
-            modelBuilder.Entity<Linea>()
-                 .HasRequired(l => l.RutaFin)
-                 .WithMany()
-                 .WillCascadeOnDelete(false);
-
-
-
 
 
         }
