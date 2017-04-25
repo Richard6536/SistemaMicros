@@ -390,6 +390,69 @@ namespace MicrosForms.Ventanas.Creaciones
 
             if(posVerticesIda.Count > 1)
                 btnGuardarDatos.Enabled = true;
+
+            //dibujar de nuevo en el mapa para comprobar errores
+            otrosMarkersIdaOverlay.Clear();
+            paraderosIdaOverlay.Clear();
+            previewIdaOverlay.Clear();
+
+            CargarPuntosEnMapa(posVerticesIda, markParaderosIda);
+        }
+
+        void CargarPuntosEnMapa(List<PointLatLng> _vertices, List<GMarkerGoogle> _paraderos)
+        {
+            //al apretar aceptarRuta, se redibujan las 2 rutas de nuevo para comprobar errores
+
+            if (!ConnectionTester.IsConnectionActive())
+                return;
+
+            List<GMarkerGoogle> paraderos = _paraderos;
+            List<PointLatLng> vertices = _vertices;
+
+
+            foreach (GMarkerGoogle p in paraderos) //Crear paraderos en el mapa
+            {
+                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Position.Lat, p.Position.Lng), GMarkerGoogleType.purple_small);
+
+                paraderosIdaOverlay.Markers.Add(paraderoMarker);
+            }
+
+            GMarkerGoogleType iconoMarcador = GMarkerGoogleType.arrow;
+            string toolTipText = "";
+            PointLatLng actual;
+            PointLatLng siguiente;
+            for (int i = 0; i < vertices.Count - 1; i++)
+            {
+
+                actual = vertices[i];
+                siguiente = vertices[i + 1];
+
+
+                if (i == 0)
+                {
+
+                    gmapController.Position = new PointLatLng(actual.Lat, actual.Lng); //enfoca el mapa en el inicio
+                    iconoMarcador = GMarkerGoogleType.red_small; //icono ida
+                    toolTipText = "Inicio ruta ida";
+
+
+                    GMarkerGoogle InicioMarker = new GMarkerGoogle(new PointLatLng(actual.Lat, actual.Lng), iconoMarcador);
+                    InicioMarker.ToolTipText = toolTipText;
+
+                    otrosMarkersIdaOverlay.Markers.Add(InicioMarker);
+                }
+
+                List<PointLatLng> puntos = new List<PointLatLng>();
+                puntos.Add(new PointLatLng(actual.Lat, actual.Lng));
+                puntos.Add(new PointLatLng(siguiente.Lat, siguiente.Lng));
+
+                GMapRoute ruta = new GMapRoute(puntos, "asdf");
+
+                ruta.Stroke = new Pen(Color.Red, 4);
+                previewIdaOverlay.Routes.Add(ruta);
+            }
+
+            RefreshMap();
         }
 
         private void gmapController_OnMarkerClick(GMapMarker item, MouseEventArgs e)

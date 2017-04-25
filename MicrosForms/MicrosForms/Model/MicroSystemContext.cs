@@ -8,7 +8,7 @@ using System.Data.Entity;
 
 namespace MicrosForms.Model
 {
-    class MicroSystemContext : DbContext
+    public class MicroSystemContext : DbContext
     {
         public MicroSystemContext() : base("name=MicroSystemDB") { }
 

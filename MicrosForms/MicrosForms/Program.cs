@@ -19,7 +19,7 @@ namespace MicrosForms
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new AdminUsuarios());
+            Application.Run(new Login());
         }
     }
 }

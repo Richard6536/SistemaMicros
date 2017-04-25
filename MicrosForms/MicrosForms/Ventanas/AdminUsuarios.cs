@@ -132,11 +132,26 @@ namespace MicrosForms.Ventanas
                 {
                     usuarios = Usuario.BuscarTodosUsuarios();
                     CargarTabla(usuarios);
+                    SeleccionarIndexPorNombre(nombreUsuario);
                 }
             }
         }
 
+        private void SeleccionarIndexPorNombre(string _nombre)
+        {
+            int index = -1;
 
+            foreach (DataGridViewRow row in dataGridUsuarios.Rows)
+            {
+                if (row.Cells[0].Value + "" == _nombre)
+                {
+                    index = row.Index;
+                }
+            }
+
+            dataGridUsuarios.Rows[0].Selected = false;
+            dataGridUsuarios.Rows[index].Selected = true;
+        }
 
 
     }

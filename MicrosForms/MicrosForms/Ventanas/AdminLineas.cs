@@ -12,6 +12,7 @@ using MicrosForms.Classes;
 using MicrosForms.Model;
 using MicrosForms.Ventanas;
 using MicrosForms.Ventanas.Creaciones;
+using MicrosForms.Ventanas.Ediciones;
 
 using GMap.NET;
 using GMap.NET.MapProviders;
@@ -249,7 +250,25 @@ namespace MicrosForms.Ventanas
 
         private void btnBorrar_Click(object sender, EventArgs e)
         {
+            DialogResult dr = MessageBox.Show("¿Está seguro que desea borrar esta línea?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if (dr == DialogResult.No)
+                return;
 
+            List<Micro> micros = Linea.ObtenerMicrosDeLinea(lineaActual.Id);
+            if(micros.Count >= 1)
+            {
+                MessageBox.Show("No puede eliminar una línea que contenga ya micros.");
+                return;
+            }
+
+            Linea.EliminarLinea(lineaActual.Id);
+            MessageBox.Show("Línea eliminada correctamente.");
+
+            previewOverlay.Clear();
+            completeOverlay.Clear();
+            paraderosOverlay.Clear();
+            otrosMarkersOverlay.Clear();
+            CargarComboboxLineas();
         }
 
         private void btnVerMicros_Click(object sender, EventArgs e)
@@ -349,6 +368,141 @@ namespace MicrosForms.Ventanas
             }
         }
 
+        private void btnCrearVuelta_Click(object sender, EventArgs e)
+        {
+            if (lineaActual != null)
+            {
+                var form = new CrearRutaVuelta(lineaActual.Id);
+                FormManager.MostrarShowDialog(this, form);
 
+                if (form.DialogResult == DialogResult.OK)
+                {
+                    int idLinea = lineaActual.Id;
+                    CargarComboboxLineas();
+                    cmbLinea.SelectedValue = idLinea;
+                }
+            }
+        }
+
+        private void btnAsignarVuelta_Click(object sender, EventArgs e)
+        {
+            if (lineaActual != null)
+            {
+                Ruta RutaVuelta = Ruta.BuscarPorId((int)cmbRutaVuelta.SelectedValue);
+
+                int idLinea = lineaActual.Id;
+                RutaVuelta.AsignarRutaComoUsable();
+
+                CargarComboboxLineas();
+                cmbLinea.SelectedValue = idLinea;
+
+                MessageBox.Show("Ruta " + RutaVuelta.Nombre + " asignada como la ruta a usar.");
+            }
+        }
+
+        private void cmbRutaVuelta_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (cmbVueltaSwitch == true)
+                {
+                    previewOverlay.Clear();
+                    completeOverlay.Clear();
+                    paraderosOverlay.Clear();
+                    otrosMarkersOverlay.Clear();
+
+                    Ruta rutaIda = Ruta.BuscarPorId(lineaActual.RutaIdaId.Value);
+                    Ruta rVuelta = Ruta.BuscarPorId((int)cmbRutaVuelta.SelectedValue);
+
+                    CargarRutaEnMapa(rutaIda);
+                    CargarRutaEnMapa(rVuelta);
+
+                    cmbVueltaSwitch = false;
+                }
+            }
+            catch
+            {
+                return;
+            }
+        }
+        bool cmbVueltaSwitch = false;
+        private void cmbRutaVuelta_MouseClick(object sender, MouseEventArgs e)
+        {
+            cmbVueltaSwitch = true;
+        }
+
+        private void btnEliminarIda_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = MessageBox.Show("¿Está seguro que desea borrar esta ruta de ida?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if (dr == DialogResult.No)
+                return;
+
+
+            if (cmbRutaIda.Items.Count > 0)
+            {
+
+                Ruta rutaIda = Ruta.BuscarPorId((int)cmbRutaIda.SelectedValue);
+                int idLinea = lineaActual.Id;
+                int idRutaAsignada = lineaActual.RutaIdaId.Value;
+
+                if (idRutaAsignada == rutaIda.Id)
+                {
+                    MessageBox.Show("No puede eliminar la ruta que está actualmente asignada.");
+                    return;
+                }
+
+                Ruta.EliminarRuta(rutaIda.Id);
+
+                CargarComboboxLineas();
+                cmbLinea.SelectedValue = idLinea;
+                MessageBox.Show("Ruta eliminada correctamente");
+            }
+        }
+
+        private void btnEliminarVuelta_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = MessageBox.Show("¿Está seguro que desea borrar esta ruta de vuelta?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if (dr == DialogResult.No)
+                return;
+
+            if (cmbRutaVuelta.Items.Count > 0)
+            {
+
+                Ruta rutaVuelta = Ruta.BuscarPorId((int)cmbRutaVuelta.SelectedValue);
+                int idLinea = lineaActual.Id;
+                int idRutaAsignada = lineaActual.RutaVueltaId.Value;
+
+                if (idRutaAsignada == rutaVuelta.Id)
+                {
+                    MessageBox.Show("No puede eliminar la ruta que está actualmente asignada.");
+                    return;
+                }
+
+                Ruta.EliminarRuta(rutaVuelta.Id);
+
+                CargarComboboxLineas();
+                cmbLinea.SelectedValue = idLinea;
+                MessageBox.Show("Ruta eliminada correctamente");
+            }
+        }
+
+        private void btnVerMicros_Click_1(object sender, EventArgs e)
+        {
+            var form = new EditarMicrosDeLinea(lineaActual.Id);
+            FormManager.MostrarShowDialog(this, form);
+        }
+
+        private void btnCambiarNombreLinea_Click(object sender, EventArgs e)
+        {
+            var form = new CambiarNombreLinea(lineaActual.Id);
+            DialogResult dr = FormManager.MostrarShowDialog(this, form);
+
+            if(dr == DialogResult.OK)
+            {
+                int idLinea = lineaActual.Id;
+                CargarComboboxLineas();
+                cmbLinea.SelectedValue = idLinea;
+            }
+        }
     }
 }

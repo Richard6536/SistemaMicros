@@ -51,14 +51,16 @@
             this.lblRutaVuelta = new System.Windows.Forms.Label();
             this.btnAsignarIda = new System.Windows.Forms.Button();
             this.btnAsignarVuelta = new System.Windows.Forms.Button();
+            this.btnCambiarNombreLinea = new System.Windows.Forms.Button();
+            this.btnVerMicros = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCrearLinea
             // 
-            this.btnCrearLinea.Location = new System.Drawing.Point(760, 110);
+            this.btnCrearLinea.Location = new System.Drawing.Point(763, 169);
             this.btnCrearLinea.Name = "btnCrearLinea";
-            this.btnCrearLinea.Size = new System.Drawing.Size(234, 43);
+            this.btnCrearLinea.Size = new System.Drawing.Size(234, 54);
             this.btnCrearLinea.TabIndex = 0;
             this.btnCrearLinea.Text = "Crear nueva linea";
             this.btnCrearLinea.UseVisualStyleBackColor = true;
@@ -68,7 +70,7 @@
             // 
             this.cmbLinea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLinea.FormattingEnabled = true;
-            this.cmbLinea.Location = new System.Drawing.Point(760, 83);
+            this.cmbLinea.Location = new System.Drawing.Point(760, 57);
             this.cmbLinea.Name = "cmbLinea";
             this.cmbLinea.Size = new System.Drawing.Size(234, 21);
             this.cmbLinea.TabIndex = 1;
@@ -77,7 +79,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(760, 67);
+            this.label1.Location = new System.Drawing.Point(760, 41);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(90, 13);
             this.label1.TabIndex = 2;
@@ -162,7 +164,7 @@
             // 
             // btnBorrar
             // 
-            this.btnBorrar.Location = new System.Drawing.Point(904, 49);
+            this.btnBorrar.Location = new System.Drawing.Point(904, 119);
             this.btnBorrar.Name = "btnBorrar";
             this.btnBorrar.Size = new System.Drawing.Size(90, 28);
             this.btnBorrar.TabIndex = 11;
@@ -185,10 +187,12 @@
             // 
             this.cmbRutaVuelta.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbRutaVuelta.FormattingEnabled = true;
-            this.cmbRutaVuelta.Location = new System.Drawing.Point(766, 402);
+            this.cmbRutaVuelta.Location = new System.Drawing.Point(767, 435);
             this.cmbRutaVuelta.Name = "cmbRutaVuelta";
             this.cmbRutaVuelta.Size = new System.Drawing.Size(231, 21);
             this.cmbRutaVuelta.TabIndex = 15;
+            this.cmbRutaVuelta.SelectedIndexChanged += new System.EventHandler(this.cmbRutaVuelta_SelectedIndexChanged);
+            this.cmbRutaVuelta.MouseClick += new System.Windows.Forms.MouseEventHandler(this.cmbRutaVuelta_MouseClick);
             // 
             // label2
             // 
@@ -202,7 +206,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(766, 386);
+            this.label3.Location = new System.Drawing.Point(767, 419);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(62, 13);
             this.label3.TabIndex = 17;
@@ -220,46 +224,51 @@
             // 
             // btnEliminarIda
             // 
-            this.btnEliminarIda.Location = new System.Drawing.Point(766, 343);
+            this.btnEliminarIda.Location = new System.Drawing.Point(763, 343);
             this.btnEliminarIda.Name = "btnEliminarIda";
             this.btnEliminarIda.Size = new System.Drawing.Size(126, 28);
             this.btnEliminarIda.TabIndex = 19;
             this.btnEliminarIda.Text = "Eliminar ruta";
             this.btnEliminarIda.UseVisualStyleBackColor = true;
+            this.btnEliminarIda.Click += new System.EventHandler(this.btnEliminarIda_Click);
             // 
             // btnEliminarVuelta
             // 
-            this.btnEliminarVuelta.Location = new System.Drawing.Point(769, 463);
+            this.btnEliminarVuelta.Location = new System.Drawing.Point(770, 496);
             this.btnEliminarVuelta.Name = "btnEliminarVuelta";
             this.btnEliminarVuelta.Size = new System.Drawing.Size(126, 28);
             this.btnEliminarVuelta.TabIndex = 21;
             this.btnEliminarVuelta.Text = "Eliminar ruta";
             this.btnEliminarVuelta.UseVisualStyleBackColor = true;
+            this.btnEliminarVuelta.Click += new System.EventHandler(this.btnEliminarVuelta_Click);
             // 
             // btnCrearVuelta
             // 
-            this.btnCrearVuelta.Location = new System.Drawing.Point(766, 429);
+            this.btnCrearVuelta.Location = new System.Drawing.Point(767, 462);
             this.btnCrearVuelta.Name = "btnCrearVuelta";
             this.btnCrearVuelta.Size = new System.Drawing.Size(129, 28);
             this.btnCrearVuelta.TabIndex = 20;
             this.btnCrearVuelta.Text = "Crear nueva ruta vuelta";
             this.btnCrearVuelta.UseVisualStyleBackColor = true;
+            this.btnCrearVuelta.Click += new System.EventHandler(this.btnCrearVuelta_Click);
             // 
             // lblRutaIda
             // 
             this.lblRutaIda.AutoSize = true;
-            this.lblRutaIda.Location = new System.Drawing.Point(766, 182);
+            this.lblRutaIda.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRutaIda.Location = new System.Drawing.Point(763, 239);
             this.lblRutaIda.Name = "lblRutaIda";
-            this.lblRutaIda.Size = new System.Drawing.Size(97, 13);
+            this.lblRutaIda.Size = new System.Drawing.Size(128, 15);
             this.lblRutaIda.TabIndex = 22;
             this.lblRutaIda.Text = "Ruta de ida actual:";
             // 
             // lblRutaVuelta
             // 
             this.lblRutaVuelta.AutoSize = true;
-            this.lblRutaVuelta.Location = new System.Drawing.Point(766, 211);
+            this.lblRutaVuelta.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblRutaVuelta.Location = new System.Drawing.Point(766, 391);
             this.lblRutaVuelta.Name = "lblRutaVuelta";
-            this.lblRutaVuelta.Size = new System.Drawing.Size(112, 13);
+            this.lblRutaVuelta.Size = new System.Drawing.Size(146, 15);
             this.lblRutaVuelta.TabIndex = 23;
             this.lblRutaVuelta.Text = "Ruta de vuelta actual:";
             // 
@@ -275,18 +284,41 @@
             // 
             // btnAsignarVuelta
             // 
-            this.btnAsignarVuelta.Location = new System.Drawing.Point(898, 429);
+            this.btnAsignarVuelta.Location = new System.Drawing.Point(899, 462);
             this.btnAsignarVuelta.Name = "btnAsignarVuelta";
             this.btnAsignarVuelta.Size = new System.Drawing.Size(100, 28);
             this.btnAsignarVuelta.TabIndex = 25;
             this.btnAsignarVuelta.Text = "Asignar a la línea";
             this.btnAsignarVuelta.UseVisualStyleBackColor = true;
+            this.btnAsignarVuelta.Click += new System.EventHandler(this.btnAsignarVuelta_Click);
+            // 
+            // btnCambiarNombreLinea
+            // 
+            this.btnCambiarNombreLinea.Location = new System.Drawing.Point(761, 119);
+            this.btnCambiarNombreLinea.Name = "btnCambiarNombreLinea";
+            this.btnCambiarNombreLinea.Size = new System.Drawing.Size(131, 28);
+            this.btnCambiarNombreLinea.TabIndex = 26;
+            this.btnCambiarNombreLinea.Text = "Cambiar nombre";
+            this.btnCambiarNombreLinea.UseVisualStyleBackColor = true;
+            this.btnCambiarNombreLinea.Click += new System.EventHandler(this.btnCambiarNombreLinea_Click);
+            // 
+            // btnVerMicros
+            // 
+            this.btnVerMicros.Location = new System.Drawing.Point(760, 84);
+            this.btnVerMicros.Name = "btnVerMicros";
+            this.btnVerMicros.Size = new System.Drawing.Size(234, 29);
+            this.btnVerMicros.TabIndex = 27;
+            this.btnVerMicros.Text = "Ver Micros";
+            this.btnVerMicros.UseVisualStyleBackColor = true;
+            this.btnVerMicros.Click += new System.EventHandler(this.btnVerMicros_Click_1);
             // 
             // AdminLineas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1035, 539);
+            this.Controls.Add(this.btnVerMicros);
+            this.Controls.Add(this.btnCambiarNombreLinea);
             this.Controls.Add(this.btnAsignarVuelta);
             this.Controls.Add(this.btnAsignarIda);
             this.Controls.Add(this.lblRutaVuelta);
@@ -339,5 +371,7 @@
         private System.Windows.Forms.Label lblRutaVuelta;
         private System.Windows.Forms.Button btnAsignarIda;
         private System.Windows.Forms.Button btnAsignarVuelta;
+        private System.Windows.Forms.Button btnCambiarNombreLinea;
+        private System.Windows.Forms.Button btnVerMicros;
     }
 }

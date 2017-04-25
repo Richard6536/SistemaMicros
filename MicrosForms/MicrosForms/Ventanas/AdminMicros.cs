@@ -123,10 +123,28 @@ namespace MicrosForms.Ventanas
                     {
                         micros = Micro.BuscarTodasLasMicros();
                         CargarTabla(micros);
+                        SeleccionarIndexPorPatente(patenteMicro);
+   
                     }
                 }
 
             }
+        }
+
+        private void SeleccionarIndexPorPatente(string _patente)
+        {
+            int index = -1;
+
+            foreach(DataGridViewRow row in datagridMicros.Rows)
+            {
+                if(row.Cells[0].Value + "" == _patente)
+                {
+                    index = row.Index;
+                }
+            }
+
+            datagridMicros.Rows[0].Selected = false;
+            datagridMicros.Rows[index].Selected = true;
         }
     }
 }

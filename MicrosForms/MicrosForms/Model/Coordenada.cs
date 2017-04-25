@@ -38,14 +38,33 @@ namespace MicrosForms.Model
             Siguiente = _sigVertice;
         }
 
-        public static void BorrarCadenaDeCoordenadas(Coordenada _coordenada)
+        public static void BorrarCadenaDeCoordenadas(Coordenada _coordenada, MicroSystemContext _BD)
+        {
+            List<Coordenada> aBorrar = new List<Coordenada>();
+
+            Coordenada actual = _coordenada;
+
+            while (actual != null)
+            {
+                aBorrar.Add(actual);
+                actual = actual.Siguiente;
+            }
+
+            foreach (Coordenada c in aBorrar)
+            {
+                _BD.Coordenadas.Remove(c);
+            }
+
+            _BD.SaveChanges();
+        }
+
+        public static Coordenada BuscarPorId(int _id)
         {
             var BD = new MicroSystemContext();
 
+            Coordenada coordenada = BD.Coordenadas.Where(c => c.Id == _id).FirstOrDefault();
 
-
-
-            BD.SaveChanges();
+            return coordenada;
         }
 
     }

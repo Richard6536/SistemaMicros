@@ -169,6 +169,12 @@
     <Compile Include="Ventanas\Ediciones\AsignarMicro.Designer.cs">
       <DependentUpon>AsignarMicro.cs</DependentUpon>
     </Compile>
+    <Compile Include="Ventanas\Ediciones\CambiarNombreLinea.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\Ediciones\CambiarNombreLinea.Designer.cs">
+      <DependentUpon>CambiarNombreLinea.cs</DependentUpon>
+    </Compile>
     <Compile Include="Ventanas\Ediciones\CambiarRol.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -180,6 +186,12 @@
     </Compile>
     <Compile Include="Ventanas\Ediciones\EditarMicro.Designer.cs">
       <DependentUpon>EditarMicro.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\Ediciones\EditarMicrosDeLinea.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\Ediciones\EditarMicrosDeLinea.Designer.cs">
+      <DependentUpon>EditarMicrosDeLinea.cs</DependentUpon>
     </Compile>
     <Compile Include="Ventanas\Ediciones\HistorialMicro.cs">
       <SubType>Form</SubType>
@@ -247,11 +259,17 @@
     <EmbeddedResource Include="Ventanas\Ediciones\AsignarMicro.resx">
       <DependentUpon>AsignarMicro.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Ventanas\Ediciones\CambiarNombreLinea.resx">
+      <DependentUpon>CambiarNombreLinea.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Ventanas\Ediciones\CambiarRol.resx">
       <DependentUpon>CambiarRol.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ventanas\Ediciones\EditarMicro.resx">
       <DependentUpon>EditarMicro.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventanas\Ediciones\EditarMicrosDeLinea.resx">
+      <DependentUpon>EditarMicrosDeLinea.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ventanas\Inicio.resx">
       <DependentUpon>Inicio.cs</DependentUpon>

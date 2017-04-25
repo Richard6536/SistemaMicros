@@ -78,6 +78,8 @@
             this.gmapController.Size = new System.Drawing.Size(484, 429);
             this.gmapController.TabIndex = 26;
             this.gmapController.Zoom = 0D;
+            this.gmapController.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gmapController_MouseClick);
+            this.gmapController.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.gmapController_MouseDoubleClick);
             // 
             // btnGuardarDatos
             // 
@@ -87,6 +89,7 @@
             this.btnGuardarDatos.TabIndex = 25;
             this.btnGuardarDatos.Text = "Guardar datos";
             this.btnGuardarDatos.UseVisualStyleBackColor = true;
+            this.btnGuardarDatos.Click += new System.EventHandler(this.btnGuardarDatos_Click);
             // 
             // panelEditCreate
             // 
@@ -107,6 +110,7 @@
             this.btnAceptarRuta.TabIndex = 8;
             this.btnAceptarRuta.Text = "Aceptar";
             this.btnAceptarRuta.UseVisualStyleBackColor = true;
+            this.btnAceptarRuta.Click += new System.EventHandler(this.btnAceptarRuta_Click);
             // 
             // btnDeshacer
             // 
@@ -116,6 +120,7 @@
             this.btnDeshacer.TabIndex = 7;
             this.btnDeshacer.Text = "Deshacer";
             this.btnDeshacer.UseVisualStyleBackColor = true;
+            this.btnDeshacer.Click += new System.EventHandler(this.btnDeshacer_Click);
             // 
             // btnCrearRuta
             // 
@@ -125,6 +130,7 @@
             this.btnCrearRuta.TabIndex = 6;
             this.btnCrearRuta.Text = "Comenzar ruta";
             this.btnCrearRuta.UseVisualStyleBackColor = true;
+            this.btnCrearRuta.Click += new System.EventHandler(this.btnCrearRuta_Click);
             // 
             // lblTituloPanel
             // 
@@ -143,6 +149,7 @@
             this.btnCancelar.TabIndex = 23;
             this.btnCancelar.Text = "Cancelar";
             this.btnCancelar.UseVisualStyleBackColor = true;
+            this.btnCancelar.Click += new System.EventHandler(this.btnCancelar_Click);
             // 
             // label2
             // 

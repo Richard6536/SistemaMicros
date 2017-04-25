@@ -268,6 +268,15 @@ namespace MicrosForms.Model
             return micro;
         }
 
+        public static Micro BuscarMicro(int _id)
+        {
+            var BD = new MicroSystemContext();
+
+            Micro micro = BD.Micros.Where(m => m.Id == _id).FirstOrDefault();
+
+            return micro;
+        }
+
         public static List<Micro> BuscarTodasLasMicros()
         {
             var BD = new MicroSystemContext();

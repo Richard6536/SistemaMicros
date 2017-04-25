@@ -98,6 +98,42 @@ namespace MicrosForms.Model
             }
         }
 
+        public static bool EditarNombre(int _idLinea, string _nuevoNombre)
+        {
+            var BD = new MicroSystemContext();
+
+            Linea linea = BD.Lineas.Where(l => l.Id == _idLinea).FirstOrDefault();
+            linea.Nombre = _nuevoNombre;
+
+            try
+            {
+                BD.SaveChanges();
+                return true;
+            }
+            catch (DbEntityValidationException ex)
+            {
+                string mensaje = "Se encontraron los siguientes errores:";
+
+                foreach (var error in ex.EntityValidationErrors.First().ValidationErrors)
+                {
+                    mensaje += "\n"+error.ErrorMessage;
+                }
+
+                MessageBox.Show(mensaje);
+                return false;
+            }
+            catch (DbUpdateException ex)
+            {
+                MessageBox.Show(ex.Message);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Imposible completar operación");
+                return false;
+            }
+        }
+
 
         public static List<Linea> ObtenerTodasLasLineas()
         {
@@ -146,6 +182,52 @@ namespace MicrosForms.Model
 
         }
 
+        public static List<Ruta> ObtenerTodasLasRutas(int _idLinea)
+        {
+            var BD = new MicroSystemContext();
 
+            Linea linea = BD.Lineas.Where(l => l.Id == _idLinea).FirstOrDefault();
+            List<Ruta> todas = linea.Rutas;
+
+            return todas;
+        }
+
+        public static List<Micro> ObtenerMicrosDeLinea(int _idLinea)
+        {
+            var BD = new MicroSystemContext();
+
+            Linea linea = BD.Lineas.Where(l => l.Id == _idLinea).FirstOrDefault();
+            List<Micro> micros = linea.Micros;
+
+            return micros;
+        }
+
+        public static void EliminarLinea(int _idLinea)
+        {
+            //asumiendo que no hay rutas asociadas
+            var BD = new MicroSystemContext();
+
+            Linea linea = BD.Lineas.Where(l => l.Id == _idLinea).FirstOrDefault();
+            List<Ruta> rutas = new List<Ruta>();
+
+            foreach(Ruta r in linea.Rutas)
+            {
+                rutas.Add(r);
+            }
+
+            for (int i = 0; i < rutas.Count; i++)
+            {
+                Ruta rutaActual = rutas[i];
+                Coordenada coordenda = BD.Coordenadas.Where(c => c.Id == rutaActual.InicioId).FirstOrDefault();
+
+                Coordenada.BorrarCadenaDeCoordenadas(coordenda, BD);
+            }
+
+            BD.SaveChanges();
+
+            BD.Lineas.Remove(linea);
+
+            BD.SaveChanges();
+        }
     }
 }
