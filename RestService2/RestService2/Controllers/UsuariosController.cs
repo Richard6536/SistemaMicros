@@ -178,13 +178,30 @@ namespace RestService2.Controllers
         }
 
 
-
-        //[EnableQuery]
-        [HttpGet]
-        public IHttpActionResult Mensaje()
+        [HttpPost]
+        public string Mensaje()
         {
 
-            return Ok("hola");
+            return "Hola";
+        }
+
+        //Link:  localhost:8433/odata/Usuarios/MensajeParametros
+
+        /*BODY
+        {
+          "Nombre":'asdf',
+          "Edad":7 
+        }
+        */
+        [HttpPost]
+        public string MensajeParametros(ODataActionParameters parameters)
+        {
+            if (parameters == null)
+                return "error";
+
+            int edad = (int)parameters["Edad"];
+            string nombre = (string)parameters["Nombre"];
+            return "Mi nombre es " + nombre + " y tengo " + edad + " años";
         }
 
 

@@ -39,6 +39,14 @@ namespace RestService2
             builder.EntitySet<Micro>("Micros");
 
 
+            ActionConfiguration mensaje = builder.Entity<Usuario>().Collection.Action("Mensaje");
+            mensaje.Returns<string>();
+
+
+            ActionConfiguration mensajeParametros = builder.Entity<Usuario>().Collection.Action("MensajeParametros");
+            mensajeParametros.Returns<string>();
+            mensajeParametros.Parameter<int>("Edad");
+            mensajeParametros.Parameter<string>("Nombre");
 
             config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
         }
