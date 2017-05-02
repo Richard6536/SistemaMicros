@@ -26,6 +26,9 @@ namespace MicrosForms.Model
 
         [Required]
         public int Calificacion { get; set; }
+
+        [Required]
+        public int NumeroCalificaciones { get; set; }
         
         public int? LineaId { get; set; }
 
@@ -54,6 +57,7 @@ namespace MicrosForms.Model
 
                 nuevaMicro.Patente = _patente;
                 nuevaMicro.Calificacion = 0;
+                nuevaMicro.NumeroCalificaciones = 0;
                 
                 if(_linea != null)
                 {

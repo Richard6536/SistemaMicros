@@ -30,6 +30,8 @@ namespace RestService2.Controllers
     {
         private MicroSystemDBEntities1 db = new MicroSystemDBEntities1();
 
+
+
         // GET: odata/Lineas
         [EnableQuery]
         public IQueryable<Linea> GetLineas()
@@ -148,6 +150,7 @@ namespace RestService2.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
+        //Ruta de ida
         // GET: odata/Lineas(5)/Ruta
         [EnableQuery]
         public SingleResult<Ruta> GetRuta([FromODataUri] int key)
@@ -155,6 +158,7 @@ namespace RestService2.Controllers
             return SingleResult.Create(db.Linea.Where(m => m.Id == key).Select(m => m.Ruta));
         }
 
+        //Ruta de vuelta
         // GET: odata/Lineas(5)/Ruta1
         [EnableQuery]
         public SingleResult<Ruta> GetRuta1([FromODataUri] int key)
@@ -162,6 +166,15 @@ namespace RestService2.Controllers
             return SingleResult.Create(db.Linea.Where(m => m.Id == key).Select(m => m.Ruta1));
         }
 
+        //Todas las rutas de esta linea
+        // GET: odata/Lineas(5)/Ruta2
+        [EnableQuery]
+        public IQueryable<Ruta> GetRuta2([FromODataUri] int key)
+        {
+            return db.Linea.Where(m => m.Id == key).SelectMany(m => m.Ruta2);
+        }
+
+        //Todas las micros de esta linea
         // GET: odata/Lineas(5)/Micro
         [EnableQuery]
         public IQueryable<Micro> GetMicro([FromODataUri] int key)
@@ -169,12 +182,7 @@ namespace RestService2.Controllers
             return db.Linea.Where(m => m.Id == key).SelectMany(m => m.Micro);
         }
 
-        // GET: odata/Lineas(5)/Ruta2
-        [EnableQuery]
-        public IQueryable<Ruta> GetRuta2([FromODataUri] int key)
-        {
-            return db.Linea.Where(m => m.Id == key).SelectMany(m => m.Ruta2);
-        }
+
 
         protected override void Dispose(bool disposing)
         {

@@ -11,6 +11,7 @@ using System.Web.Http.ModelBinding;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Routing;
 using RestService2.Models;
+using RestService2.Classes;
 
 namespace RestService2.Controllers
 {
@@ -30,7 +31,146 @@ namespace RestService2.Controllers
     {
         private MicroSystemDBEntities1 db = new MicroSystemDBEntities1();
 
-        // GET: odata/Usuarios
+        //Validar
+        //Editar
+        //existe mail
+        //actualizar posicion
+        //Obtener micro de chofer
+        //Seleccionar paradero (id paradero)
+        //Deseleccionar paradero (sin id)
+
+        //POST: odata/Usuarios/EsValido
+        //Parametros: Email,Password
+        [HttpPost]
+        public bool EsValido(ODataActionParameters parameters)
+        {
+            if (parameters == null)
+                return false;
+
+            string mail = (string)parameters["Email"];
+            string pass = (string)parameters["Password"];
+
+            Usuario user = db.Usuario.Where(u => u.Email == mail).FirstOrDefault();
+
+            if (user == null)
+                return false;
+
+            bool valido = PasswordHash.ValidatePassword(pass, user.Password);
+
+            return valido;
+        }
+
+        //POST: odata/Usuarios(5)/EditarDatos
+        //Parametros: ???
+        [HttpPost]
+        public IHttpActionResult EditarDatos([FromODataUri]int key, ODataActionParameters parameters)
+        {
+            string nombre = (string)parameters["Nombre"];
+            string pass = (string)parameters["Password"];
+
+            Usuario user = db.Usuario.Where(u => u.Id == key).FirstOrDefault();
+            user.Nombre = nombre;
+            db.SaveChanges();
+            return Ok();
+        }
+
+        //POST: odata/Usuarios/ExisteMail
+        //Parametros: Email
+        [HttpPost]
+        public bool ExisteMail(ODataActionParameters parameters)
+        {
+            string mail = (string)parameters["Email"];
+
+            Usuario user = db.Usuario.Where(u => u.Email == mail).FirstOrDefault();
+
+            if (user == null)
+                return false;
+            else
+                return true;
+        }
+
+        //POST: odata/Usuarios(5)/ActualizarPosicion
+        //Parametros: Latitud, Longitud
+        [HttpPost]
+        public IHttpActionResult ActualizarPosicion([FromODataUri] int key, ODataActionParameters parameters)
+        {
+            double latitud = (double)parameters["Latitud"];
+            double longitud = (double)parameters["Longitud"]; 
+
+            Usuario user = db.Usuario.Where(u => u.Id == key).FirstOrDefault();
+
+            user.Latitud = latitud;
+            user.Longitud = longitud;
+
+            db.SaveChanges();
+
+            return Ok();
+        }
+
+        //POST: odata/Usuarios(5)/ObtenerMicro
+        //Parametros: nope
+        [HttpPost]
+        public Micro ObtenerMicro([FromODataUri] int key)
+        {
+            try
+            {
+                Usuario user = db.Usuario.Where(u => u.Id == key).FirstOrDefault();
+                return user.MicroChofer1.Micro1;
+            }
+            catch
+            {
+                return null;
+            }
+            
+        }
+
+        //POST: odata/Usuarios(5)/SeleccionarParadero
+        //Parametros: IdParadero
+        [HttpPost]
+        public IHttpActionResult SeleccionarParadero([FromODataUri] int key, ODataActionParameters parameters)
+        {
+            Usuario user = db.Usuario.Where(u => u.Id == key).FirstOrDefault();
+            int idParadero = (int)parameters["IdParadero"];
+            Paradero paradero = db.Paradero.Where(p => p.Id == idParadero).FirstOrDefault();
+
+            if(user.UsuarioParaderoId != null)
+            {
+                UsuarioParadero up = user.UsuarioParadero;
+                db.UsuarioParadero.Remove(up);
+            }
+
+            UsuarioParadero upNuevo = new UsuarioParadero();
+            upNuevo.Usuario1 = user;
+            upNuevo.Paradero = paradero;
+
+            user.UsuarioParadero = upNuevo;
+
+            db.UsuarioParadero.Add(upNuevo);
+            db.SaveChanges();
+            return Ok();
+        }
+
+        //POST: odata/Usuarios(5)/DeseleccionarParadero
+        //Parametros: nope
+        [HttpPost]
+        public IHttpActionResult DeseleccionarParadero([FromODataUri] int key)
+        {
+            Usuario user = db.Usuario.Where(u => u.Id == key).FirstOrDefault();
+
+            if (user.UsuarioParaderoId != null)
+            {
+                UsuarioParadero up = user.UsuarioParadero;
+                db.UsuarioParadero.Remove(up);
+                db.SaveChanges();
+            }
+            return Ok();
+
+            
+        }
+
+
+        #region Originales
+            // GET: odata/Usuarios
         [EnableQuery]
         public IQueryable<Usuario> GetUsuarios()
         {
@@ -148,19 +288,15 @@ namespace RestService2.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
+
         // GET: odata/Usuarios(5)/MicroChofer
         [EnableQuery]
-        public IQueryable<MicroChofer> GetMicroChofer([FromODataUri] int key)
-        {
-            return db.Usuario.Where(m => m.Id == key).SelectMany(m => m.MicroChofer);
-        }
-
-        // GET: odata/Usuarios(5)/MicroChofer1
-        [EnableQuery]
-        public SingleResult<MicroChofer> GetMicroChofer1([FromODataUri] int key)
+        public SingleResult<MicroChofer> GetMicroChofer([FromODataUri] int key)
         {
             return SingleResult.Create(db.Usuario.Where(m => m.Id == key).Select(m => m.MicroChofer1));
         }
+
+
         //[EnableQuery]
         [HttpGet]
         public IQueryable<Coordenada> GetRutaCompleta()
@@ -196,12 +332,17 @@ namespace RestService2.Controllers
         [HttpPost]
         public string MensajeParametros(ODataActionParameters parameters)
         {
+
             if (parameters == null)
                 return "error";
 
+            
+
             int edad = (int)parameters["Edad"];
             string nombre = (string)parameters["Nombre"];
-            return "Mi nombre es " + nombre + " y tengo " + edad + " años";
+            string mensaje =  "Mi nombre es " + nombre + " y tengo " + edad + " años";
+
+            return mensaje;
         }
 
 
@@ -210,13 +351,6 @@ namespace RestService2.Controllers
         public SingleResult<UsuarioParadero> GetUsuarioParadero([FromODataUri] int key)
         {
             return SingleResult.Create(db.Usuario.Where(m => m.Id == key).Select(m => m.UsuarioParadero));
-        }
-
-        // GET: odata/Usuarios(5)/UsuarioParadero1
-        [EnableQuery]
-        public IQueryable<UsuarioParadero> GetUsuarioParadero1([FromODataUri] int key)
-        {
-            return db.Usuario.Where(m => m.Id == key).SelectMany(m => m.UsuarioParadero1);
         }
 
         protected override void Dispose(bool disposing)
@@ -232,5 +366,6 @@ namespace RestService2.Controllers
         {
             return db.Usuario.Count(e => e.Id == key) > 0;
         }
+#endregion
     }
 }

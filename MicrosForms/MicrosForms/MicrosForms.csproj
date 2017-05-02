@@ -91,6 +91,9 @@
       <DependentUpon>201704230106158_asdfasd.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Coordenada.cs" />
+    <Compile Include="Model\HistorialDiario.cs" />
+    <Compile Include="Model\HistorialIdaVuelta.cs" />
+    <Compile Include="Model\HistorialParadero.cs" />
     <Compile Include="Model\MicroParadero.cs" />
     <Compile Include="Model\UsuarioParadero.cs" />
     <Compile Include="Model\MicroChofer.cs" />

@@ -31,6 +31,29 @@ namespace RestService2.Controllers
     {
         private MicroSystemDBEntities1 db = new MicroSystemDBEntities1();
 
+        //entregar lista de coordenadas completa
+
+        // POST: odata/Rutas(5)/ListaCoordenadas
+        [HttpPost]
+        public List<Coordenada> ListaCoordenadas([FromODataUri] int key)
+        {
+            Coordenada inicio = db.Ruta.Where(r => r.Id == key).FirstOrDefault().Coordenada;
+
+            List<Coordenada> vertices = new List<Coordenada>();
+            vertices.Add(inicio);
+
+            Coordenada siguiente = inicio.Coordenada2;
+            while(siguiente != null)
+            {
+                vertices.Add(siguiente);
+                siguiente = siguiente.Coordenada2;
+            }
+
+            return vertices;
+        }
+
+
+
         // GET: odata/Rutas
         [EnableQuery]
         public IQueryable<Ruta> GetRutas()
@@ -153,27 +176,15 @@ namespace RestService2.Controllers
         [EnableQuery]
         public SingleResult<Coordenada> GetCoordenada([FromODataUri] int key)
         {
+            //Coordenada de inicio
             return SingleResult.Create(db.Ruta.Where(m => m.Id == key).Select(m => m.Coordenada));
         }
 
         // GET: odata/Rutas(5)/Linea
         [EnableQuery]
-        public IQueryable<Linea> GetLinea([FromODataUri] int key)
+        public SingleResult<Linea> GetLinea([FromODataUri] int key)
         {
-            return db.Ruta.Where(m => m.Id == key).SelectMany(m => m.Linea);
-        }
-
-        // GET: odata/Rutas(5)/Linea1
-        [EnableQuery]
-        public IQueryable<Linea> GetLinea1([FromODataUri] int key)
-        {
-            return db.Ruta.Where(m => m.Id == key).SelectMany(m => m.Linea1);
-        }
-
-        // GET: odata/Rutas(5)/Linea2
-        [EnableQuery]
-        public SingleResult<Linea> GetLinea2([FromODataUri] int key)
-        {
+            //Linea a la que pertenece
             return SingleResult.Create(db.Ruta.Where(m => m.Id == key).Select(m => m.Linea2));
         }
 
@@ -181,6 +192,7 @@ namespace RestService2.Controllers
         [EnableQuery]
         public IQueryable<Paradero> GetParadero([FromODataUri] int key)
         {
+            //Todos los paraderos
             return db.Ruta.Where(m => m.Id == key).SelectMany(m => m.Paradero);
         }
 

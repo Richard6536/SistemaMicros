@@ -1,0 +1,41 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity.Validation;
+using System.Data.Entity.Infrastructure;
+
+using System.Diagnostics;
+using MicrosForms.Classes;
+
+namespace MicrosForms.Model
+{
+    [Table("HistorialDiario")]
+    public class HistorialDiario
+    {
+        [Key]
+        public int Id { get; set; }
+
+        public string NombreChofer { get; set; }
+
+        public DateTime Fecha { get; set; }
+
+        public DateTime HoraInicio { get; set; }
+
+        public DateTime HoraFinal { get; set; }
+
+        public float KilometrosRecorridos { get; set; }
+
+        public int CalificacionesRecibidas { get; set; }
+
+        public int CalificacionDiaria { get; set; }
+
+        public int PasajerosTransportados { get; set; }
+
+        public int NumeroIdaVueltas { get; set; }
+    }
+}

@@ -31,6 +31,46 @@ namespace RestService2.Controllers
     {
         private MicroSystemDBEntities1 db = new MicroSystemDBEntities1();
 
+
+        //Entregar usuarios que seleccionaron tal paradero
+        //Obtener micros dirigiendose a tal paradero
+
+
+        // POST: odata/Paraderos(5)/UsuariosQueSeleccionaron
+        [HttpPost]
+        public List<Usuario> UsuariosQueSeleccionaron([FromODataUri] int key)
+        {
+            List<Usuario> usuarios = new List<Usuario>();
+            Paradero paradero = db.Paradero.Where(p => p.Id == key).FirstOrDefault();
+
+            List<UsuarioParadero> usuarioParaderos = paradero.UsuarioParadero.ToList();
+
+            foreach(UsuarioParadero up in usuarioParaderos)
+            {
+                usuarios.Add(up.Usuario1);
+            }
+
+            return usuarios;
+        }
+
+        // POST: odata/Paraderos(5)/MicrosQueSeleecionaron
+        [HttpPost]
+        public List<Micro> MicrosQueSeleecionaron([FromODataUri] int key)
+        {
+            List<Micro> micros = new List<Micro>();
+            Paradero paradero = db.Paradero.Where(p => p.Id == key).FirstOrDefault();
+
+            List<MicroParadero> microParaderos = paradero.MicroParadero.ToList();
+
+            foreach (MicroParadero mp in microParaderos)
+            {
+                micros.Add(mp.Micro1);
+            }
+
+            return micros;
+        }
+
+
         // GET: odata/Paraderos
         [EnableQuery]
         public IQueryable<Paradero> GetParaderos()
@@ -153,6 +193,7 @@ namespace RestService2.Controllers
         [EnableQuery]
         public IQueryable<MicroParadero> GetMicroParadero([FromODataUri] int key)
         {
+            //Todos los microParaderos asociados
             return db.Paradero.Where(m => m.Id == key).SelectMany(m => m.MicroParadero);
         }
 
@@ -160,6 +201,7 @@ namespace RestService2.Controllers
         [EnableQuery]
         public SingleResult<Ruta> GetRuta([FromODataUri] int key)
         {
+            //Todos los usuarios paraderos asociados
             return SingleResult.Create(db.Paradero.Where(m => m.Id == key).Select(m => m.Ruta));
         }
 

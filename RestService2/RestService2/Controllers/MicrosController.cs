@@ -11,6 +11,7 @@ using System.Web.Http.ModelBinding;
 using System.Web.Http.OData;
 using System.Web.Http.OData.Routing;
 using RestService2.Models;
+using RestService2.Classes;
 
 namespace RestService2.Controllers
 {
@@ -30,6 +31,88 @@ namespace RestService2.Controllers
     public class MicrosController : ODataController
     {
         private MicroSystemDBEntities1 db = new MicroSystemDBEntities1();
+
+
+        //Obtener posicion
+        //Seleccionar paradero
+        //Deseleccionar paradero
+        //NuevaCalificacion
+
+
+        // POST: odata/Micros(5)/ObtenerPosicion
+        [HttpPost]
+        public Posicion ObtenerPosicion([FromODataUri] int key)
+        {
+            Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
+
+            Posicion pos = null;
+
+            if(micro.MicroChoferId != null)
+            {
+                Usuario chofer = micro.MicroChofer.Usuario;
+                pos = new Posicion(chofer.Latitud, chofer.Longitud);
+            }
+
+            return pos;
+        }
+
+        //POST: odata/Micros(5)/SeleccionarParadero
+        //Parametros: IdParadero
+        [HttpPost]
+        public IHttpActionResult SeleccionarParadero([FromODataUri] int key, ODataActionParameters parameters)
+        {
+            Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
+            int idParadero = (int)parameters["IdParadero"];
+            Paradero paradero = db.Paradero.Where(p => p.Id == idParadero).FirstOrDefault();
+
+            if (micro.MicroParaderoId != null)
+            {
+                MicroParadero mp = micro.MicroParadero;
+                db.MicroParadero.Remove(mp);
+            }
+
+            MicroParadero mpNuevo = new MicroParadero();
+            mpNuevo.Micro1 = micro;
+            mpNuevo.Paradero = paradero;
+
+            micro.MicroParadero = mpNuevo;
+
+            db.MicroParadero.Add(mpNuevo);
+            db.SaveChanges();
+            return Ok();
+        }
+
+        //POST: odata/Micros(5)/DeseleccionarParadero
+        //Parametros: nope
+        [HttpPost]
+        public IHttpActionResult DeseleccionarParadero([FromODataUri] int key)
+        {
+            Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
+
+            if (micro.MicroParaderoId != null)
+            {
+                MicroParadero mp = micro.MicroParadero;
+                db.MicroParadero.Remove(mp);
+                db.SaveChanges();
+            }
+            return Ok();
+        }
+
+
+        //POST: odata/Micros(5)/NuevaCalificacion
+        //Parametros: Calificacion
+        [HttpPost]
+        public IHttpActionResult NuevaCalificacion([FromODataUri] int key, ODataActionParameters parameters)
+        {
+            Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
+            int cal = (int)parameters["Calificacion"];
+
+            //....
+
+            return Ok();
+        }
+
+
 
         // GET: odata/Micros
         [EnableQuery]
@@ -168,20 +251,6 @@ namespace RestService2.Controllers
         public SingleResult<MicroParadero> GetMicroParadero([FromODataUri] int key)
         {
             return SingleResult.Create(db.Micro.Where(m => m.Id == key).Select(m => m.MicroParadero));
-        }
-
-        // GET: odata/Micros(5)/MicroChofer1
-        [EnableQuery]
-        public IQueryable<MicroChofer> GetMicroChofer1([FromODataUri] int key)
-        {
-            return db.Micro.Where(m => m.Id == key).SelectMany(m => m.MicroChofer1);
-        }
-
-        // GET: odata/Micros(5)/MicroParadero1
-        [EnableQuery]
-        public IQueryable<MicroParadero> GetMicroParadero1([FromODataUri] int key)
-        {
-            return db.Micro.Where(m => m.Id == key).SelectMany(m => m.MicroParadero1);
         }
 
         protected override void Dispose(bool disposing)
