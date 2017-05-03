@@ -66,7 +66,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Patente" Type="nvarchar" MaxLength="6" Nullable="false" />
-          <Property Name="Calificacion" Type="int" Nullable="false" />
+          <Property Name="Calificacion" Type="real" Nullable="false" />
           <Property Name="NumeroCalificaciones" Type="int" Nullable="false" />
           <Property Name="LineaId" Type="int" />
           <Property Name="MicroParaderoId" Type="int" />
@@ -916,7 +916,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="MicroSystemDBEntities2" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="MicroSystemDBEntities3" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Coordenada" EntityType="Self.Coordenada" />
           <EntitySet Name="HistorialDiario" EntityType="Self.HistorialDiario" />
           <EntitySet Name="HistorialIdaVuelta" EntityType="Self.HistorialIdaVuelta" />
@@ -1015,7 +1015,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="MicroSystemDBModelStoreContainer" CdmEntityContainer="MicroSystemDBEntities2">
+        <EntityContainerMapping StorageEntityContainer="MicroSystemDBModelStoreContainer" CdmEntityContainer="MicroSystemDBEntities3">
           <EntitySetMapping Name="Coordenada">
             <EntityTypeMapping TypeName="MicroSystemDBModel.Coordenada">
               <MappingFragment StoreEntitySet="Coordenada">

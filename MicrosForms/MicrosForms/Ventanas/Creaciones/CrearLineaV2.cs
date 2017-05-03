@@ -179,6 +179,7 @@ namespace MicrosForms.Ventanas.Creaciones
                 }
 
                 btnDeshacer.Enabled = true;
+                CrearPosicionParadero(posVerticesIda.Last().Lat, posVerticesIda.Last().Lng);
             }
             else if(editandoMapa && !editandoIda)
             {
@@ -217,6 +218,8 @@ namespace MicrosForms.Ventanas.Creaciones
                     PointLatLng punto = ultimoFragmentoRuta.Points[i];
                     posVerticesVuelta.Add(punto);
                 }
+
+                CrearPosicionParadero(posVerticesVuelta.Last().Lat, posVerticesVuelta.Last().Lng);
 
             }
         }
@@ -623,16 +626,6 @@ namespace MicrosForms.Ventanas.Creaciones
             if (e.Button == MouseButtons.Right && editandoMapa && puntosClickeadosIda.Count > 0)
             {
                 ClickNuevoPuntoRuta(lat, lng);
-
-                if (editandoIda )
-                {
-                    CrearPosicionParadero(posVerticesIda.Last().Lat, posVerticesIda.Last().Lng);
-                }
-                else
-                {
-                    CrearPosicionParadero(posVerticesVuelta.Last().Lat, posVerticesVuelta.Last().Lng);
-                }
-
             }
         }
     }

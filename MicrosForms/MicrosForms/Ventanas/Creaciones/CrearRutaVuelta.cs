@@ -456,8 +456,7 @@ namespace MicrosForms.Ventanas.Creaciones
 
             if (e.Button == MouseButtons.Right && editandoMapa && puntosClickeadosVuelta.Count > 0)
             {
-                ClickNuevoPuntoRuta(lat, lng);
-                CrearPosicionParadero(posVerticesVuelta.Last().Lat, posVerticesVuelta.Last().Lng);
+                ClickNuevoPuntoRuta(lat, lng);              
 
             }
         }
@@ -500,6 +499,7 @@ namespace MicrosForms.Ventanas.Creaciones
                 }
 
                 btnDeshacer.Enabled = true;
+                CrearPosicionParadero(posVerticesVuelta.Last().Lat, posVerticesVuelta.Last().Lng);
             }
         }
 

@@ -232,9 +232,7 @@ namespace MicrosForms.Ventanas.Creaciones
 
             if (e.Button == MouseButtons.Right && editandoMapa && puntosClickeadosIda.Count > 0)
             {
-                ClickNuevoPuntoRuta(lat, lng);
-                CrearPosicionParadero(posVerticesIda.Last().Lat, posVerticesIda.Last().Lng);
-
+                ClickNuevoPuntoRuta(lat, lng);               
             }
         }
 
@@ -284,6 +282,7 @@ namespace MicrosForms.Ventanas.Creaciones
                 }
 
                 btnDeshacer.Enabled = true;
+                CrearPosicionParadero(posVerticesIda.Last().Lat, posVerticesIda.Last().Lng);
             }
         }
 

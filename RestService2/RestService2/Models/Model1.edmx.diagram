@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="a6910c159f7e4d518e674fc6c7ca4a63" Name="Diagram1">
+      <Diagram DiagramId="4ac86997579647be8ce979ad5ad18e5f" Name="Diagram1">
         <EntityTypeShape EntityType="MicroSystemDBModel.Coordenada" Width="1.5" PointX="1.5" PointY="9.5" IsExpanded="true" />
         <EntityTypeShape EntityType="MicroSystemDBModel.HistorialDiario" Width="1.5" PointX="7.5" PointY="5.5" IsExpanded="true" />
         <EntityTypeShape EntityType="MicroSystemDBModel.HistorialIdaVuelta" Width="1.5" PointX="9.75" PointY="6" IsExpanded="true" />
