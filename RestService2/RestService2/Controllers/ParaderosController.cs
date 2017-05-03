@@ -29,7 +29,7 @@ namespace RestService2.Controllers
     */
     public class ParaderosController : ODataController
     {
-        private MicroSystemDBEntities1 db = new MicroSystemDBEntities1();
+        private MicroSystemDBEntities2 db = new MicroSystemDBEntities2();
 
 
         //Entregar usuarios que seleccionaron tal paradero

@@ -25,8 +25,7 @@ namespace MicrosForms.Model
         public string Patente { get; set; }
 
         [Required]
-        public int Calificacion { get; set; }
-
+        public float Calificacion { get; set; }
         [Required]
         public int NumeroCalificaciones { get; set; }
         
@@ -44,6 +43,8 @@ namespace MicrosForms.Model
 
         [ForeignKey("MicroChoferId")]
         public virtual MicroChofer MicroChofer { get; set; }
+
+        public virtual List<HistorialDiario> HistorialesDiarios { get; set; }
 
         public Micro() { }
 
@@ -288,6 +289,15 @@ namespace MicrosForms.Model
             List<Micro> todasMicros = BD.Micros.ToList();
 
             return todasMicros;
+        }
+
+        public static List<HistorialDiario> ObtenerHistorialesDiarios(int _idMicro)
+        {
+            var BD = new MicroSystemContext();
+
+            List<HistorialDiario> historiales = BD.Micros.Where(m => m.Id == _idMicro).FirstOrDefault().HistorialesDiarios;
+
+            return historiales;
         }
     }
 }

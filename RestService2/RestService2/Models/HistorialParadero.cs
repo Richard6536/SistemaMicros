@@ -12,12 +12,14 @@ namespace RestService2.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class sysdiagrams
+    public partial class HistorialParadero
     {
-        public string name { get; set; }
-        public int principal_id { get; set; }
-        public int diagram_id { get; set; }
-        public Nullable<int> version { get; set; }
-        public byte[] definition { get; set; }
+        public int Id { get; set; }
+        public System.DateTime HoraLlegada { get; set; }
+        public System.TimeSpan TiempoDetenido { get; set; }
+        public int PasajerosRecibidos { get; set; }
+        public int IdIdaVuelta { get; set; }
+    
+        public virtual HistorialIdaVuelta HistorialIdaVuelta { get; set; }
     }
 }

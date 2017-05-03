@@ -29,6 +29,23 @@ namespace MicrosForms.Model
         public TimeSpan DuracionRecorrido { get; set; }
 
 
+        public int IdDiario { get; set; }
+        [ForeignKey("IdDiario")]
+        public virtual HistorialDiario HistorialDiario { get; set; }
 
+        public virtual List<HistorialParadero> HistorialesParaderos { get; set; }
+
+
+        public HistorialIdaVuelta()
+        { }
+
+        public List<HistorialParadero> ObtenerHistorialesParaderos(int _idHistorialIdaVuelta)
+        {
+            var BD = new MicroSystemContext();
+
+            List<HistorialParadero> historiales = BD.HistorialesIdaVuelta.Where(hiv => hiv.Id == _idHistorialIdaVuelta).FirstOrDefault().HistorialesParaderos;
+
+            return historiales;
+        }
     }
 }

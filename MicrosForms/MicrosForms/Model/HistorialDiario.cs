@@ -37,5 +37,25 @@ namespace MicrosForms.Model
         public int PasajerosTransportados { get; set; }
 
         public int NumeroIdaVueltas { get; set; }
+
+
+        public int IdMicro { get; set; }
+        [ForeignKey("IdMicro")]
+        public virtual Micro Micro { get; set; }
+
+        public virtual List<HistorialIdaVuelta> HistorialesIdaVuelta { get; set; }
+
+        public HistorialDiario()
+        { }
+
+
+        public static List<HistorialIdaVuelta> ObtenerHistorialesIdaVuelta(int _idHistorialDiario)
+        {
+            var BD = new MicroSystemContext();
+
+            List<HistorialIdaVuelta> historiales = BD.HistorialesDiarios.Where(hd => hd.Id == _idHistorialDiario).FirstOrDefault().HistorialesIdaVuelta;
+
+            return historiales;
+        }
     }
 }

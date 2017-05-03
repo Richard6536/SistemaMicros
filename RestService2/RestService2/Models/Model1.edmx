@@ -14,6 +14,43 @@
           <Property Name="Longitud" Type="float" Nullable="false" />
           <Property Name="SiguienteCoordenadaId" Type="int" />
         </EntityType>
+        <EntityType Name="HistorialDiario">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NombreChofer" Type="nvarchar(max)" />
+          <Property Name="Fecha" Type="datetime" Nullable="false" />
+          <Property Name="HoraInicio" Type="datetime" Nullable="false" />
+          <Property Name="HoraFinal" Type="datetime" Nullable="false" />
+          <Property Name="KilometrosRecorridos" Type="real" Nullable="false" />
+          <Property Name="CalificacionesRecibidas" Type="int" Nullable="false" />
+          <Property Name="CalificacionDiaria" Type="int" Nullable="false" />
+          <Property Name="PasajerosTransportados" Type="int" Nullable="false" />
+          <Property Name="NumeroIdaVueltas" Type="int" Nullable="false" />
+          <Property Name="IdMicro" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="HistorialIdaVuelta">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PasajerosTransportados" Type="int" Nullable="false" />
+          <Property Name="HoraInicio" Type="datetime" Nullable="false" />
+          <Property Name="HoraTermino" Type="datetime" Nullable="false" />
+          <Property Name="DuracionRecorrido" Type="time" Precision="7" Nullable="false" />
+          <Property Name="IdDiario" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="HistorialParadero">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HoraLlegada" Type="datetime" Nullable="false" />
+          <Property Name="TiempoDetenido" Type="time" Precision="7" Nullable="false" />
+          <Property Name="PasajerosRecibidos" Type="int" Nullable="false" />
+          <Property Name="IdIdaVuelta" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Linea">
           <Key>
             <PropertyRef Name="Id" />
@@ -30,6 +67,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Patente" Type="nvarchar" MaxLength="6" Nullable="false" />
           <Property Name="Calificacion" Type="int" Nullable="false" />
+          <Property Name="NumeroCalificaciones" Type="int" Nullable="false" />
           <Property Name="LineaId" Type="int" />
           <Property Name="MicroParaderoId" Type="int" />
           <Property Name="MicroChoferId" Type="int" />
@@ -69,16 +107,6 @@
           <Property Name="InicioId" Type="int" Nullable="false" />
           <Property Name="LineaId" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
-        </EntityType>
         <EntityType Name="Usuario">
           <Key>
             <PropertyRef Name="Id" />
@@ -110,6 +138,48 @@
             </Principal>
             <Dependent Role="Coordenada1">
               <PropertyRef Name="SiguienteCoordenadaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_HistorialDiario_dbo_Micro_IdMicro">
+          <End Role="Micro" Type="Self.Micro" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HistorialDiario" Type="Self.HistorialDiario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Micro">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HistorialDiario">
+              <PropertyRef Name="IdMicro" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_HistorialIdaVuelta_dbo_HistorialDiario_IdDiario">
+          <End Role="HistorialDiario" Type="Self.HistorialDiario" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HistorialIdaVuelta" Type="Self.HistorialIdaVuelta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HistorialDiario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HistorialIdaVuelta">
+              <PropertyRef Name="IdDiario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_HistorialParadero_dbo_HistorialIdaVuelta_IdIdaVuelta">
+          <End Role="HistorialIdaVuelta" Type="Self.HistorialIdaVuelta" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HistorialParadero" Type="Self.HistorialParadero" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HistorialIdaVuelta">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HistorialParadero">
+              <PropertyRef Name="IdIdaVuelta" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -323,18 +393,32 @@
         </Association>
         <EntityContainer Name="MicroSystemDBModelStoreContainer">
           <EntitySet Name="Coordenada" EntityType="Self.Coordenada" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HistorialDiario" EntityType="Self.HistorialDiario" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HistorialIdaVuelta" EntityType="Self.HistorialIdaVuelta" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HistorialParadero" EntityType="Self.HistorialParadero" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Linea" EntityType="Self.Linea" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Micro" EntityType="Self.Micro" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MicroChofer" EntityType="Self.MicroChofer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MicroParadero" EntityType="Self.MicroParadero" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Paradero" EntityType="Self.Paradero" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ruta" EntityType="Self.Ruta" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UsuarioParadero" EntityType="Self.UsuarioParadero" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId" Association="Self.FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId">
             <End Role="Coordenada" EntitySet="Coordenada" />
             <End Role="Coordenada1" EntitySet="Coordenada" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_HistorialDiario_dbo_Micro_IdMicro" Association="Self.FK_dbo_HistorialDiario_dbo_Micro_IdMicro">
+            <End Role="Micro" EntitySet="Micro" />
+            <End Role="HistorialDiario" EntitySet="HistorialDiario" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_HistorialIdaVuelta_dbo_HistorialDiario_IdDiario" Association="Self.FK_dbo_HistorialIdaVuelta_dbo_HistorialDiario_IdDiario">
+            <End Role="HistorialDiario" EntitySet="HistorialDiario" />
+            <End Role="HistorialIdaVuelta" EntitySet="HistorialIdaVuelta" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_HistorialParadero_dbo_HistorialIdaVuelta_IdIdaVuelta" Association="Self.FK_dbo_HistorialParadero_dbo_HistorialIdaVuelta_IdIdaVuelta">
+            <End Role="HistorialIdaVuelta" EntitySet="HistorialIdaVuelta" />
+            <End Role="HistorialParadero" EntitySet="HistorialParadero" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_Linea_dbo_Ruta_RutaIdaId" Association="Self.FK_dbo_Linea_dbo_Ruta_RutaIdaId">
             <End Role="Ruta" EntitySet="Ruta" />
@@ -418,6 +502,48 @@
           <NavigationProperty Name="Coordenada2" Relationship="Self.FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId" FromRole="Coordenada1" ToRole="Coordenada" />
           <NavigationProperty Name="Ruta" Relationship="Self.FK_dbo_Ruta_dbo_Coordenada_InicioId" FromRole="Coordenada" ToRole="Ruta" />
         </EntityType>
+        <EntityType Name="HistorialDiario">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NombreChofer" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Fecha" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="HoraInicio" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="HoraFinal" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="KilometrosRecorridos" Type="Single" Nullable="false" />
+          <Property Name="CalificacionesRecibidas" Type="Int32" Nullable="false" />
+          <Property Name="CalificacionDiaria" Type="Int32" Nullable="false" />
+          <Property Name="PasajerosTransportados" Type="Int32" Nullable="false" />
+          <Property Name="NumeroIdaVueltas" Type="Int32" Nullable="false" />
+          <Property Name="IdMicro" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Micro" Relationship="Self.FK_dbo_HistorialDiario_dbo_Micro_IdMicro" FromRole="HistorialDiario" ToRole="Micro" />
+          <NavigationProperty Name="HistorialIdaVuelta" Relationship="Self.FK_dbo_HistorialIdaVuelta_dbo_HistorialDiario_IdDiario" FromRole="HistorialDiario" ToRole="HistorialIdaVuelta" />
+        </EntityType>
+        <EntityType Name="HistorialIdaVuelta">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PasajerosTransportados" Type="Int32" Nullable="false" />
+          <Property Name="HoraInicio" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="HoraTermino" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="DuracionRecorrido" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="IdDiario" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="HistorialDiario" Relationship="Self.FK_dbo_HistorialIdaVuelta_dbo_HistorialDiario_IdDiario" FromRole="HistorialIdaVuelta" ToRole="HistorialDiario" />
+          <NavigationProperty Name="HistorialParadero" Relationship="Self.FK_dbo_HistorialParadero_dbo_HistorialIdaVuelta_IdIdaVuelta" FromRole="HistorialIdaVuelta" ToRole="HistorialParadero" />
+        </EntityType>
+        <EntityType Name="HistorialParadero">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HoraLlegada" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TiempoDetenido" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="PasajerosRecibidos" Type="Int32" Nullable="false" />
+          <Property Name="IdIdaVuelta" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="HistorialIdaVuelta" Relationship="Self.FK_dbo_HistorialParadero_dbo_HistorialIdaVuelta_IdIdaVuelta" FromRole="HistorialParadero" ToRole="HistorialIdaVuelta" />
+        </EntityType>
         <EntityType Name="Linea">
           <Key>
             <PropertyRef Name="Id" />
@@ -437,10 +563,12 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Patente" Type="String" MaxLength="6" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Calificacion" Type="Int32" Nullable="false" />
+          <Property Name="Calificacion" Type="Single" Nullable="false" />
+          <Property Name="NumeroCalificaciones" Type="Int32" Nullable="false" />
           <Property Name="LineaId" Type="Int32" />
           <Property Name="MicroParaderoId" Type="Int32" />
           <Property Name="MicroChoferId" Type="Int32" />
+          <NavigationProperty Name="HistorialDiario" Relationship="Self.FK_dbo_HistorialDiario_dbo_Micro_IdMicro" FromRole="Micro" ToRole="HistorialDiario" />
           <NavigationProperty Name="Linea" Relationship="Self.FK_dbo_Micro_dbo_Linea_LineaId" FromRole="Micro" ToRole="Linea" />
           <NavigationProperty Name="MicroChofer" Relationship="Self.FK_dbo_Micro_dbo_MicroChofer_MicroChoferId" FromRole="Micro" ToRole="MicroChofer" />
           <NavigationProperty Name="MicroParadero" Relationship="Self.FK_dbo_Micro_dbo_MicroParadero_MicroParaderoId" FromRole="Micro" ToRole="MicroParadero" />
@@ -497,16 +625,6 @@
           <NavigationProperty Name="Linea2" Relationship="Self.FK_dbo_Ruta_dbo_Linea_LineaId" FromRole="Ruta" ToRole="Linea" />
           <NavigationProperty Name="Paradero" Relationship="Self.FK_dbo_Paradero_dbo_Ruta_RutaId" FromRole="Ruta" ToRole="Paradero" />
         </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
         <EntityType Name="Usuario">
           <Key>
             <PropertyRef Name="Id" />
@@ -559,6 +677,48 @@
             </Principal>
             <Dependent Role="Ruta">
               <PropertyRef Name="InicioId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_HistorialDiario_dbo_Micro_IdMicro">
+          <End Role="Micro" Type="Self.Micro" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HistorialDiario" Type="Self.HistorialDiario" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Micro">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HistorialDiario">
+              <PropertyRef Name="IdMicro" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_HistorialIdaVuelta_dbo_HistorialDiario_IdDiario">
+          <End Role="HistorialDiario" Type="Self.HistorialDiario" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HistorialIdaVuelta" Type="Self.HistorialIdaVuelta" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HistorialDiario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HistorialIdaVuelta">
+              <PropertyRef Name="IdDiario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_HistorialParadero_dbo_HistorialIdaVuelta_IdIdaVuelta">
+          <End Role="HistorialIdaVuelta" Type="Self.HistorialIdaVuelta" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="HistorialParadero" Type="Self.HistorialParadero" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="HistorialIdaVuelta">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="HistorialParadero">
+              <PropertyRef Name="IdIdaVuelta" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -756,15 +916,17 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="MicroSystemDBEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="MicroSystemDBEntities2" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Coordenada" EntityType="Self.Coordenada" />
+          <EntitySet Name="HistorialDiario" EntityType="Self.HistorialDiario" />
+          <EntitySet Name="HistorialIdaVuelta" EntityType="Self.HistorialIdaVuelta" />
+          <EntitySet Name="HistorialParadero" EntityType="Self.HistorialParadero" />
           <EntitySet Name="Linea" EntityType="Self.Linea" />
           <EntitySet Name="Micro" EntityType="Self.Micro" />
           <EntitySet Name="MicroChofer" EntityType="Self.MicroChofer" />
           <EntitySet Name="MicroParadero" EntityType="Self.MicroParadero" />
           <EntitySet Name="Paradero" EntityType="Self.Paradero" />
           <EntitySet Name="Ruta" EntityType="Self.Ruta" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
           <EntitySet Name="Usuario" EntityType="Self.Usuario" />
           <EntitySet Name="UsuarioParadero" EntityType="Self.UsuarioParadero" />
           <AssociationSet Name="FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId" Association="Self.FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId">
@@ -774,6 +936,18 @@
           <AssociationSet Name="FK_dbo_Ruta_dbo_Coordenada_InicioId" Association="Self.FK_dbo_Ruta_dbo_Coordenada_InicioId">
             <End Role="Coordenada" EntitySet="Coordenada" />
             <End Role="Ruta" EntitySet="Ruta" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_HistorialDiario_dbo_Micro_IdMicro" Association="Self.FK_dbo_HistorialDiario_dbo_Micro_IdMicro">
+            <End Role="Micro" EntitySet="Micro" />
+            <End Role="HistorialDiario" EntitySet="HistorialDiario" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_HistorialIdaVuelta_dbo_HistorialDiario_IdDiario" Association="Self.FK_dbo_HistorialIdaVuelta_dbo_HistorialDiario_IdDiario">
+            <End Role="HistorialDiario" EntitySet="HistorialDiario" />
+            <End Role="HistorialIdaVuelta" EntitySet="HistorialIdaVuelta" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_HistorialParadero_dbo_HistorialIdaVuelta_IdIdaVuelta" Association="Self.FK_dbo_HistorialParadero_dbo_HistorialIdaVuelta_IdIdaVuelta">
+            <End Role="HistorialIdaVuelta" EntitySet="HistorialIdaVuelta" />
+            <End Role="HistorialParadero" EntitySet="HistorialParadero" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_Linea_dbo_Ruta_RutaIdaId" Association="Self.FK_dbo_Linea_dbo_Ruta_RutaIdaId">
             <End Role="Ruta" EntitySet="Ruta" />
@@ -841,7 +1015,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="MicroSystemDBModelStoreContainer" CdmEntityContainer="MicroSystemDBEntities1">
+        <EntityContainerMapping StorageEntityContainer="MicroSystemDBModelStoreContainer" CdmEntityContainer="MicroSystemDBEntities2">
           <EntitySetMapping Name="Coordenada">
             <EntityTypeMapping TypeName="MicroSystemDBModel.Coordenada">
               <MappingFragment StoreEntitySet="Coordenada">
@@ -849,6 +1023,46 @@
                 <ScalarProperty Name="Latitud" ColumnName="Latitud" />
                 <ScalarProperty Name="Longitud" ColumnName="Longitud" />
                 <ScalarProperty Name="SiguienteCoordenadaId" ColumnName="SiguienteCoordenadaId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HistorialDiario">
+            <EntityTypeMapping TypeName="MicroSystemDBModel.HistorialDiario">
+              <MappingFragment StoreEntitySet="HistorialDiario">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="NombreChofer" ColumnName="NombreChofer" />
+                <ScalarProperty Name="Fecha" ColumnName="Fecha" />
+                <ScalarProperty Name="HoraInicio" ColumnName="HoraInicio" />
+                <ScalarProperty Name="HoraFinal" ColumnName="HoraFinal" />
+                <ScalarProperty Name="KilometrosRecorridos" ColumnName="KilometrosRecorridos" />
+                <ScalarProperty Name="CalificacionesRecibidas" ColumnName="CalificacionesRecibidas" />
+                <ScalarProperty Name="CalificacionDiaria" ColumnName="CalificacionDiaria" />
+                <ScalarProperty Name="PasajerosTransportados" ColumnName="PasajerosTransportados" />
+                <ScalarProperty Name="NumeroIdaVueltas" ColumnName="NumeroIdaVueltas" />
+                <ScalarProperty Name="IdMicro" ColumnName="IdMicro" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HistorialIdaVuelta">
+            <EntityTypeMapping TypeName="MicroSystemDBModel.HistorialIdaVuelta">
+              <MappingFragment StoreEntitySet="HistorialIdaVuelta">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="PasajerosTransportados" ColumnName="PasajerosTransportados" />
+                <ScalarProperty Name="HoraInicio" ColumnName="HoraInicio" />
+                <ScalarProperty Name="HoraTermino" ColumnName="HoraTermino" />
+                <ScalarProperty Name="DuracionRecorrido" ColumnName="DuracionRecorrido" />
+                <ScalarProperty Name="IdDiario" ColumnName="IdDiario" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HistorialParadero">
+            <EntityTypeMapping TypeName="MicroSystemDBModel.HistorialParadero">
+              <MappingFragment StoreEntitySet="HistorialParadero">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="HoraLlegada" ColumnName="HoraLlegada" />
+                <ScalarProperty Name="TiempoDetenido" ColumnName="TiempoDetenido" />
+                <ScalarProperty Name="PasajerosRecibidos" ColumnName="PasajerosRecibidos" />
+                <ScalarProperty Name="IdIdaVuelta" ColumnName="IdIdaVuelta" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -868,6 +1082,7 @@
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Patente" ColumnName="Patente" />
                 <ScalarProperty Name="Calificacion" ColumnName="Calificacion" />
+                <ScalarProperty Name="NumeroCalificaciones" ColumnName="NumeroCalificaciones" />
                 <ScalarProperty Name="LineaId" ColumnName="LineaId" />
                 <ScalarProperty Name="MicroParaderoId" ColumnName="MicroParaderoId" />
                 <ScalarProperty Name="MicroChoferId" ColumnName="MicroChoferId" />
@@ -910,17 +1125,6 @@
                 <ScalarProperty Name="TipoDeRuta" ColumnName="TipoDeRuta" />
                 <ScalarProperty Name="InicioId" ColumnName="InicioId" />
                 <ScalarProperty Name="LineaId" ColumnName="LineaId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="MicroSystemDBModel.sysdiagrams">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

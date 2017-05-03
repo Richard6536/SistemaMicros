@@ -13,6 +13,7 @@ using MicrosForms.Model;
 using MicrosForms.Ventanas;
 using MicrosForms.Ventanas.Creaciones;
 using MicrosForms.Ventanas.Ediciones;
+using MicrosForms.Ventanas.Historiales;
 
 namespace MicrosForms.Ventanas
 {
@@ -109,7 +110,7 @@ namespace MicrosForms.Ventanas
 
                 if (e.ColumnIndex == 4) //Historial
                 {
-                    var forms = new HistorialMicro(patenteMicro);
+                    var forms = new MicrosForms.Ventanas.Historiales.HistorialDiario(patenteMicro);
                     FormManager.MostrarShowDialog(this, forms);
 
                 }

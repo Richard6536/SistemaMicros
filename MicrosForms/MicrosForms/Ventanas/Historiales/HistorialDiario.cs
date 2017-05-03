@@ -8,11 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MicrosForms.Ventanas.Ediciones
+namespace MicrosForms.Ventanas.Historiales
 {
-    public partial class HistorialMicro : Form
+    public partial class HistorialDiario : Form
     {
-        public HistorialMicro(string _patente)
+        public HistorialDiario(string _patenteMicro)
         {
             InitializeComponent();
         }

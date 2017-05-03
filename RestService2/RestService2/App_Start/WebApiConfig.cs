@@ -38,10 +38,13 @@ namespace RestService2
             builder.EntitySet<Linea>("Lineas");
             builder.EntitySet<Paradero>("Paraderos");
             builder.EntitySet<Micro>("Micros");
+            builder.EntitySet<HistorialDiario>("HistorialesDiarios");
+            builder.EntitySet<HistorialIdaVuelta>("HistorialesIdaVuelta");
+            builder.EntitySet<HistorialParadero>("HistorialesParaderos");
 
             #region Usuario
             ActionConfiguration mensajeParametros = builder.Entity<Usuario>().Collection.Action("MensajeParametros");
-            mensajeParametros.Returns<ValorGenerico>();
+            mensajeParametros.Returns<string>();
             mensajeParametros.Parameter<int>("Edad");
             mensajeParametros.Parameter<string>("Nombre");
 
@@ -106,7 +109,7 @@ namespace RestService2
             microDeseleccionParadero.Returns<IHttpActionResult>();
 
             ActionConfiguration nuevaCalificacion = builder.Entity<Micro>().Action("NuevaCalificacion");
-            nuevaCalificacion.Returns<IHttpActionResult>();
+            nuevaCalificacion.Returns<float>();
             nuevaCalificacion.Parameter<int>("Calificacion");
 
             #endregion

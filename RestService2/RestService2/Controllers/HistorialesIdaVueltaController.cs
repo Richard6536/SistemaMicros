@@ -21,33 +21,47 @@ namespace RestService2.Controllers
     using System.Web.Http.OData.Extensions;
     using RestService2.Models;
     ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-    builder.EntitySet<Linea>("Lineas");
-    builder.EntitySet<Ruta>("Ruta"); 
-    builder.EntitySet<Micro>("Micro"); 
+    builder.EntitySet<HistorialIdaVuelta>("HistorialesIdaVuelta");
+    builder.EntitySet<HistorialDiario>("HistorialDiario"); 
+    builder.EntitySet<HistorialParadero>("HistorialParadero"); 
     config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
     */
-    public class LineasController : ODataController
+    public class HistorialesIdaVueltaController : ODataController
     {
         private MicroSystemDBEntities2 db = new MicroSystemDBEntities2();
 
-
-
-        // GET: odata/Lineas
+        // GET: odata/HistorialesIdaVuelta
         [EnableQuery]
-        public IQueryable<Linea> GetLineas()
+        public IQueryable<HistorialIdaVuelta> GetHistorialesIdaVuelta()
         {
-            return db.Linea;
+            return db.HistorialIdaVuelta;
         }
 
-        // GET: odata/Lineas(5)
+        // GET: odata/HistorialesIdaVuelta(5)
         [EnableQuery]
-        public SingleResult<Linea> GetLinea([FromODataUri] int key)
+        public SingleResult<HistorialIdaVuelta> GetHistorialIdaVuelta([FromODataUri] int key)
         {
-            return SingleResult.Create(db.Linea.Where(linea => linea.Id == key));
+            return SingleResult.Create(db.HistorialIdaVuelta.Where(historialIdaVuelta => historialIdaVuelta.Id == key));
         }
 
-        // PUT: odata/Lineas(5)
-        public IHttpActionResult Put([FromODataUri] int key, Delta<Linea> patch)
+        // GET: odata/HistorialesIdaVuelta(5)/HistorialDiario
+        [EnableQuery]
+        public SingleResult<HistorialDiario> GetHistorialDiario([FromODataUri] int key)
+        {
+            return SingleResult.Create(db.HistorialIdaVuelta.Where(m => m.Id == key).Select(m => m.HistorialDiario));
+        }
+
+        // GET: odata/HistorialesIdaVuelta(5)/HistorialParadero
+        [EnableQuery]
+        public IQueryable<HistorialParadero> GetHistorialParadero([FromODataUri] int key)
+        {
+            return db.HistorialIdaVuelta.Where(m => m.Id == key).SelectMany(m => m.HistorialParadero);
+        }
+
+
+
+        // PUT: odata/HistorialesIdaVuelta(5)
+        public IHttpActionResult Put([FromODataUri] int key, Delta<HistorialIdaVuelta> patch)
         {
             Validate(patch.GetEntity());
 
@@ -56,13 +70,13 @@ namespace RestService2.Controllers
                 return BadRequest(ModelState);
             }
 
-            Linea linea = db.Linea.Find(key);
-            if (linea == null)
+            HistorialIdaVuelta historialIdaVuelta = db.HistorialIdaVuelta.Find(key);
+            if (historialIdaVuelta == null)
             {
                 return NotFound();
             }
 
-            patch.Put(linea);
+            patch.Put(historialIdaVuelta);
 
             try
             {
@@ -70,7 +84,7 @@ namespace RestService2.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!LineaExists(key))
+                if (!HistorialIdaVueltaExists(key))
                 {
                     return NotFound();
                 }
@@ -80,26 +94,26 @@ namespace RestService2.Controllers
                 }
             }
 
-            return Updated(linea);
+            return Updated(historialIdaVuelta);
         }
 
-        // POST: odata/Lineas
-        public IHttpActionResult Post(Linea linea)
+        // POST: odata/HistorialesIdaVuelta
+        public IHttpActionResult Post(HistorialIdaVuelta historialIdaVuelta)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Linea.Add(linea);
+            db.HistorialIdaVuelta.Add(historialIdaVuelta);
             db.SaveChanges();
 
-            return Created(linea);
+            return Created(historialIdaVuelta);
         }
 
-        // PATCH: odata/Lineas(5)
+        // PATCH: odata/HistorialesIdaVuelta(5)
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<Linea> patch)
+        public IHttpActionResult Patch([FromODataUri] int key, Delta<HistorialIdaVuelta> patch)
         {
             Validate(patch.GetEntity());
 
@@ -108,13 +122,13 @@ namespace RestService2.Controllers
                 return BadRequest(ModelState);
             }
 
-            Linea linea = db.Linea.Find(key);
-            if (linea == null)
+            HistorialIdaVuelta historialIdaVuelta = db.HistorialIdaVuelta.Find(key);
+            if (historialIdaVuelta == null)
             {
                 return NotFound();
             }
 
-            patch.Patch(linea);
+            patch.Patch(historialIdaVuelta);
 
             try
             {
@@ -122,7 +136,7 @@ namespace RestService2.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!LineaExists(key))
+                if (!HistorialIdaVueltaExists(key))
                 {
                     return NotFound();
                 }
@@ -132,54 +146,22 @@ namespace RestService2.Controllers
                 }
             }
 
-            return Updated(linea);
+            return Updated(historialIdaVuelta);
         }
 
-        // DELETE: odata/Lineas(5)
+        // DELETE: odata/HistorialesIdaVuelta(5)
         public IHttpActionResult Delete([FromODataUri] int key)
         {
-            Linea linea = db.Linea.Find(key);
-            if (linea == null)
+            HistorialIdaVuelta historialIdaVuelta = db.HistorialIdaVuelta.Find(key);
+            if (historialIdaVuelta == null)
             {
                 return NotFound();
             }
 
-            db.Linea.Remove(linea);
+            db.HistorialIdaVuelta.Remove(historialIdaVuelta);
             db.SaveChanges();
 
             return StatusCode(HttpStatusCode.NoContent);
-        }
-
-        //Ruta de ida
-        // GET: odata/Lineas(5)/Ruta
-        [EnableQuery]
-        public SingleResult<Ruta> GetRuta([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.Linea.Where(m => m.Id == key).Select(m => m.Ruta));
-        }
-
-        //Ruta de vuelta
-        // GET: odata/Lineas(5)/Ruta1
-        [EnableQuery]
-        public SingleResult<Ruta> GetRuta1([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.Linea.Where(m => m.Id == key).Select(m => m.Ruta1));
-        }
-
-        //Todas las rutas de esta linea
-        // GET: odata/Lineas(5)/Ruta2
-        [EnableQuery]
-        public IQueryable<Ruta> GetRuta2([FromODataUri] int key)
-        {
-            return db.Linea.Where(m => m.Id == key).SelectMany(m => m.Ruta2);
-        }
-
-        //Todas las micros de esta linea
-        // GET: odata/Lineas(5)/Micro
-        [EnableQuery]
-        public IQueryable<Micro> GetMicro([FromODataUri] int key)
-        {
-            return db.Linea.Where(m => m.Id == key).SelectMany(m => m.Micro);
         }
 
 
@@ -193,9 +175,9 @@ namespace RestService2.Controllers
             base.Dispose(disposing);
         }
 
-        private bool LineaExists(int key)
+        private bool HistorialIdaVueltaExists(int key)
         {
-            return db.Linea.Count(e => e.Id == key) > 0;
+            return db.HistorialIdaVuelta.Count(e => e.Id == key) > 0;
         }
     }
 }

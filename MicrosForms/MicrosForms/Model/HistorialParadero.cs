@@ -26,5 +26,14 @@ namespace MicrosForms.Model
 
         public int PasajerosRecibidos { get; set; }
 
+
+        public int IdIdaVuelta { get; set; }
+        [ForeignKey("IdIdaVuelta")]
+        public virtual HistorialIdaVuelta HistorialIdaVuelta { get; set; }
+
+
+        public HistorialParadero()
+        { }
+
     }
 }

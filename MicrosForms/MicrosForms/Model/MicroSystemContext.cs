@@ -22,6 +22,9 @@ namespace MicrosForms.Model
         public DbSet<MicroChofer> MicroChoferes { get; set; }
         public DbSet<MicroParadero> MicroParaderos { get; set; }
         public DbSet<UsuarioParadero> UsuarioParadero { get; set; }
+        public DbSet<HistorialDiario> HistorialesDiarios { get; set; }
+        public DbSet<HistorialIdaVuelta> HistorialesIdaVuelta { get; set; }
+        public DbSet<HistorialParadero> HistorialesParaderos { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

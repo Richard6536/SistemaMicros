@@ -7,13 +7,13 @@ namespace MicrosForms.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class asdfasd : IMigrationMetadata
+    public sealed partial class Historiales : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(asdfasd));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Historiales));
         
         string IMigrationMetadata.Id
         {
-            get { return "201704230106158_asdfasd"; }
+            get { return "201705031706319_Historiales"; }
         }
         
         string IMigrationMetadata.Source

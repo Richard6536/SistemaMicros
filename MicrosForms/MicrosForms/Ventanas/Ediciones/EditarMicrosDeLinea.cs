@@ -106,7 +106,7 @@ namespace MicrosForms.Ventanas.Ediciones
 
                 if (e.ColumnIndex == 3) //Historial
                 {
-                    var forms = new HistorialMicro(patenteMicro);
+                    var forms = new MicrosForms.Ventanas.Historiales.HistorialDiario(patenteMicro);
                     FormManager.MostrarShowDialog(this, forms);
 
                 }

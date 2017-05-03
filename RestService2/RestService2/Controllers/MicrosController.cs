@@ -23,6 +23,7 @@ namespace RestService2.Controllers
     using RestService2.Models;
     ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
     builder.EntitySet<Micro>("Micros");
+    builder.EntitySet<HistorialDiario>("HistorialDiario"); 
     builder.EntitySet<Linea>("Linea"); 
     builder.EntitySet<MicroChofer>("MicroChofer"); 
     builder.EntitySet<MicroParadero>("MicroParadero"); 
@@ -30,14 +31,12 @@ namespace RestService2.Controllers
     */
     public class MicrosController : ODataController
     {
-        private MicroSystemDBEntities1 db = new MicroSystemDBEntities1();
-
+        private MicroSystemDBEntities2 db = new MicroSystemDBEntities2();
 
         //Obtener posicion
         //Seleccionar paradero
         //Deseleccionar paradero
         //NuevaCalificacion
-
 
         // POST: odata/Micros(5)/ObtenerPosicion
         [HttpPost]
@@ -47,7 +46,7 @@ namespace RestService2.Controllers
 
             Posicion pos = null;
 
-            if(micro.MicroChoferId != null)
+            if (micro.MicroChoferId != null)
             {
                 Usuario chofer = micro.MicroChofer.Usuario;
                 pos = new Posicion(chofer.Latitud, chofer.Longitud);
@@ -102,15 +101,29 @@ namespace RestService2.Controllers
         //POST: odata/Micros(5)/NuevaCalificacion
         //Parametros: Calificacion
         [HttpPost]
-        public IHttpActionResult NuevaCalificacion([FromODataUri] int key, ODataActionParameters parameters)
+        public float NuevaCalificacion([FromODataUri] int key, ODataActionParameters parameters)
         {
             Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
-            int cal = (int)parameters["Calificacion"];
+            float cal = (float)parameters["Calificacion"];
 
-            //....
+            float calificacionActual = micro.Calificacion;
+            int numCalActual = micro.NumeroCalificaciones;
 
-            return Ok();
+            if(numCalActual == 0)
+            {
+                micro.Calificacion = cal;
+            }
+            else
+            {
+                micro.Calificacion = (calificacionActual + cal) / (numCalActual + 1);
+            }
+
+            micro.NumeroCalificaciones++;
+            db.SaveChanges();
+
+            return micro.Calificacion;
         }
+
 
 
 
@@ -232,6 +245,13 @@ namespace RestService2.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
+        // GET: odata/Micros(5)/HistorialDiario
+        [EnableQuery]
+        public IQueryable<HistorialDiario> GetHistorialDiario([FromODataUri] int key)
+        {
+            return db.Micro.Where(m => m.Id == key).SelectMany(m => m.HistorialDiario);
+        }
+
         // GET: odata/Micros(5)/Linea
         [EnableQuery]
         public SingleResult<Linea> GetLinea([FromODataUri] int key)
@@ -252,6 +272,7 @@ namespace RestService2.Controllers
         {
             return SingleResult.Create(db.Micro.Where(m => m.Id == key).Select(m => m.MicroParadero));
         }
+
 
         protected override void Dispose(bool disposing)
         {

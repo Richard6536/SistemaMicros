@@ -86,9 +86,13 @@
     <Compile Include="Classes\ConnectionTester.cs" />
     <Compile Include="Classes\FormManager.cs" />
     <Compile Include="Classes\PasswordHash.cs" />
-    <Compile Include="Migrations\201704230106158_asdfasd.cs" />
-    <Compile Include="Migrations\201704230106158_asdfasd.Designer.cs">
-      <DependentUpon>201704230106158_asdfasd.cs</DependentUpon>
+    <Compile Include="Migrations\201705031706319_Historiales.cs" />
+    <Compile Include="Migrations\201705031706319_Historiales.Designer.cs">
+      <DependentUpon>201705031706319_Historiales.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705031737562_calificacionDetalle.cs" />
+    <Compile Include="Migrations\201705031737562_calificacionDetalle.Designer.cs">
+      <DependentUpon>201705031737562_calificacionDetalle.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Coordenada.cs" />
     <Compile Include="Model\HistorialDiario.cs" />
@@ -196,11 +200,23 @@
     <Compile Include="Ventanas\Ediciones\EditarMicrosDeLinea.Designer.cs">
       <DependentUpon>EditarMicrosDeLinea.cs</DependentUpon>
     </Compile>
-    <Compile Include="Ventanas\Ediciones\HistorialMicro.cs">
+    <Compile Include="Ventanas\Historiales\HistorialDiario.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Ventanas\Ediciones\HistorialMicro.Designer.cs">
-      <DependentUpon>HistorialMicro.cs</DependentUpon>
+    <Compile Include="Ventanas\Historiales\HistorialDiario.Designer.cs">
+      <DependentUpon>HistorialDiario.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\Historiales\HistorialesIdaVuelta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\Historiales\HistorialesIdaVuelta.Designer.cs">
+      <DependentUpon>HistorialesIdaVuelta.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Ventanas\Historiales\HistorialesParaderos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Ventanas\Historiales\HistorialesParaderos.Designer.cs">
+      <DependentUpon>HistorialesParaderos.cs</DependentUpon>
     </Compile>
     <Compile Include="Ventanas\Inicio.cs">
       <SubType>Form</SubType>
@@ -220,8 +236,11 @@
     <Compile Include="Ventanas\Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Migrations\201704230106158_asdfasd.resx">
-      <DependentUpon>201704230106158_asdfasd.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201705031706319_Historiales.resx">
+      <DependentUpon>201705031706319_Historiales.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705031737562_calificacionDetalle.resx">
+      <DependentUpon>201705031737562_calificacionDetalle.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -273,6 +292,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Ventanas\Ediciones\EditarMicrosDeLinea.resx">
       <DependentUpon>EditarMicrosDeLinea.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventanas\Historiales\HistorialDiario.resx">
+      <DependentUpon>HistorialDiario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventanas\Historiales\HistorialesIdaVuelta.resx">
+      <DependentUpon>HistorialesIdaVuelta.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Ventanas\Historiales\HistorialesParaderos.resx">
+      <DependentUpon>HistorialesParaderos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Ventanas\Inicio.resx">
       <DependentUpon>Inicio.cs</DependentUpon>

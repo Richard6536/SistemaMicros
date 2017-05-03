@@ -3,7 +3,7 @@ namespace MicrosForms.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class asdfasd : DbMigration
+    public partial class Historiales : DbMigration
     {
         public override void Up()
         {
@@ -43,6 +43,7 @@ namespace MicrosForms.Migrations
                         Id = c.Int(nullable: false, identity: true),
                         Patente = c.String(nullable: false, maxLength: 6),
                         Calificacion = c.Int(nullable: false),
+                        NumeroCalificaciones = c.Int(nullable: false),
                         LineaId = c.Int(),
                         MicroParaderoId = c.Int(),
                         MicroChoferId = c.Int(),
@@ -54,6 +55,55 @@ namespace MicrosForms.Migrations
                 .Index(t => t.LineaId)
                 .Index(t => t.MicroParaderoId)
                 .Index(t => t.MicroChoferId);
+            
+            CreateTable(
+                "dbo.HistorialDiario",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        NombreChofer = c.String(),
+                        Fecha = c.DateTime(nullable: false),
+                        HoraInicio = c.DateTime(nullable: false),
+                        HoraFinal = c.DateTime(nullable: false),
+                        KilometrosRecorridos = c.Single(nullable: false),
+                        CalificacionesRecibidas = c.Int(nullable: false),
+                        CalificacionDiaria = c.Int(nullable: false),
+                        PasajerosTransportados = c.Int(nullable: false),
+                        NumeroIdaVueltas = c.Int(nullable: false),
+                        IdMicro = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Micro", t => t.IdMicro, cascadeDelete: true)
+                .Index(t => t.IdMicro);
+            
+            CreateTable(
+                "dbo.HistorialIdaVuelta",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        PasajerosTransportados = c.Int(nullable: false),
+                        HoraInicio = c.DateTime(nullable: false),
+                        HoraTermino = c.DateTime(nullable: false),
+                        DuracionRecorrido = c.Time(nullable: false, precision: 7),
+                        IdDiario = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.HistorialDiario", t => t.IdDiario, cascadeDelete: true)
+                .Index(t => t.IdDiario);
+            
+            CreateTable(
+                "dbo.HistorialParadero",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        HoraLlegada = c.DateTime(nullable: false),
+                        TiempoDetenido = c.Time(nullable: false, precision: 7),
+                        PasajerosRecibidos = c.Int(nullable: false),
+                        IdIdaVuelta = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.HistorialIdaVuelta", t => t.IdIdaVuelta, cascadeDelete: true)
+                .Index(t => t.IdIdaVuelta);
             
             CreateTable(
                 "dbo.MicroChofer",
@@ -167,6 +217,9 @@ namespace MicrosForms.Migrations
             DropForeignKey("dbo.MicroParadero", "MicroId", "dbo.Micro");
             DropForeignKey("dbo.Usuario", "MicroChoferId", "dbo.MicroChofer");
             DropForeignKey("dbo.Micro", "LineaId", "dbo.Linea");
+            DropForeignKey("dbo.HistorialDiario", "IdMicro", "dbo.Micro");
+            DropForeignKey("dbo.HistorialParadero", "IdIdaVuelta", "dbo.HistorialIdaVuelta");
+            DropForeignKey("dbo.HistorialIdaVuelta", "IdDiario", "dbo.HistorialDiario");
             DropForeignKey("dbo.Coordenada", "SiguienteCoordenadaId", "dbo.Coordenada");
             DropIndex("dbo.Ruta", new[] { "LineaId" });
             DropIndex("dbo.Ruta", new[] { "InicioId" });
@@ -180,6 +233,9 @@ namespace MicrosForms.Migrations
             DropIndex("dbo.Usuario", "NombreIndex");
             DropIndex("dbo.MicroChofer", new[] { "ChoferId" });
             DropIndex("dbo.MicroChofer", new[] { "MicroId" });
+            DropIndex("dbo.HistorialParadero", new[] { "IdIdaVuelta" });
+            DropIndex("dbo.HistorialIdaVuelta", new[] { "IdDiario" });
+            DropIndex("dbo.HistorialDiario", new[] { "IdMicro" });
             DropIndex("dbo.Micro", new[] { "MicroChoferId" });
             DropIndex("dbo.Micro", new[] { "MicroParaderoId" });
             DropIndex("dbo.Micro", new[] { "LineaId" });
@@ -193,6 +249,9 @@ namespace MicrosForms.Migrations
             DropTable("dbo.UsuarioParadero");
             DropTable("dbo.Usuario");
             DropTable("dbo.MicroChofer");
+            DropTable("dbo.HistorialParadero");
+            DropTable("dbo.HistorialIdaVuelta");
+            DropTable("dbo.HistorialDiario");
             DropTable("dbo.Micro");
             DropTable("dbo.Linea");
             DropTable("dbo.Coordenada");

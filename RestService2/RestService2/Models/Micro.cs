@@ -17,17 +17,21 @@ namespace RestService2.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Micro()
         {
+            this.HistorialDiario = new HashSet<HistorialDiario>();
             this.MicroChofer1 = new HashSet<MicroChofer>();
             this.MicroParadero1 = new HashSet<MicroParadero>();
         }
     
         public int Id { get; set; }
         public string Patente { get; set; }
-        public int Calificacion { get; set; }
+        public float Calificacion { get; set; }
+        public int NumeroCalificaciones { get; set; }
         public Nullable<int> LineaId { get; set; }
         public Nullable<int> MicroParaderoId { get; set; }
         public Nullable<int> MicroChoferId { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<HistorialDiario> HistorialDiario { get; set; }
         public virtual Linea Linea { get; set; }
         public virtual MicroChofer MicroChofer { get; set; }
         public virtual MicroParadero MicroParadero { get; set; }

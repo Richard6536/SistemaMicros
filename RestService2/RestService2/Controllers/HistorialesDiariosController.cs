@@ -21,33 +21,47 @@ namespace RestService2.Controllers
     using System.Web.Http.OData.Extensions;
     using RestService2.Models;
     ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
-    builder.EntitySet<Linea>("Lineas");
-    builder.EntitySet<Ruta>("Ruta"); 
+    builder.EntitySet<HistorialDiario>("HistorialesDiarios");
     builder.EntitySet<Micro>("Micro"); 
+    builder.EntitySet<HistorialIdaVuelta>("HistorialIdaVuelta"); 
     config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
     */
-    public class LineasController : ODataController
+    public class HistorialesDiariosController : ODataController
     {
         private MicroSystemDBEntities2 db = new MicroSystemDBEntities2();
 
-
-
-        // GET: odata/Lineas
+        // GET: odata/HistorialesDiarios
         [EnableQuery]
-        public IQueryable<Linea> GetLineas()
+        public IQueryable<HistorialDiario> GetHistorialesDiarios()
         {
-            return db.Linea;
+            return db.HistorialDiario;
         }
 
-        // GET: odata/Lineas(5)
+        // GET: odata/HistorialesDiarios(5)
         [EnableQuery]
-        public SingleResult<Linea> GetLinea([FromODataUri] int key)
+        public SingleResult<HistorialDiario> GetHistorialDiario([FromODataUri] int key)
         {
-            return SingleResult.Create(db.Linea.Where(linea => linea.Id == key));
+            return SingleResult.Create(db.HistorialDiario.Where(historialDiario => historialDiario.Id == key));
         }
 
-        // PUT: odata/Lineas(5)
-        public IHttpActionResult Put([FromODataUri] int key, Delta<Linea> patch)
+        // GET: odata/HistorialesDiarios(5)/Micro
+        [EnableQuery]
+        public SingleResult<Micro> GetMicro([FromODataUri] int key)
+        {
+            return SingleResult.Create(db.HistorialDiario.Where(m => m.Id == key).Select(m => m.Micro));
+        }
+
+        // GET: odata/HistorialesDiarios(5)/HistorialIdaVuelta
+        [EnableQuery]
+        public IQueryable<HistorialIdaVuelta> GetHistorialIdaVuelta([FromODataUri] int key)
+        {
+            return db.HistorialDiario.Where(m => m.Id == key).SelectMany(m => m.HistorialIdaVuelta);
+        }
+
+
+
+        // PUT: odata/HistorialesDiarios(5)
+        public IHttpActionResult Put([FromODataUri] int key, Delta<HistorialDiario> patch)
         {
             Validate(patch.GetEntity());
 
@@ -56,13 +70,13 @@ namespace RestService2.Controllers
                 return BadRequest(ModelState);
             }
 
-            Linea linea = db.Linea.Find(key);
-            if (linea == null)
+            HistorialDiario historialDiario = db.HistorialDiario.Find(key);
+            if (historialDiario == null)
             {
                 return NotFound();
             }
 
-            patch.Put(linea);
+            patch.Put(historialDiario);
 
             try
             {
@@ -70,7 +84,7 @@ namespace RestService2.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!LineaExists(key))
+                if (!HistorialDiarioExists(key))
                 {
                     return NotFound();
                 }
@@ -80,26 +94,26 @@ namespace RestService2.Controllers
                 }
             }
 
-            return Updated(linea);
+            return Updated(historialDiario);
         }
 
-        // POST: odata/Lineas
-        public IHttpActionResult Post(Linea linea)
+        // POST: odata/HistorialesDiarios
+        public IHttpActionResult Post(HistorialDiario historialDiario)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Linea.Add(linea);
+            db.HistorialDiario.Add(historialDiario);
             db.SaveChanges();
 
-            return Created(linea);
+            return Created(historialDiario);
         }
 
-        // PATCH: odata/Lineas(5)
+        // PATCH: odata/HistorialesDiarios(5)
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] int key, Delta<Linea> patch)
+        public IHttpActionResult Patch([FromODataUri] int key, Delta<HistorialDiario> patch)
         {
             Validate(patch.GetEntity());
 
@@ -108,13 +122,13 @@ namespace RestService2.Controllers
                 return BadRequest(ModelState);
             }
 
-            Linea linea = db.Linea.Find(key);
-            if (linea == null)
+            HistorialDiario historialDiario = db.HistorialDiario.Find(key);
+            if (historialDiario == null)
             {
                 return NotFound();
             }
 
-            patch.Patch(linea);
+            patch.Patch(historialDiario);
 
             try
             {
@@ -122,7 +136,7 @@ namespace RestService2.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!LineaExists(key))
+                if (!HistorialDiarioExists(key))
                 {
                     return NotFound();
                 }
@@ -132,57 +146,25 @@ namespace RestService2.Controllers
                 }
             }
 
-            return Updated(linea);
+            return Updated(historialDiario);
         }
 
-        // DELETE: odata/Lineas(5)
+        // DELETE: odata/HistorialesDiarios(5)
         public IHttpActionResult Delete([FromODataUri] int key)
         {
-            Linea linea = db.Linea.Find(key);
-            if (linea == null)
+            HistorialDiario historialDiario = db.HistorialDiario.Find(key);
+            if (historialDiario == null)
             {
                 return NotFound();
             }
 
-            db.Linea.Remove(linea);
+            db.HistorialDiario.Remove(historialDiario);
             db.SaveChanges();
 
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        //Ruta de ida
-        // GET: odata/Lineas(5)/Ruta
-        [EnableQuery]
-        public SingleResult<Ruta> GetRuta([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.Linea.Where(m => m.Id == key).Select(m => m.Ruta));
-        }
-
-        //Ruta de vuelta
-        // GET: odata/Lineas(5)/Ruta1
-        [EnableQuery]
-        public SingleResult<Ruta> GetRuta1([FromODataUri] int key)
-        {
-            return SingleResult.Create(db.Linea.Where(m => m.Id == key).Select(m => m.Ruta1));
-        }
-
-        //Todas las rutas de esta linea
-        // GET: odata/Lineas(5)/Ruta2
-        [EnableQuery]
-        public IQueryable<Ruta> GetRuta2([FromODataUri] int key)
-        {
-            return db.Linea.Where(m => m.Id == key).SelectMany(m => m.Ruta2);
-        }
-
-        //Todas las micros de esta linea
-        // GET: odata/Lineas(5)/Micro
-        [EnableQuery]
-        public IQueryable<Micro> GetMicro([FromODataUri] int key)
-        {
-            return db.Linea.Where(m => m.Id == key).SelectMany(m => m.Micro);
-        }
-
-
+ 
 
         protected override void Dispose(bool disposing)
         {
@@ -193,9 +175,9 @@ namespace RestService2.Controllers
             base.Dispose(disposing);
         }
 
-        private bool LineaExists(int key)
+        private bool HistorialDiarioExists(int key)
         {
-            return db.Linea.Count(e => e.Id == key) > 0;
+            return db.HistorialDiario.Count(e => e.Id == key) > 0;
         }
     }
 }
