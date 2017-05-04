@@ -232,11 +232,13 @@ namespace MicrosForms.Ventanas.Creaciones
 
             if (e.Button == MouseButtons.Right && editandoMapa && puntosClickeadosIda.Count > 0)
             {
-                ClickNuevoPuntoRuta(lat, lng);               
+                bool res = ClickNuevoPuntoRuta(lat, lng);
+                if(res)
+                    CrearPosicionParadero(posVerticesIda.Last().Lat, posVerticesIda.Last().Lng);
             }
         }
 
-        void ClickNuevoPuntoRuta(double _lat, double _lng)
+        bool ClickNuevoPuntoRuta(double _lat, double _lng)
         {
             //extiende la ruta creada
             if (editandoMapa)
@@ -263,7 +265,7 @@ namespace MicrosForms.Ventanas.Creaciones
                     {
                         MessageBox.Show("No fue posible crear una ruta al lugar indicado.\nSe recomienda revisar su conexión a internet, por ser necesaria en la búsqueda de rutas.");
                         puntosClickeadosIda.Remove(puntosClickeadosIda.Last());
-                        return;
+                        return false;
                     }
                     GMapRoute ultimoFragmentoRuta = new GMapRoute(direccion.Route, "rutaPrevIda");
 
@@ -282,8 +284,8 @@ namespace MicrosForms.Ventanas.Creaciones
                 }
 
                 btnDeshacer.Enabled = true;
-                CrearPosicionParadero(posVerticesIda.Last().Lat, posVerticesIda.Last().Lng);
             }
+            return true;
         }
 
         void CrearPosicionParadero(double _lat, double _lng)

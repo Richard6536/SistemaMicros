@@ -132,7 +132,7 @@ namespace MicrosForms.Ventanas.Creaciones
             RefreshMap();
         }
 
-        void ClickNuevoPuntoRuta(double _lat, double _lng)
+        private bool ClickNuevoPuntoRuta(double _lat, double _lng)
         {
             //extiende la ruta creada
             if (editandoMapa && editandoIda)
@@ -160,7 +160,7 @@ namespace MicrosForms.Ventanas.Creaciones
                     {
                         MessageBox.Show("No fue posible crear una ruta al lugar indicado.\nSe recomienda revisar su conexión a internet, por ser necesaria en la búsqueda de rutas.");
                         puntosClickeadosIda.Remove(puntosClickeadosIda.Last());
-                        return;
+                        return false;
                     }
                     GMapRoute ultimoFragmentoRuta = new GMapRoute(direccion.Route, "rutaPrevIda");
 
@@ -178,8 +178,7 @@ namespace MicrosForms.Ventanas.Creaciones
                     }
                 }
 
-                btnDeshacer.Enabled = true;
-                CrearPosicionParadero(posVerticesIda.Last().Lat, posVerticesIda.Last().Lng);
+                btnDeshacer.Enabled = true;    
             }
             else if(editandoMapa && !editandoIda)
             {
@@ -203,7 +202,7 @@ namespace MicrosForms.Ventanas.Creaciones
                 {
                     MessageBox.Show("No fue posible crear una ruta al lugar indicado.\nSe recomienda revisar su conexión a internet, por ser necesaria en la búsqueda de rutas.");
                     puntosClickeadosVuelta.Remove(puntosClickeadosVuelta.Last());
-                    return;
+                    return false;
                 }
                 GMapRoute ultimoFragmentoRuta = new GMapRoute(direccion.Route, "rutaPrevVuelta");
 
@@ -219,9 +218,9 @@ namespace MicrosForms.Ventanas.Creaciones
                     posVerticesVuelta.Add(punto);
                 }
 
-                CrearPosicionParadero(posVerticesVuelta.Last().Lat, posVerticesVuelta.Last().Lng);
-
             }
+
+            return true;
         }
 
         void DibujarTramo(List<PointLatLng> _puntos, Color _color, GMapOverlay _overlay, int _numeroFragmento)
@@ -265,93 +264,101 @@ namespace MicrosForms.Ventanas.Creaciones
 
         private void btnDeshacer_Click(object sender, EventArgs e)
         {
-            //deshace el ultimo trozo de ruta creado
-            if (editandoIda)
+            if (editandoMapa)
             {
-                if (editandoMapa && puntosClickeadosIda.Count == 1)
+                //deshace el ultimo trozo de ruta creado
+                if (editandoIda)
                 {
-                    otrosMarkersOverlay.Markers.Remove(puntoInicioRuta);
-                    puntosClickeadosIda.RemoveAt(puntosClickeadosIda.Count - 1);
-                    btnDeshacer.Enabled = false;
-
-                    RefreshMap();
-                }
-
-                //Quita el paradero si esque hay
-                GMarkerGoogle m = markParaderosIda.Where(mp => Convert.ToString(mp.Tag) == fragmentosDeRuta.Count+"").FirstOrDefault();
-
-                paraderosOverlay.Markers.Remove(m);
-                markParaderosIda.Remove(m);
-
-
-                if (editandoMapa && puntosClickeadosIda.Count >= 2)
-                {
-                    GMapRoute ultimoFragmento = fragmentosDeRuta.Last();
-
-                    List<PointLatLng> verticesUltimoFragmento = ultimoFragmento.Points;
-
-                    foreach (PointLatLng p in verticesUltimoFragmento)
+                    if (puntosClickeadosIda.Count == 1)
                     {
-                        posVerticesIda.Remove(p);
+                        otrosMarkersOverlay.Markers.Remove(puntoInicioRuta);
+                        puntosClickeadosIda.RemoveAt(puntosClickeadosIda.Count - 1);
+                        btnDeshacer.Enabled = false;
+
+                        RefreshMap();
                     }
-
-                    EliminarTramoDibujado(previewIdaOverlay, fragmentosDeRuta.Count);
-
-                    fragmentosDeRuta.Remove(ultimoFragmento);
-                    puntosClickeadosIda.RemoveAt(puntosClickeadosIda.Count - 1);
-
-                }
-
-                if(puntosClickeadosIda.Count < 2)
-                {
-                    btnComenzarVuelta.Enabled = false;
-                }
-            }
-            else
-            {
-                if(editandoMapa && puntosClickeadosVuelta.Count == 0)
-                {
-                    //Deshace el ultimo trampo de ida y elimina el marker con el tag InicioRegreso
-
-                    GMapRoute ultimoFragmento = fragmentosDeRuta.Last();
-
-                    EliminarTramoDibujado(previewIdaOverlay, fragmentosDeRuta.Count);
-
-                    fragmentosDeRuta.Remove(ultimoFragmento);
-                    puntosClickeadosIda.RemoveAt(puntosClickeadosIda.Count - 1);
-
-                    otrosMarkersOverlay.Markers.Remove(puntoInicioRegreso);
-                    puntoInicioRegreso = null;
-
-                    btnComenzarVuelta.Enabled = true;
-                    editandoIda = true;
-                }
-
-                if (editandoMapa && puntosClickeadosVuelta.Count >= 1)
-                {
 
                     //Quita el paradero si esque hay
-                    GMarkerGoogle m = markParaderosVuelta.Where(mp => Convert.ToString(mp.Tag) == fragmentosDeRuta.Count + "").FirstOrDefault();
+                    GMarkerGoogle m = markParaderosIda.Where(mp => Convert.ToString(mp.Tag) == fragmentosDeRuta.Count + "").FirstOrDefault();
+
                     paraderosOverlay.Markers.Remove(m);
-                    markParaderosVuelta.Remove(m);
+                    markParaderosIda.Remove(m);
 
-                    GMapRoute ultimoFragmento = fragmentosDeRuta.Last();
 
-                    List<PointLatLng> verticesUltimoFragmento = ultimoFragmento.Points;
-
-                    foreach (PointLatLng p in verticesUltimoFragmento)
+                    if (puntosClickeadosIda.Count >= 2)
                     {
-                        posVerticesVuelta.Remove(p);
+                        GMapRoute ultimoFragmento = fragmentosDeRuta.Last();
+
+                        List<PointLatLng> verticesUltimoFragmento = ultimoFragmento.Points;
+
+                        foreach (PointLatLng p in verticesUltimoFragmento)
+                        {
+                            posVerticesIda.Remove(p);
+                        }
+
+                        EliminarTramoDibujado(previewIdaOverlay, fragmentosDeRuta.Count);
+
+                        fragmentosDeRuta.Remove(ultimoFragmento);
+                        puntosClickeadosIda.RemoveAt(puntosClickeadosIda.Count - 1);
+
                     }
 
-                    EliminarTramoDibujado(previewVueltaOverlay, fragmentosDeRuta.Count);
+                    if (puntosClickeadosIda.Count < 2)
+                    {
+                        btnComenzarVuelta.Enabled = false;
+                    }
+                }
+                else
+                {
 
-                    fragmentosDeRuta.Remove(ultimoFragmento);
-                    puntosClickeadosVuelta.RemoveAt(puntosClickeadosVuelta.Count - 1);
+                    if (puntosClickeadosVuelta.Count == 0)
+                    {
+                        //Quita el paradero si esque hay (el ultimo del tramo de ida)
+                        GMarkerGoogle m = markParaderosIda.Where(mp => Convert.ToString(mp.Tag) == fragmentosDeRuta.Count + "").FirstOrDefault();
+                        paraderosOverlay.Markers.Remove(m);
+                        markParaderosVuelta.Remove(m);
 
+
+                        //Deshace el ultimo trampo de ida y elimina el marker con el tag InicioRegreso
+                        GMapRoute ultimoFragmento = fragmentosDeRuta.Last();
+
+                        EliminarTramoDibujado(previewIdaOverlay, fragmentosDeRuta.Count);
+
+                        fragmentosDeRuta.Remove(ultimoFragmento);
+                        puntosClickeadosIda.RemoveAt(puntosClickeadosIda.Count - 1);
+
+                        otrosMarkersOverlay.Markers.Remove(puntoInicioRegreso);
+                        puntoInicioRegreso = null;
+
+                        btnComenzarVuelta.Enabled = true;
+                        editandoIda = true;
+                    }
+
+                    if (puntosClickeadosVuelta.Count >= 1)
+                    {
+
+                        //Quita el paradero si esque hay
+                        GMarkerGoogle m = markParaderosVuelta.Where(mp => Convert.ToString(mp.Tag) == fragmentosDeRuta.Count + "").FirstOrDefault();
+                        paraderosOverlay.Markers.Remove(m);
+                        markParaderosVuelta.Remove(m);
+
+                        GMapRoute ultimoFragmento = fragmentosDeRuta.Last();
+
+                        List<PointLatLng> verticesUltimoFragmento = ultimoFragmento.Points;
+
+                        foreach (PointLatLng p in verticesUltimoFragmento)
+                        {
+                            posVerticesVuelta.Remove(p);
+                        }
+
+                        EliminarTramoDibujado(previewVueltaOverlay, fragmentosDeRuta.Count);
+
+                        fragmentosDeRuta.Remove(ultimoFragmento);
+                        puntosClickeadosVuelta.RemoveAt(puntosClickeadosVuelta.Count - 1);
+
+                    }
                 }
             }
-
         }
 
         private void btnAceptarRuta_Click(object sender, EventArgs e)
@@ -625,7 +632,20 @@ namespace MicrosForms.Ventanas.Creaciones
 
             if (e.Button == MouseButtons.Right && editandoMapa && puntosClickeadosIda.Count > 0)
             {
-                ClickNuevoPuntoRuta(lat, lng);
+                bool res = ClickNuevoPuntoRuta(lat, lng);
+
+                if (res == false)
+                    return;
+
+                if (editandoIda )
+                {
+                    CrearPosicionParadero(posVerticesIda.Last().Lat, posVerticesIda.Last().Lng);
+                }
+                else
+                {
+                    CrearPosicionParadero(posVerticesVuelta.Last().Lat, posVerticesVuelta.Last().Lng);
+                }
+
             }
         }
     }
