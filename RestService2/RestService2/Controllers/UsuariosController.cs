@@ -42,10 +42,10 @@ namespace RestService2.Controllers
         //POST: odata/Usuarios/EsValido
         //Parametros: Email,Password
         [HttpPost]
-        public bool EsValido(ODataActionParameters parameters)
+        public Usuario EsValido(ODataActionParameters parameters)
         {
             if (parameters == null)
-                return false;
+                return null;
 
             string mail = (string)parameters["Email"];
             string pass = (string)parameters["Password"];
@@ -53,12 +53,16 @@ namespace RestService2.Controllers
             Usuario user = db.Usuario.Where(u => u.Email == mail).FirstOrDefault();
 
             if (user == null)
-                return false;
+                return null;
 
             bool valido = PasswordHash.ValidatePassword(pass, user.Password);
 
-            return valido;
+            if (valido)
+                return user;
+            else
+                return null;
         }
+
 
         //POST: odata/Usuarios(5)/EditarDatos
         //Parametros: ???
@@ -224,6 +228,10 @@ namespace RestService2.Controllers
         // POST: odata/Usuarios
         public IHttpActionResult Post(Usuario usuario)
         {
+            string passEncriptada = PasswordHash.CreateHash(usuario.Password);
+            usuario.Password = passEncriptada;
+
+
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

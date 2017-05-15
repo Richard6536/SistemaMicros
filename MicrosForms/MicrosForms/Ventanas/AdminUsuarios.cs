@@ -153,6 +153,36 @@ namespace MicrosForms.Ventanas
             dataGridUsuarios.Rows[index].Selected = true;
         }
 
+        private void btnActualizar_Click(object sender, EventArgs e)
+        {
+            usuarios = Usuario.BuscarTodosUsuarios();
+            CargarTabla(usuarios);
+        }
 
+        private void txtFiltroNombre_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if(txtFiltroNombre.Text == "")
+                {
+                    CargarTabla(usuarios);
+                    return;
+                }
+
+                dataGridUsuarios.Rows.Clear();
+
+                foreach (Usuario u in usuarios)
+                {
+                    if (u.Nombre.ToUpper().Contains(txtFiltroNombre.Text.ToUpper()))
+                    {
+                        CargarLinea(u);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
     }
 }

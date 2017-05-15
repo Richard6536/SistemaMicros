@@ -57,5 +57,24 @@ namespace MicrosForms.Model
 
             return historiales;
         }
+
+        public static Micro ObtenerMicro(int _idHistorialDiario)
+        {
+            var BD = new MicroSystemContext();
+
+            Micro micro = BD.HistorialesDiarios.Where(hd => hd.Id == _idHistorialDiario).FirstOrDefault().Micro;
+
+            return micro;
+
+        }
+
+        public static HistorialDiario BuscarPorId(int _idHistorialDiario)
+        {
+            var BD = new MicroSystemContext();
+
+            HistorialDiario historial = BD.HistorialesDiarios.Where(hd => hd.Id == _idHistorialDiario).FirstOrDefault();
+
+            return historial;
+        }
     }
 }

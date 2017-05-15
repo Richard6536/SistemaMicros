@@ -105,6 +105,7 @@
             // 
             this.txtPassword.Location = new System.Drawing.Point(196, 126);
             this.txtPassword.Name = "txtPassword";
+            this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(146, 20);
             this.txtPassword.TabIndex = 7;
             // 
@@ -112,6 +113,7 @@
             // 
             this.txtConfrimarPassword.Location = new System.Drawing.Point(196, 152);
             this.txtConfrimarPassword.Name = "txtConfrimarPassword";
+            this.txtConfrimarPassword.PasswordChar = '*';
             this.txtConfrimarPassword.Size = new System.Drawing.Size(146, 20);
             this.txtConfrimarPassword.TabIndex = 8;
             // 

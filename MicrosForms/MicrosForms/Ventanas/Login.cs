@@ -25,7 +25,7 @@ namespace MicrosForms.Ventanas
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            string nombre = txtNombre.Text;
+            string nombre = txtEmail.Text;
             string pass = txtPassword.Text;
 
             if(!ConnectionTester.IsConnectionActive())
@@ -33,7 +33,7 @@ namespace MicrosForms.Ventanas
                 return;
             }
 
-            if(txtNombre.Text == "" || txtPassword.Text == "")
+            if(txtEmail.Text == "" || txtPassword.Text == "")
             {
                 MessageBox.Show("No deje campos en blanco");
                 return;

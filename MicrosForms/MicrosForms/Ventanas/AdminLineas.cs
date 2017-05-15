@@ -250,6 +250,9 @@ namespace MicrosForms.Ventanas
 
         private void btnBorrar_Click(object sender, EventArgs e)
         {
+            if (lineaActual == null)
+                return;
+
             DialogResult dr = MessageBox.Show("¿Está seguro que desea borrar esta línea?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
             if (dr == DialogResult.No)
                 return;
@@ -305,34 +308,34 @@ namespace MicrosForms.Ventanas
 
         private void btnCrearIda_Click(object sender, EventArgs e)
         {
-            if(lineaActual != null)
-            {
-                var form = new CrearRutaIda(lineaActual.Id);
-                FormManager.MostrarShowDialog(this, form);
+            if (lineaActual == null)
+                return;
 
-                if(form.DialogResult == DialogResult.OK)
-                {
-                    int idLinea = lineaActual.Id;
-                    CargarComboboxLineas();
-                    cmbLinea.SelectedValue = idLinea;
-                }
+            var form = new CrearRutaIda(lineaActual.Id);
+            FormManager.MostrarShowDialog(this, form);
+
+            if(form.DialogResult == DialogResult.OK)
+            {
+                int idLinea = lineaActual.Id;
+                CargarComboboxLineas();
+                cmbLinea.SelectedValue = idLinea;
             }
         }
 
         private void btnAsignarIda_Click(object sender, EventArgs e)
         {
-            if (lineaActual != null)
-            {
-                Ruta rutaIda = Ruta.BuscarPorId((int)cmbRutaIda.SelectedValue);
+            if (lineaActual == null)
+                return;
 
-                int idLinea = lineaActual.Id;
-                rutaIda.AsignarRutaComoUsable();
+            Ruta rutaIda = Ruta.BuscarPorId((int)cmbRutaIda.SelectedValue);
 
-                CargarComboboxLineas();
-                cmbLinea.SelectedValue = idLinea;
+            int idLinea = lineaActual.Id;
+            rutaIda.AsignarRutaComoUsable();
 
-                MessageBox.Show("Ruta " + rutaIda.Nombre + " asignada como la ruta a usar.");
-            }
+            CargarComboboxLineas();
+            cmbLinea.SelectedValue = idLinea;
+
+            MessageBox.Show("Ruta " + rutaIda.Nombre + " asignada como la ruta a usar.");
         }
 
         bool cmbIdaSwitch = false;
@@ -370,34 +373,34 @@ namespace MicrosForms.Ventanas
 
         private void btnCrearVuelta_Click(object sender, EventArgs e)
         {
-            if (lineaActual != null)
-            {
-                var form = new CrearRutaVuelta(lineaActual.Id);
-                FormManager.MostrarShowDialog(this, form);
+            if (lineaActual == null)
+                return;
 
-                if (form.DialogResult == DialogResult.OK)
-                {
-                    int idLinea = lineaActual.Id;
-                    CargarComboboxLineas();
-                    cmbLinea.SelectedValue = idLinea;
-                }
+            var form = new CrearRutaVuelta(lineaActual.Id);
+            FormManager.MostrarShowDialog(this, form);
+
+            if (form.DialogResult == DialogResult.OK)
+            {
+                int idLinea = lineaActual.Id;
+                CargarComboboxLineas();
+                cmbLinea.SelectedValue = idLinea;
             }
         }
 
         private void btnAsignarVuelta_Click(object sender, EventArgs e)
         {
-            if (lineaActual != null)
-            {
-                Ruta RutaVuelta = Ruta.BuscarPorId((int)cmbRutaVuelta.SelectedValue);
+            if (lineaActual == null)
+                return;
 
-                int idLinea = lineaActual.Id;
-                RutaVuelta.AsignarRutaComoUsable();
+            Ruta RutaVuelta = Ruta.BuscarPorId((int)cmbRutaVuelta.SelectedValue);
 
-                CargarComboboxLineas();
-                cmbLinea.SelectedValue = idLinea;
+            int idLinea = lineaActual.Id;
+            RutaVuelta.AsignarRutaComoUsable();
 
-                MessageBox.Show("Ruta " + RutaVuelta.Nombre + " asignada como la ruta a usar.");
-            }
+            CargarComboboxLineas();
+            cmbLinea.SelectedValue = idLinea;
+
+            MessageBox.Show("Ruta " + RutaVuelta.Nombre + " asignada como la ruta a usar.");
         }
 
         private void cmbRutaVuelta_SelectedIndexChanged(object sender, EventArgs e)
@@ -433,6 +436,9 @@ namespace MicrosForms.Ventanas
 
         private void btnEliminarIda_Click(object sender, EventArgs e)
         {
+            if (lineaActual == null)
+                return;
+
             DialogResult dr = MessageBox.Show("¿Está seguro que desea borrar esta ruta de ida?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
             if (dr == DialogResult.No)
                 return;
@@ -461,6 +467,9 @@ namespace MicrosForms.Ventanas
 
         private void btnEliminarVuelta_Click(object sender, EventArgs e)
         {
+            if (lineaActual == null)
+                return;
+
             DialogResult dr = MessageBox.Show("¿Está seguro que desea borrar esta ruta de vuelta?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
             if (dr == DialogResult.No)
                 return;
@@ -488,12 +497,18 @@ namespace MicrosForms.Ventanas
 
         private void btnVerMicros_Click_1(object sender, EventArgs e)
         {
+            if (lineaActual == null)
+                return;
+
             var form = new EditarMicrosDeLinea(lineaActual.Id);
             FormManager.MostrarShowDialog(this, form);
         }
 
         private void btnCambiarNombreLinea_Click(object sender, EventArgs e)
         {
+            if (lineaActual == null)
+                return;
+
             var form = new CambiarNombreLinea(lineaActual.Id);
             DialogResult dr = FormManager.MostrarShowDialog(this, form);
 

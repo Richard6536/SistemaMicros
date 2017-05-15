@@ -28,24 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.txtNombre = new System.Windows.Forms.TextBox();
+            this.txtEmail = new System.Windows.Forms.TextBox();
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.btnLogin = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // txtNombre
+            // txtEmail
             // 
-            this.txtNombre.Location = new System.Drawing.Point(183, 88);
-            this.txtNombre.Name = "txtNombre";
-            this.txtNombre.Size = new System.Drawing.Size(194, 20);
-            this.txtNombre.TabIndex = 0;
+            this.txtEmail.Location = new System.Drawing.Point(183, 88);
+            this.txtEmail.Name = "txtEmail";
+            this.txtEmail.Size = new System.Drawing.Size(194, 20);
+            this.txtEmail.TabIndex = 0;
             // 
             // txtPassword
             // 
             this.txtPassword.Location = new System.Drawing.Point(183, 129);
             this.txtPassword.Name = "txtPassword";
+            this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(194, 20);
             this.txtPassword.TabIndex = 1;
             // 
@@ -64,9 +65,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(106, 88);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 13);
+            this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 3;
-            this.label1.Text = "Nombre";
+            this.label1.Text = "E-mail";
             // 
             // label2
             // 
@@ -81,12 +82,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(510, 325);
+            this.ClientSize = new System.Drawing.Size(502, 313);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.txtPassword);
-            this.Controls.Add(this.txtNombre);
+            this.Controls.Add(this.txtEmail);
             this.Name = "Login";
             this.Text = "Login";
             this.ResumeLayout(false);
@@ -96,7 +97,7 @@
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtNombre;
+        private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.Label label1;

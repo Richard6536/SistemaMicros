@@ -39,7 +39,7 @@ namespace MicrosForms.Model
         public HistorialIdaVuelta()
         { }
 
-        public List<HistorialParadero> ObtenerHistorialesParaderos(int _idHistorialIdaVuelta)
+        public static List<HistorialParadero> ObtenerHistorialesParaderos(int _idHistorialIdaVuelta)
         {
             var BD = new MicroSystemContext();
 

@@ -51,15 +51,5 @@ namespace MicrosForms.Classes
             return next.DialogResult;
         }
 
-        //ShowDialog
-        //this.Enabled = false;
-        //var forms = new AreasQuePidenInsumo(codigoInsumo);
-        //forms.ShowDialog();
-        //this.Enabled = true;
-
-        //volver
-        //this.DialogResult = DialogResult.OK;
-
-
     }
 }
