@@ -167,7 +167,7 @@ namespace MicrosForms.Ventanas.Creaciones
 
                     fragmentosDeRuta.Add(ultimoFragmentoRuta);
 
-                    DibujarTramo(ultimoFragmentoRuta.Points, Color.Red, previewIdaOverlay, fragmentosDeRuta.Count);
+                    MapController.DibujarTramo(ultimoFragmentoRuta.Points, Color.Red, previewIdaOverlay, fragmentosDeRuta.Count);
 
                     RefreshMap();
 
@@ -208,7 +208,7 @@ namespace MicrosForms.Ventanas.Creaciones
 
                 fragmentosDeRuta.Add(ultimoFragmentoRuta);
 
-                DibujarTramo(ultimoFragmentoRuta.Points, Color.Blue, previewVueltaOverlay, fragmentosDeRuta.Count);
+                MapController.DibujarTramo(ultimoFragmentoRuta.Points, Color.Blue, previewVueltaOverlay, fragmentosDeRuta.Count);
 
                 RefreshMap();
 
@@ -221,45 +221,6 @@ namespace MicrosForms.Ventanas.Creaciones
             }
 
             return true;
-        }
-
-        void DibujarTramo(List<PointLatLng> _puntos, Color _color, GMapOverlay _overlay, int _numeroFragmento)
-        {
-            PointLatLng actual;
-            PointLatLng siguiente;
-            for (int i = 0; i < _puntos.Count - 1; i++)
-            {
-
-                actual = _puntos[i];
-                siguiente = _puntos[i + 1];
-
-                List<PointLatLng> puntos = new List<PointLatLng>();
-                puntos.Add(actual);
-                puntos.Add(siguiente);
-
-                GMapPolygon polygon = new GMapPolygon(puntos, _numeroFragmento+"");
-                polygon.Stroke = new Pen(_color, 4);
-
-                _overlay.Polygons.Add(polygon);
-            }
-        }
-
-        void EliminarTramoDibujado(GMapOverlay _overlay, int _numeroFragmento)
-        {
-            List<GMapPolygon> borrables = new List<GMapPolygon>();
-
-            foreach(GMapPolygon pol in _overlay.Polygons)
-            {
-                if(pol.Name == _numeroFragmento +"")
-                {
-                    borrables.Add(pol);
-                }
-            }
-
-            foreach(GMapPolygon pol in borrables)
-            {
-                _overlay.Polygons.Remove(pol);
-            }
         }
 
         private void btnDeshacer_Click(object sender, EventArgs e)
@@ -296,7 +257,7 @@ namespace MicrosForms.Ventanas.Creaciones
                             posVerticesIda.Remove(p);
                         }
 
-                        EliminarTramoDibujado(previewIdaOverlay, fragmentosDeRuta.Count);
+                        MapController.EliminarTramoDibujado(previewIdaOverlay, fragmentosDeRuta.Count);
 
                         fragmentosDeRuta.Remove(ultimoFragmento);
                         puntosClickeadosIda.RemoveAt(puntosClickeadosIda.Count - 1);
@@ -322,7 +283,7 @@ namespace MicrosForms.Ventanas.Creaciones
                         //Deshace el ultimo trampo de ida y elimina el marker con el tag InicioRegreso
                         GMapRoute ultimoFragmento = fragmentosDeRuta.Last();
 
-                        EliminarTramoDibujado(previewIdaOverlay, fragmentosDeRuta.Count);
+                        MapController.EliminarTramoDibujado(previewIdaOverlay, fragmentosDeRuta.Count);
 
                         fragmentosDeRuta.Remove(ultimoFragmento);
                         puntosClickeadosIda.RemoveAt(puntosClickeadosIda.Count - 1);
@@ -351,7 +312,7 @@ namespace MicrosForms.Ventanas.Creaciones
                             posVerticesVuelta.Remove(p);
                         }
 
-                        EliminarTramoDibujado(previewVueltaOverlay, fragmentosDeRuta.Count);
+                        MapController.EliminarTramoDibujado(previewVueltaOverlay, fragmentosDeRuta.Count);
 
                         fragmentosDeRuta.Remove(ultimoFragmento);
                         puntosClickeadosVuelta.RemoveAt(puntosClickeadosVuelta.Count - 1);
@@ -378,8 +339,12 @@ namespace MicrosForms.Ventanas.Creaciones
             previewIdaOverlay.Clear();
             previewVueltaOverlay.Clear();
 
-            CargarPuntosEnMapa(posVerticesIda, markParaderosIda, Ruta.TipoRuta.ida);
-            CargarPuntosEnMapa(posVerticesVuelta, markParaderosVuelta, Ruta.TipoRuta.vuelta);
+
+            MapController.CargarPuntosEnMapa(posVerticesIda, markParaderosIda, gmapController, paraderosOverlay, previewIdaOverlay, Color.Red);
+            MapController.CargarPuntosEnMapa(posVerticesVuelta, markParaderosVuelta, gmapController, paraderosOverlay, previewVueltaOverlay, Color.Blue);
+            List<Coordenada> coordenadas = MapController.CrearVertices(posVerticesIda);
+            MapController.CrearMarcadorInicio(coordenadas, gmapController, otrosMarkersOverlay, "Inicio ruta de Ida", GMarkerGoogleType.red);
+
 
         }
 
@@ -391,126 +356,6 @@ namespace MicrosForms.Ventanas.Creaciones
         #endregion
 
 
-        #region Creacion paraderos
-
-        void CrearPosicionParadero(double _lat, double _lng)
-        {
-            //Se hace doble click en el lugar donde se quiere hacer un paradero
-
-            if (editandoMapa)
-            {
-                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(_lat, _lng), GMarkerGoogleType.purple_small);
-                paraderoMarker.Tag = fragmentosDeRuta.Count + "";
-
-                if (editandoIda)
-                    markParaderosIda.Add(paraderoMarker);
-                    
-                if(!editandoIda)
-                    markParaderosVuelta.Add(paraderoMarker);
-                
-                paraderosOverlay.Markers.Add(paraderoMarker);
-            }
-        }
-
-
-        #endregion
-
-
-       
-
-        void CargarPuntosEnMapa(List<PointLatLng> _vertices, List<GMarkerGoogle> _paraderos, Ruta.TipoRuta _tipoRuta)
-        {
-            //al apretar aceptarRuta, se redibujan las 2 rutas de nuevo para comprobar errores
-
-            if (!ConnectionTester.IsConnectionActive())
-                return;
-
-            List<GMarkerGoogle> paraderos = _paraderos;
-            List<PointLatLng> vertices = _vertices;
-
-
-            foreach (GMarkerGoogle p in paraderos) //Crear paraderos en el mapa
-            {
-                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Position.Lat, p.Position.Lng), GMarkerGoogleType.purple_small);
-
-                paraderosOverlay.Markers.Add(paraderoMarker);
-            }
-
-            GMarkerGoogleType iconoMarcador = GMarkerGoogleType.arrow;
-            string toolTipText = "";
-            PointLatLng actual;
-            PointLatLng siguiente;
-            for (int i = 0; i < vertices.Count - 1; i++)
-            {
-
-                actual = vertices[i];
-                siguiente = vertices[i + 1];
-
-
-                if (i == 0)
-                {
-                    //Crea marcador al inicio de la ruta
-                    if (_tipoRuta == Ruta.TipoRuta.ida)
-                    {
-                        gmapController.Position = new PointLatLng(actual.Lat, actual.Lng); //enfoca el mapa en el inicio
-                        iconoMarcador = GMarkerGoogleType.red_small; //icono ida
-                        toolTipText = "Inicio ruta ida";
-                    }
-                    else
-                    {
-                        iconoMarcador = GMarkerGoogleType.blue_small; //icono vuelta
-                        toolTipText = "Inicio ruta vuelta";
-                    }
-
-                    GMarkerGoogle InicioMarker = new GMarkerGoogle(new PointLatLng(actual.Lat, actual.Lng), iconoMarcador);
-                    InicioMarker.ToolTipText = toolTipText;
-
-                    otrosMarkersOverlay.Markers.Add(InicioMarker);
-                }
-
-                if (i == vertices.Count - 2)
-                {
-                    //Crea marcador al final de la ruta
-                    //solo en la de ruta de vuelta
-                    if (_tipoRuta == Ruta.TipoRuta.vuelta)
-                    {
-                        gmapController.Position = new PointLatLng(actual.Lat, actual.Lng); //enfoca el mapa en el inicio
-                        iconoMarcador = GMarkerGoogleType.blue_small; //icono ida
-                        toolTipText = "Final ruta vuelta";
-
-                        GMarkerGoogle FinalMarker = new GMarkerGoogle(new PointLatLng(siguiente.Lat, siguiente.Lng), iconoMarcador);
-                        FinalMarker.ToolTipText = toolTipText;
-
-                        otrosMarkersOverlay.Markers.Add(FinalMarker);
-                    }
-
-                }
-
-                List<PointLatLng> puntos = new List<PointLatLng>();
-                puntos.Add(new PointLatLng(actual.Lat, actual.Lng));
-                puntos.Add(new PointLatLng(siguiente.Lat, siguiente.Lng));
-
-                //GMapPolygon polygon = new GMapPolygon(puntos, "mypolygon");
-                GMapRoute ruta = new GMapRoute(puntos, "asdf");
-
-                if (_tipoRuta == Ruta.TipoRuta.ida)
-                {
-                    ruta.Stroke = new Pen(Color.Red, 4);
-                    previewIdaOverlay.Routes.Add(ruta);
-                }
-                    
-                if (_tipoRuta == Ruta.TipoRuta.vuelta)
-                {
-                    ruta.Stroke = new Pen(Color.Blue, 4);
-                    previewVueltaOverlay.Routes.Add(ruta);
-                }
-                    
-                
-            }
-
-            RefreshMap();
-
-        }
 
         private void btnCancelar_Click(object sender, EventArgs e)
         {
@@ -525,8 +370,8 @@ namespace MicrosForms.Ventanas.Creaciones
 
             string mensajeError = "";
 
-            List<Coordenada> verticesIda = CrearVertices(posVerticesIda);
-            List<Coordenada> verticesVuelta = CrearVertices(posVerticesVuelta);
+            List<Coordenada> verticesIda = MapController.CrearVertices(posVerticesIda);
+            List<Coordenada> verticesVuelta = MapController.CrearVertices(posVerticesVuelta);
 
             if (txtNombreLinea.Text == "")
             {
@@ -552,8 +397,8 @@ namespace MicrosForms.Ventanas.Creaciones
                 return;
             }
 
-            List<Paradero> paraderosIda = CrearParaderos(markParaderosIda);
-            List<Paradero> paraderosVuelta = CrearParaderos(markParaderosVuelta);
+            List<Paradero> paraderosIda = MapController.CrearParaderos(markParaderosIda);
+            List<Paradero> paraderosVuelta = MapController.CrearParaderos(markParaderosVuelta);
 
 
             Linea nuevaLinea = Linea.CrearLinea(txtNombreLinea.Text);
@@ -578,37 +423,6 @@ namespace MicrosForms.Ventanas.Creaciones
             gmapController.Zoom = gmapController.Zoom - 1;
         }
 
-        private List<Paradero> CrearParaderos(List<GMarkerGoogle> _listaMarcadores)
-        {
-            //se revisan los elementos de la lista de markParaderos para crear los paraderos de verdad
-            //usado antes de guardar datos
-
-            List<Paradero> paraderos = new List<Paradero>();
-
-            foreach (var mark in _listaMarcadores)
-            {
-                Paradero p = new Paradero(mark.Position.Lat, mark.Position.Lng);
-                paraderos.Add(p);
-            }
-
-            return paraderos;
-        }
-
-        private List<Coordenada> CrearVertices(List<PointLatLng> _puntosVertices)
-        {
-            //se revisan los puntos de la ruta para crear las coordenadas 
-
-            List<Coordenada> vertices = new List<Coordenada>();
-
-            for (int i = 0; i < _puntosVertices.Count; i++)
-            {
-                PointLatLng punto = _puntosVertices[i];
-
-                Coordenada c = new Coordenada(punto.Lat, punto.Lng, null);
-                vertices.Add(c);
-            }
-            return vertices;
-        }
 
         private void gmapController_MouseDoubleClick(object sender, MouseEventArgs e)
         {
@@ -637,13 +451,16 @@ namespace MicrosForms.Ventanas.Creaciones
                 if (res == false)
                     return;
 
-                if (editandoIda )
+                if(editandoMapa)
                 {
-                    CrearPosicionParadero(posVerticesIda.Last().Lat, posVerticesIda.Last().Lng);
-                }
-                else
-                {
-                    CrearPosicionParadero(posVerticesVuelta.Last().Lat, posVerticesVuelta.Last().Lng);
+                    if(editandoIda)
+                    {
+                        MapController.CrearPosicionParadero(posVerticesIda.Last().Lat, posVerticesIda.Last().Lng, fragmentosDeRuta, markParaderosIda, paraderosOverlay);
+                    }
+                    else
+                    {
+                        MapController.CrearPosicionParadero(posVerticesVuelta.Last().Lat, posVerticesVuelta.Last().Lng, fragmentosDeRuta, markParaderosVuelta, paraderosOverlay);
+                    }
                 }
 
             }

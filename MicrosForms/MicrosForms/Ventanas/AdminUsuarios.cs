@@ -184,5 +184,27 @@ namespace MicrosForms.Ventanas
                 return;
             }
         }
+
+        private void AdminUsuarios_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (FormManager.cerrandoAplicacion == true)
+                return;
+
+            var res = MessageBox.Show(this, "¿Seguro desea cerrar la aplicación?", "Exit",
+            MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            if (res != DialogResult.Yes)
+            {
+                e.Cancel = true;
+                return;
+            }
+            FormManager.cerrandoAplicacion = true;
+        }
+
+        private void AdminUsuarios_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
+
+
     }
 }

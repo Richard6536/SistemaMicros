@@ -29,6 +29,12 @@
         private void InitializeComponent()
         {
             this.datagridMicros = new System.Windows.Forms.DataGridView();
+            this.Patente = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.LineaMicro = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Clasificacion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Chofer = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.VerHistorial = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.Editar = new System.Windows.Forms.DataGridViewButtonColumn();
             this.btnCrearMicro = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.administrarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -36,12 +42,6 @@
             this.usuariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cerrarSesiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ventanaInicio = new System.Windows.Forms.ToolStripMenuItem();
-            this.Patente = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.LineaMicro = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Clasificacion = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Chofer = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.VerHistorial = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.Editar = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.datagridMicros)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -63,6 +63,46 @@
             this.datagridMicros.Size = new System.Drawing.Size(607, 301);
             this.datagridMicros.TabIndex = 0;
             this.datagridMicros.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.datagridMicros_CellContentClick);
+            // 
+            // Patente
+            // 
+            this.Patente.HeaderText = "Patente";
+            this.Patente.Name = "Patente";
+            this.Patente.ReadOnly = true;
+            this.Patente.Width = 70;
+            // 
+            // LineaMicro
+            // 
+            this.LineaMicro.HeaderText = "Linea";
+            this.LineaMicro.Name = "LineaMicro";
+            this.LineaMicro.ReadOnly = true;
+            // 
+            // Clasificacion
+            // 
+            this.Clasificacion.HeaderText = "Clasificación";
+            this.Clasificacion.Name = "Clasificacion";
+            this.Clasificacion.ReadOnly = true;
+            this.Clasificacion.Width = 70;
+            // 
+            // Chofer
+            // 
+            this.Chofer.HeaderText = "Nombre de chofer";
+            this.Chofer.Name = "Chofer";
+            this.Chofer.ReadOnly = true;
+            this.Chofer.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Chofer.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            // 
+            // VerHistorial
+            // 
+            this.VerHistorial.HeaderText = "Historial";
+            this.VerHistorial.Name = "VerHistorial";
+            this.VerHistorial.Text = "Ver historial";
+            // 
+            // Editar
+            // 
+            this.Editar.HeaderText = "Editar";
+            this.Editar.Name = "Editar";
+            this.Editar.Text = "Editar datos";
             // 
             // btnCrearMicro
             // 
@@ -125,46 +165,6 @@
             this.ventanaInicio.Text = "Ventana de inicio";
             this.ventanaInicio.Click += new System.EventHandler(this.ventanaInicio_Click);
             // 
-            // Patente
-            // 
-            this.Patente.HeaderText = "Patente";
-            this.Patente.Name = "Patente";
-            this.Patente.ReadOnly = true;
-            this.Patente.Width = 70;
-            // 
-            // LineaMicro
-            // 
-            this.LineaMicro.HeaderText = "Linea";
-            this.LineaMicro.Name = "LineaMicro";
-            this.LineaMicro.ReadOnly = true;
-            // 
-            // Clasificacion
-            // 
-            this.Clasificacion.HeaderText = "Clasificación";
-            this.Clasificacion.Name = "Clasificacion";
-            this.Clasificacion.ReadOnly = true;
-            this.Clasificacion.Width = 70;
-            // 
-            // Chofer
-            // 
-            this.Chofer.HeaderText = "Nombre de chofer";
-            this.Chofer.Name = "Chofer";
-            this.Chofer.ReadOnly = true;
-            this.Chofer.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.Chofer.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // VerHistorial
-            // 
-            this.VerHistorial.HeaderText = "Historial";
-            this.VerHistorial.Name = "VerHistorial";
-            this.VerHistorial.Text = "Ver historial";
-            // 
-            // Editar
-            // 
-            this.Editar.HeaderText = "Editar";
-            this.Editar.Name = "Editar";
-            this.Editar.Text = "Editar datos";
-            // 
             // AdminMicros
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -175,6 +175,8 @@
             this.Controls.Add(this.datagridMicros);
             this.Name = "AdminMicros";
             this.Text = "AdminMicros";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AdminMicros_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AdminMicros_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.datagridMicros)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

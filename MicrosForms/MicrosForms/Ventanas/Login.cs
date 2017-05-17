@@ -21,11 +21,12 @@ namespace MicrosForms.Ventanas
         public Login()
         {
             InitializeComponent();
+            MapController.CargarRecursos();
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            string nombre = txtEmail.Text;
+            string mail = txtEmail.Text;
             string pass = txtPassword.Text;
 
             if(!ConnectionTester.IsConnectionActive())
@@ -41,6 +42,11 @@ namespace MicrosForms.Ventanas
 
             if (Usuario.VerificarExistenciaUsusuarios() == false)
             {
+                MessageBox.Show("No hay usuarios creados en la base de datos. Se procederá a crear el primer adminsitrador.");
+
+                txtEmail.Text = "";
+                txtPassword.Text = "";
+
                 this.Enabled = false;
                 var form = new CrearPrimerUsuario();
 
@@ -51,8 +57,10 @@ namespace MicrosForms.Ventanas
             }
             else
             {
-                if (Usuario.EsPasswordValida(nombre, pass))
+                if (Usuario.EsPasswordValida(mail, pass))
                 {
+                    txtEmail.Text = "";
+                    txtPassword.Text = "";
                     FormManager.CambiarForm(this, new InicioReal());
                 }
                 else
@@ -61,6 +69,12 @@ namespace MicrosForms.Ventanas
                 }
             }
 
+        }
+
+        private void Login_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            FormManager.cerrandoAplicacion = true;
+            Application.Exit();
         }
     }
 }

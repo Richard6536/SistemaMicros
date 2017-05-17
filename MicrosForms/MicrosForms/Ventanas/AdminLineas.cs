@@ -106,91 +106,6 @@ namespace MicrosForms.Ventanas
             }
         }
 
-        void CargarRutaEnMapa(Ruta _ruta)
-        {
-            if (!ConnectionTester.IsConnectionActive())
-                return;
-
-
-            List<Paradero> paraderos = Ruta.ObtenerParaderosRuta(_ruta);
-            List<Coordenada> vertices = Ruta.ObtenerVerticesDeInicioAFin(_ruta);
-
-
-            foreach (Paradero p in paraderos) //Crear paraderos en el mapa
-            {
-                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Latitud, p.Longitud), GMarkerGoogleType.purple_small);
-
-                paraderosOverlay.Markers.Add(paraderoMarker);
-            }
-
-            GMarkerGoogleType iconoMarcador = GMarkerGoogleType.arrow;
-            string toolTipText = "";
-            Coordenada actual;
-            Coordenada siguiente;
-            for (int i = 0; i < vertices.Count - 1; i++)
-            {
-
-                actual = vertices[i];
-                siguiente = vertices[i + 1];
-
-
-                if (i == 0)
-                {
-                    //Crea marcador al inicio de la ruta
-                    if (_ruta.TipoDeRuta == Ruta.TipoRuta.ida)
-                    {
-                        gmapController.Position = new PointLatLng(actual.Latitud, actual.Longitud); //enfoca el mapa en el inicio
-                        iconoMarcador = GMarkerGoogleType.red_small; //icono ida
-                        toolTipText = "Inicio ruta ida";
-                    }
-                    else
-                    {
-                        iconoMarcador = GMarkerGoogleType.blue_small; //icono vuelta
-                        toolTipText = "Inicio ruta vuelta";
-                    }
-
-                    GMarkerGoogle InicioMarker = new GMarkerGoogle(new PointLatLng(actual.Latitud, actual.Longitud), iconoMarcador);
-                    InicioMarker.ToolTipText = toolTipText;
-
-                    otrosMarkersOverlay.Markers.Add(InicioMarker);
-                } 
-
-                if (i == vertices.Count - 2)
-                {
-                    //Crea marcador al final de la ruta
-                    //solo en la de ruta de vuelta
-                    if (_ruta.TipoDeRuta == Ruta.TipoRuta.vuelta)
-                    {
-                        
-                        iconoMarcador = GMarkerGoogleType.blue_small; //icono ida
-                        toolTipText = "Final ruta vuelta";
-
-                        GMarkerGoogle FinalMarker = new GMarkerGoogle(new PointLatLng(siguiente.Latitud, siguiente.Longitud), iconoMarcador);
-                        FinalMarker.ToolTipText = toolTipText;
-
-                        otrosMarkersOverlay.Markers.Add(FinalMarker);
-                    }
-
-                } 
-
-                List<PointLatLng> puntos = new List<PointLatLng>();
-                puntos.Add(new PointLatLng(actual.Latitud, actual.Longitud));
-                puntos.Add(new PointLatLng(siguiente.Latitud, siguiente.Longitud));
-
-                GMapRoute ruta = new GMapRoute(puntos, "asdf");
-
-                if (_ruta.TipoDeRuta == Ruta.TipoRuta.ida)
-                    ruta.Stroke = new Pen(Color.Red, 4);
-                if (_ruta.TipoDeRuta == Ruta.TipoRuta.vuelta)
-                    ruta.Stroke = new Pen(Color.Blue, 4);
-
-                previewOverlay.Routes.Add(ruta);
-            }
-
-            RefreshMap();
-
-        }
-
         void DebugMarker(Coordenada _coordenda)
         {
 
@@ -228,6 +143,40 @@ namespace MicrosForms.Ventanas
             }
 
         }
+
+
+        void CargarLineaActual()
+        {
+            lineaActual = Linea.BuscarLinea(Convert.ToInt32(cmbLinea.SelectedValue));
+
+            Ruta rIda = Ruta.BuscarPorId(lineaActual.RutaIdaId.Value);
+            Ruta rVuelta = Ruta.BuscarPorId(lineaActual.RutaVueltaId.Value);
+
+
+            MapController.CargarRutaEnMapa(rIda, gmapController, paraderosOverlay, previewOverlay, Color.Red);
+            MapController.CargarRutaEnMapa(rVuelta, gmapController, paraderosOverlay, previewOverlay, Color.Blue);
+            List<Coordenada> coor = Ruta.ObtenerVerticesDeInicioAFin(rIda);
+            MapController.CrearMarcadorInicio(coor, gmapController, otrosMarkersOverlay, "Inicio ruta de Ida", GMarkerGoogleType.red);
+
+            lblRutaIda.Text = "Ruta de ida actual: " + rIda.Nombre;
+            lblRutaVuelta.Text = "Ruta de vuelta actual: " + rVuelta.Nombre;
+
+            List<Ruta> rutasIda = Linea.ObtenerRutasPorTipo(lineaActual.Id, Ruta.TipoRuta.ida);
+            List<Ruta> rutasVuelta = Linea.ObtenerRutasPorTipo(lineaActual.Id, Ruta.TipoRuta.vuelta);
+
+            cmbRutaIda.DataSource = rutasIda;
+            cmbRutaIda.ValueMember = "Id";
+            cmbRutaIda.DisplayMember = "Nombre";
+            cmbRutaIda.SelectedValue = lineaActual.RutaIdaId;
+
+            cmbRutaVuelta.DataSource = rutasVuelta;
+            cmbRutaVuelta.ValueMember = "Id";
+            cmbRutaVuelta.DisplayMember = "Nombre";
+            cmbRutaVuelta.SelectedValue = lineaActual.RutaVueltaId;
+        }
+
+
+
 
         private void cmbLinea_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -279,33 +228,6 @@ namespace MicrosForms.Ventanas
 
         }
 
-        void CargarLineaActual()
-        {
-            lineaActual = Linea.BuscarLinea(Convert.ToInt32(cmbLinea.SelectedValue));
-
-            Ruta rIda = Ruta.BuscarPorId(lineaActual.RutaIdaId.Value);
-            Ruta rVuelta = Ruta.BuscarPorId(lineaActual.RutaVueltaId.Value);
-
-            CargarRutaEnMapa(rIda);
-            CargarRutaEnMapa(rVuelta);
-
-            lblRutaIda.Text = "Ruta de ida actual: " + rIda.Nombre;
-            lblRutaVuelta.Text = "Ruta de vuelta actual: " + rVuelta.Nombre;
-
-            List<Ruta> rutasIda = Linea.ObtenerRutasPorTipo(lineaActual.Id, Ruta.TipoRuta.ida);
-            List<Ruta> rutasVuelta = Linea.ObtenerRutasPorTipo(lineaActual.Id, Ruta.TipoRuta.vuelta);
-
-            cmbRutaIda.DataSource = rutasIda;
-            cmbRutaIda.ValueMember = "Id";
-            cmbRutaIda.DisplayMember = "Nombre";
-            cmbRutaIda.SelectedValue = lineaActual.RutaIdaId;
-
-            cmbRutaVuelta.DataSource = rutasVuelta;
-            cmbRutaVuelta.ValueMember = "Id";
-            cmbRutaVuelta.DisplayMember = "Nombre";
-            cmbRutaVuelta.SelectedValue = lineaActual.RutaVueltaId;
-        }
-
         private void btnCrearIda_Click(object sender, EventArgs e)
         {
             if (lineaActual == null)
@@ -344,6 +266,7 @@ namespace MicrosForms.Ventanas
         {
             cmbIdaSwitch = true;
         }
+
         private void cmbRutaIda_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -355,11 +278,15 @@ namespace MicrosForms.Ventanas
                     paraderosOverlay.Clear();
                     otrosMarkersOverlay.Clear();
 
-                    Ruta rutaIda = Ruta.BuscarPorId((int)cmbRutaIda.SelectedValue);
+                    Ruta rIda = Ruta.BuscarPorId((int)cmbRutaIda.SelectedValue);
                     Ruta rVuelta = Ruta.BuscarPorId(lineaActual.RutaVueltaId.Value);
 
-                    CargarRutaEnMapa(rutaIda);
-                    CargarRutaEnMapa(rVuelta);
+                    MapController.CargarRutaEnMapa(rIda, gmapController, paraderosOverlay, previewOverlay, Color.Red);
+                    MapController.CargarRutaEnMapa(rVuelta, gmapController, paraderosOverlay, previewOverlay, Color.Blue);
+                    List<Coordenada> coor = Ruta.ObtenerVerticesDeInicioAFin(rIda);
+                    MapController.CrearMarcadorInicio(coor, gmapController, otrosMarkersOverlay, "Inicio ruta de Ida", GMarkerGoogleType.red);
+
+
 
                     cmbIdaSwitch = false;
                 }
@@ -414,11 +341,15 @@ namespace MicrosForms.Ventanas
                     paraderosOverlay.Clear();
                     otrosMarkersOverlay.Clear();
 
-                    Ruta rutaIda = Ruta.BuscarPorId(lineaActual.RutaIdaId.Value);
+                    Ruta rIda = Ruta.BuscarPorId(lineaActual.RutaIdaId.Value);
                     Ruta rVuelta = Ruta.BuscarPorId((int)cmbRutaVuelta.SelectedValue);
 
-                    CargarRutaEnMapa(rutaIda);
-                    CargarRutaEnMapa(rVuelta);
+                    MapController.CargarRutaEnMapa(rIda, gmapController, paraderosOverlay, previewOverlay, Color.Red);
+                    MapController.CargarRutaEnMapa(rVuelta, gmapController, paraderosOverlay, previewOverlay, Color.Blue);
+                    List<Coordenada> coor = Ruta.ObtenerVerticesDeInicioAFin(rIda);
+                    MapController.CrearMarcadorInicio(coor, gmapController, otrosMarkersOverlay, "Inicio ruta de Ida", GMarkerGoogleType.red);
+
+
 
                     cmbVueltaSwitch = false;
                 }
@@ -519,5 +450,27 @@ namespace MicrosForms.Ventanas
                 cmbLinea.SelectedValue = idLinea;
             }
         }
+
+        private void AdminLineas_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (FormManager.cerrandoAplicacion == true)
+                return;
+
+            var res = MessageBox.Show(this, "¿Seguro desea cerrar la aplicación?", "Exit",
+            MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            if (res != DialogResult.Yes)
+            {
+                e.Cancel = true;
+                return;
+            }
+            FormManager.cerrandoAplicacion = true;
+        }
+
+        private void AdminLineas_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
+
+
     }
 }

@@ -49,7 +49,7 @@ namespace RestService2
             mensajeParametros.Parameter<string>("Nombre");
 
             ActionConfiguration esValido = builder.Entity<Usuario>().Collection.Action("EsValido");
-            esValido.Returns<bool>();
+            esValido.ReturnsFromEntitySet<Usuario>("Usuarios");
             esValido.Parameter<string>("Email");
             esValido.Parameter<string>("Password");
 

@@ -19,7 +19,10 @@ namespace MicrosForms
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Login());
+
+            var formInicio = new Login();
+            formInicio.StartPosition = FormStartPosition.CenterScreen;
+            Application.Run(formInicio);
         }
     }
 }

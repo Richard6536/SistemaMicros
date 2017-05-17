@@ -28,98 +28,56 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.gMapControl1 = new GMap.NET.WindowsForms.GMapControl();
-            this.trackBarZoom = new System.Windows.Forms.TrackBar();
-            this.lblZoom = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.gmapController = new GMap.NET.WindowsForms.GMapControl();
+            this.cmbLinea = new System.Windows.Forms.ComboBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.administrarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.líneasToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.microsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.usuariosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cerrarSesiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarZoom)).BeginInit();
+            this.label1 = new System.Windows.Forms.Label();
+            this.datagridMicros = new System.Windows.Forms.DataGridView();
+            this.label2 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.datagridMicros)).BeginInit();
             this.SuspendLayout();
             // 
-            // gMapControl1
+            // gmapController
             // 
-            this.gMapControl1.Bearing = 0F;
-            this.gMapControl1.CanDragMap = true;
-            this.gMapControl1.EmptyTileColor = System.Drawing.Color.Navy;
-            this.gMapControl1.GrayScaleMode = false;
-            this.gMapControl1.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
-            this.gMapControl1.LevelsKeepInMemmory = 5;
-            this.gMapControl1.Location = new System.Drawing.Point(12, 51);
-            this.gMapControl1.MarkersEnabled = true;
-            this.gMapControl1.MaxZoom = 2;
-            this.gMapControl1.MinZoom = 2;
-            this.gMapControl1.MouseWheelZoomEnabled = true;
-            this.gMapControl1.MouseWheelZoomType = GMap.NET.MouseWheelZoomType.MousePositionAndCenter;
-            this.gMapControl1.Name = "gMapControl1";
-            this.gMapControl1.NegativeMode = false;
-            this.gMapControl1.PolygonsEnabled = true;
-            this.gMapControl1.RetryLoadTile = 0;
-            this.gMapControl1.RoutesEnabled = true;
-            this.gMapControl1.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
-            this.gMapControl1.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
-            this.gMapControl1.ShowTileGridLines = false;
-            this.gMapControl1.Size = new System.Drawing.Size(455, 292);
-            this.gMapControl1.TabIndex = 0;
-            this.gMapControl1.Zoom = 0D;
+            this.gmapController.Bearing = 0F;
+            this.gmapController.CanDragMap = true;
+            this.gmapController.EmptyTileColor = System.Drawing.Color.Navy;
+            this.gmapController.GrayScaleMode = false;
+            this.gmapController.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
+            this.gmapController.LevelsKeepInMemmory = 5;
+            this.gmapController.Location = new System.Drawing.Point(12, 51);
+            this.gmapController.MarkersEnabled = true;
+            this.gmapController.MaxZoom = 2;
+            this.gmapController.MinZoom = 2;
+            this.gmapController.MouseWheelZoomEnabled = true;
+            this.gmapController.MouseWheelZoomType = GMap.NET.MouseWheelZoomType.MousePositionAndCenter;
+            this.gmapController.Name = "gmapController";
+            this.gmapController.NegativeMode = false;
+            this.gmapController.PolygonsEnabled = true;
+            this.gmapController.RetryLoadTile = 0;
+            this.gmapController.RoutesEnabled = true;
+            this.gmapController.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
+            this.gmapController.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
+            this.gmapController.ShowTileGridLines = false;
+            this.gmapController.Size = new System.Drawing.Size(455, 337);
+            this.gmapController.TabIndex = 0;
+            this.gmapController.Zoom = 0D;
             // 
-            // trackBarZoom
+            // cmbLinea
             // 
-            this.trackBarZoom.Location = new System.Drawing.Point(12, 378);
-            this.trackBarZoom.Name = "trackBarZoom";
-            this.trackBarZoom.Size = new System.Drawing.Size(383, 45);
-            this.trackBarZoom.TabIndex = 1;
-            // 
-            // lblZoom
-            // 
-            this.lblZoom.AutoSize = true;
-            this.lblZoom.Location = new System.Drawing.Point(13, 350);
-            this.lblZoom.Name = "lblZoom";
-            this.lblZoom.Size = new System.Drawing.Size(34, 13);
-            this.lblZoom.TabIndex = 2;
-            this.lblZoom.Text = "Zoom";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(488, 67);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(228, 21);
-            this.comboBox1.TabIndex = 3;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(485, 51);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(57, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Filtrar linea";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(485, 113);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(84, 13);
-            this.label2.TabIndex = 5;
-            this.label2.Text = "Seleccionar ruta";
-            // 
-            // comboBox2
-            // 
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(488, 143);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(228, 21);
-            this.comboBox2.TabIndex = 6;
+            this.cmbLinea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbLinea.FormattingEnabled = true;
+            this.cmbLinea.Location = new System.Drawing.Point(494, 81);
+            this.cmbLinea.Name = "cmbLinea";
+            this.cmbLinea.Size = new System.Drawing.Size(228, 21);
+            this.cmbLinea.TabIndex = 3;
+            this.cmbLinea.SelectedIndexChanged += new System.EventHandler(this.cmbLinea_SelectedIndexChanged_1);
             // 
             // menuStrip1
             // 
@@ -145,21 +103,21 @@
             // líneasToolStripMenuItem
             // 
             this.líneasToolStripMenuItem.Name = "líneasToolStripMenuItem";
-            this.líneasToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.líneasToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.líneasToolStripMenuItem.Text = "Líneas";
             this.líneasToolStripMenuItem.Click += new System.EventHandler(this.líneasToolStripMenuItem_Click);
             // 
             // microsToolStripMenuItem
             // 
             this.microsToolStripMenuItem.Name = "microsToolStripMenuItem";
-            this.microsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.microsToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.microsToolStripMenuItem.Text = "Micros";
             this.microsToolStripMenuItem.Click += new System.EventHandler(this.microsToolStripMenuItem_Click);
             // 
             // usuariosToolStripMenuItem
             // 
             this.usuariosToolStripMenuItem.Name = "usuariosToolStripMenuItem";
-            this.usuariosToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.usuariosToolStripMenuItem.Size = new System.Drawing.Size(119, 22);
             this.usuariosToolStripMenuItem.Text = "Usuarios";
             this.usuariosToolStripMenuItem.Click += new System.EventHandler(this.usuariosToolStripMenuItem_Click);
             // 
@@ -171,24 +129,51 @@
             this.cerrarSesiónToolStripMenuItem.Text = "Cerrar sesión";
             this.cerrarSesiónToolStripMenuItem.Click += new System.EventHandler(this.cerrarSesiónToolStripMenuItem_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(494, 62);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(40, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Líneas";
+            // 
+            // datagridMicros
+            // 
+            this.datagridMicros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.datagridMicros.Location = new System.Drawing.Point(494, 133);
+            this.datagridMicros.Name = "datagridMicros";
+            this.datagridMicros.Size = new System.Drawing.Size(228, 255);
+            this.datagridMicros.TabIndex = 9;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(494, 114);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(38, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Micros";
+            // 
             // InicioReal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(764, 428);
-            this.Controls.Add(this.comboBox2);
             this.Controls.Add(this.label2);
+            this.Controls.Add(this.datagridMicros);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.lblZoom);
-            this.Controls.Add(this.trackBarZoom);
-            this.Controls.Add(this.gMapControl1);
+            this.Controls.Add(this.cmbLinea);
+            this.Controls.Add(this.gmapController);
             this.Controls.Add(this.menuStrip1);
             this.Name = "InicioReal";
             this.Text = "InicioReal";
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarZoom)).EndInit();
+            this.Activated += new System.EventHandler(this.InicioReal_Activated);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.InicioReal_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.InicioReal_FormClosed);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.datagridMicros)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -196,18 +181,16 @@
 
         #endregion
 
-        private GMap.NET.WindowsForms.GMapControl gMapControl1;
-        private System.Windows.Forms.TrackBar trackBarZoom;
-        private System.Windows.Forms.Label lblZoom;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox comboBox2;
+        private GMap.NET.WindowsForms.GMapControl gmapController;
+        private System.Windows.Forms.ComboBox cmbLinea;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem administrarToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem líneasToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem microsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem usuariosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cerrarSesiónToolStripMenuItem;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.DataGridView datagridMicros;
+        private System.Windows.Forms.Label label2;
     }
 }

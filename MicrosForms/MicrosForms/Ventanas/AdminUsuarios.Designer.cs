@@ -137,14 +137,14 @@
             // líneasToolStripMenuItem
             // 
             this.líneasToolStripMenuItem.Name = "líneasToolStripMenuItem";
-            this.líneasToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.líneasToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.líneasToolStripMenuItem.Text = "Líneas";
             this.líneasToolStripMenuItem.Click += new System.EventHandler(this.líneasToolStripMenuItem_Click);
             // 
             // microsToolStripMenuItem
             // 
             this.microsToolStripMenuItem.Name = "microsToolStripMenuItem";
-            this.microsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.microsToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
             this.microsToolStripMenuItem.Text = "Micros";
             this.microsToolStripMenuItem.Click += new System.EventHandler(this.microsToolStripMenuItem_Click);
             // 
@@ -204,6 +204,8 @@
             this.Controls.Add(this.dataGridUsuarios);
             this.Name = "AdminUsuarios";
             this.Text = "AdminUsuarios";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AdminUsuarios_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AdminUsuarios_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridUsuarios)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();

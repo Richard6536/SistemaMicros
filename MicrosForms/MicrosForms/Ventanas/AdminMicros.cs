@@ -147,5 +147,27 @@ namespace MicrosForms.Ventanas
             datagridMicros.Rows[0].Selected = false;
             datagridMicros.Rows[index].Selected = true;
         }
+
+        private void AdminMicros_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (FormManager.cerrandoAplicacion == true)
+                return;
+
+            var res = MessageBox.Show(this, "¿Seguro desea cerrar la aplicación?", "Exit",
+            MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            if (res != DialogResult.Yes)
+            {
+                e.Cancel = true;
+                return;
+            }
+            FormManager.cerrandoAplicacion = true;
+        }
+
+        private void AdminMicros_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
+        }
+
+
     }
 }

@@ -44,8 +44,10 @@ namespace RestService2.Controllers
         [HttpPost]
         public Usuario EsValido(ODataActionParameters parameters)
         {
+            Usuario userFallido = new Usuario() { Id = -1 };
+
             if (parameters == null)
-                return null;
+                return userFallido;
 
             string mail = (string)parameters["Email"];
             string pass = (string)parameters["Password"];
@@ -53,14 +55,14 @@ namespace RestService2.Controllers
             Usuario user = db.Usuario.Where(u => u.Email == mail).FirstOrDefault();
 
             if (user == null)
-                return null;
+                return userFallido;
 
             bool valido = PasswordHash.ValidatePassword(pass, user.Password);
 
             if (valido)
                 return user;
             else
-                return null;
+                return userFallido;
         }
 
 
@@ -116,14 +118,15 @@ namespace RestService2.Controllers
         [HttpPost]
         public Micro ObtenerMicro([FromODataUri] int key)
         {
+            Micro microFallida = new Micro() { Id = -1 };
             try
-            {
+            {           
                 Usuario user = db.Usuario.Where(u => u.Id == key).FirstOrDefault();
                 return user.MicroChofer1.Micro1;
             }
             catch
             {
-                return null;
+                return microFallida;
             }
             
         }

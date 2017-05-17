@@ -339,6 +339,8 @@
             this.Controls.Add(this.btnCrearLinea);
             this.Name = "AdminLineas";
             this.Text = "AdminLineas";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AdminLineas_FormClosing);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.AdminLineas_FormClosed);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);

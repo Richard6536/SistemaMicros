@@ -10,6 +10,8 @@ namespace MicrosForms.Classes
 {
     public class FormManager
     {
+        public static bool cerrandoAplicacion = false;
+
         public static void CambiarForm(Form current, Form next)
         {
             

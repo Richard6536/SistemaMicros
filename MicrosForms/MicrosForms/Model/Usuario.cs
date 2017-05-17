@@ -199,14 +199,14 @@ namespace MicrosForms.Model
             }
         }
 
-        public static bool EsPasswordValida(String _nombre, String _pass)
+        public static bool EsPasswordValida(String _mail, String _pass)
         {
 
             try
             {
                 var BD = new MicroSystemContext();
 
-                var usuarioSeleccionado = BD.Usuarios.Where(u => u.Nombre == _nombre).FirstOrDefault();
+                var usuarioSeleccionado = BD.Usuarios.Where(u => u.Email == _mail).FirstOrDefault();
 
                 bool resultPass = PasswordHash.ValidatePassword(_pass, usuarioSeleccionado.Password);
 
