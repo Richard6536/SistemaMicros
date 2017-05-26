@@ -269,7 +269,7 @@ namespace MicrosForms.Ventanas.Creaciones
             if(posVerticesIda.Last() != puntoFinal.Position
                 && distancia < 1)
             {
-                posVerticesIda.Add(new PointLatLng(puntoFinal.Position.Lat, puntoFinal.Position.Lng));
+                posVerticesIda[posVerticesIda.Count - 1] = new PointLatLng(puntoFinal.Position.Lat, puntoFinal.Position.Lng);
             }
 
             List<Coordenada> coor = MapController.CrearVertices(posVerticesIda);
