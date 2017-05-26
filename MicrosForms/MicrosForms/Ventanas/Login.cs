@@ -21,7 +21,6 @@ namespace MicrosForms.Ventanas
         public Login()
         {
             InitializeComponent();
-            MapController.CargarRecursos();
         }
 
         private void btnLogin_Click(object sender, EventArgs e)

@@ -264,6 +264,14 @@ namespace MicrosForms.Ventanas.Creaciones
             paraderosIdaOverlay.Clear();
             previewIdaOverlay.Clear();
 
+            double distancia = MapController.DistanciaEntrePuntos(posVerticesIda.Last(), puntoFinal.Position);
+
+            if(posVerticesIda.Last() != puntoFinal.Position
+                && distancia < 1)
+            {
+                posVerticesIda.Add(new PointLatLng(puntoFinal.Position.Lat, puntoFinal.Position.Lng));
+            }
+
             List<Coordenada> coor = MapController.CrearVertices(posVerticesIda);
             MapController.CargarPuntosEnMapa(posVerticesIda, markParaderosIda, gmapController, paraderosIdaOverlay, previewIdaOverlay, Color.Red);
             MapController.CrearMarcadorInicio(coor, gmapController, otrosMarkersIdaOverlay, "Inicio ruta de Ida", GMarkerGoogleType.red);

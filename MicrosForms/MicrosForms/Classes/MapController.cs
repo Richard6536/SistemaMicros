@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Device.Location;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -22,15 +23,7 @@ namespace MicrosForms.Classes
 {
     class MapController
     {
-        public static Bitmap imagenMarcadorParadero;
-
-
-
-        public static void CargarRecursos()
-        {
-            imagenMarcadorParadero = new Bitmap(MicrosForms.Properties.Resources.marcadorParaderoMini);
-
-        }
+        //imagenMarcadorParadero = new Bitmap(MicrosForms.Properties.Resources.marcadorParaderoMini);
 
         public static void CargarRutaEnMapa(Ruta _ruta, GMapControl _gmapController, GMapOverlay _paraderosOverlay, GMapOverlay _rutaOverlay, Color _colorRuta)
         {
@@ -43,7 +36,7 @@ namespace MicrosForms.Classes
 
             foreach (Paradero p in paraderos) //Crear paraderos en el mapa
             {
-                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Latitud, p.Longitud), MapController.imagenMarcadorParadero);
+                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Latitud, p.Longitud), new Bitmap(MicrosForms.Properties.Resources.marcadorParaderoMini));
 
                 _paraderosOverlay.Markers.Add(paraderoMarker);
             }
@@ -118,7 +111,7 @@ namespace MicrosForms.Classes
 
             foreach (GMarkerGoogle p in paraderos) //Crear paraderos en el mapa
             {
-                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Position.Lat, p.Position.Lng), MapController.imagenMarcadorParadero);
+                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Position.Lat, p.Position.Lng), new Bitmap(MicrosForms.Properties.Resources.marcadorParaderoMini));
 
                 _paraderosOverlay.Markers.Add(paraderoMarker);
             }
@@ -188,7 +181,7 @@ namespace MicrosForms.Classes
         public static void CrearPosicionParadero(double _lat, double _lng, List<GMapRoute> fragmentosDeRuta, List<GMarkerGoogle> markParaderos, GMapOverlay _overlayParaderos)
         {
 
-            GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(_lat, _lng), MapController.imagenMarcadorParadero);
+            GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(_lat, _lng), new Bitmap(MicrosForms.Properties.Resources.marcadorParaderoMini));
             paraderoMarker.Tag = fragmentosDeRuta.Count + "";
             markParaderos.Add(paraderoMarker);
 
@@ -204,6 +197,20 @@ namespace MicrosForms.Classes
 
             _gmapController.Zoom++;
             _gmapController.Zoom--;
+        }
+
+        public static double DistanciaEntrePuntos(PointLatLng punto1, PointLatLng punto2)
+        {
+            GMapRoute r = new GMapRoute("asdf");
+            r.Points.Add(punto1);
+            r.Points.Add(punto2);
+
+            double distance = r.Distance;
+        
+            var sCoord = new GeoCoordinate(punto1.Lat, punto1.Lng);
+            var eCoord = new GeoCoordinate(punto2.Lat, punto2.Lng);
+
+            return sCoord.GetDistanceTo(eCoord);
         }
 
     }
