@@ -41,6 +41,8 @@ namespace MicrosForms.Model
         public double Latitud { get; set; }
         public double Longitud { get; set; }
 
+        public bool TransmitiendoPosicion { get; set; }
+
         public int? UsuarioParaderoId { get; set; }
         public int? MicroChoferId { get; set; }
         
@@ -67,6 +69,7 @@ namespace MicrosForms.Model
                 nuevoUsuario.Rol = _rol;
                 nuevoUsuario.Email = _email;
                 nuevoUsuario.Password = passEncriptada;
+                nuevoUsuario.TransmitiendoPosicion = false;
 
                 BD.Usuarios.Add(nuevoUsuario);
 

@@ -31,7 +31,7 @@ namespace RestService2.Controllers
     */
     public class MicrosController : ODataController
     {
-        private MicroSystemDBEntities3 db = new MicroSystemDBEntities3();
+        private MicroSystemDBEntities4 db = new MicroSystemDBEntities4();
 
         //Obtener posicion
         //Seleccionar paradero

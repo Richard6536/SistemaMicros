@@ -96,6 +96,10 @@
     <Compile Include="Migrations\201705031737562_calificacionDetalle.Designer.cs">
       <DependentUpon>201705031737562_calificacionDetalle.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705291917235_transmitirPos.cs" />
+    <Compile Include="Migrations\201705291917235_transmitirPos.Designer.cs">
+      <DependentUpon>201705291917235_transmitirPos.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\Coordenada.cs" />
     <Compile Include="Model\HistorialDiario.cs" />
     <Compile Include="Model\HistorialIdaVuelta.cs" />
@@ -242,6 +246,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705031737562_calificacionDetalle.resx">
       <DependentUpon>201705031737562_calificacionDetalle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705291917235_transmitirPos.resx">
+      <DependentUpon>201705291917235_transmitirPos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

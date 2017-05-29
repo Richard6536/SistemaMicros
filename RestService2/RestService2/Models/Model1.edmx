@@ -120,6 +120,7 @@
           <Property Name="Longitud" Type="float" Nullable="false" />
           <Property Name="UsuarioParaderoId" Type="int" />
           <Property Name="MicroChoferId" Type="int" />
+          <Property Name="TransmitiendoPosicion" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="UsuarioParadero">
           <Key>
@@ -638,6 +639,7 @@
           <Property Name="Longitud" Type="Double" Nullable="false" />
           <Property Name="UsuarioParaderoId" Type="Int32" />
           <Property Name="MicroChoferId" Type="Int32" />
+          <Property Name="TransmitiendoPosicion" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="MicroChofer" Relationship="Self.FK_dbo_MicroChofer_dbo_Usuario_ChoferId" FromRole="Usuario" ToRole="MicroChofer" />
           <NavigationProperty Name="MicroChofer1" Relationship="Self.FK_dbo_Usuario_dbo_MicroChofer_MicroChoferId" FromRole="Usuario" ToRole="MicroChofer" />
           <NavigationProperty Name="UsuarioParadero" Relationship="Self.FK_dbo_Usuario_dbo_UsuarioParadero_UsuarioParaderoId" FromRole="Usuario" ToRole="UsuarioParadero" />
@@ -916,7 +918,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="MicroSystemDBEntities3" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="MicroSystemDBEntities4" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Coordenada" EntityType="Self.Coordenada" />
           <EntitySet Name="HistorialDiario" EntityType="Self.HistorialDiario" />
           <EntitySet Name="HistorialIdaVuelta" EntityType="Self.HistorialIdaVuelta" />
@@ -1015,7 +1017,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="MicroSystemDBModelStoreContainer" CdmEntityContainer="MicroSystemDBEntities3">
+        <EntityContainerMapping StorageEntityContainer="MicroSystemDBModelStoreContainer" CdmEntityContainer="MicroSystemDBEntities4">
           <EntitySetMapping Name="Coordenada">
             <EntityTypeMapping TypeName="MicroSystemDBModel.Coordenada">
               <MappingFragment StoreEntitySet="Coordenada">
@@ -1140,6 +1142,7 @@
                 <ScalarProperty Name="Longitud" ColumnName="Longitud" />
                 <ScalarProperty Name="UsuarioParaderoId" ColumnName="UsuarioParaderoId" />
                 <ScalarProperty Name="MicroChoferId" ColumnName="MicroChoferId" />
+                <ScalarProperty Name="TransmitiendoPosicion" ColumnName="TransmitiendoPosicion" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

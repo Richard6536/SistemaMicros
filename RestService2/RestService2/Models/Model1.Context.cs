@@ -13,10 +13,10 @@ namespace RestService2.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class MicroSystemDBEntities3 : DbContext
+    public partial class MicroSystemDBEntities4 : DbContext
     {
-        public MicroSystemDBEntities3()
-            : base("name=MicroSystemDBEntities3")
+        public MicroSystemDBEntities4()
+            : base("name=MicroSystemDBEntities4")
         {
         }
     

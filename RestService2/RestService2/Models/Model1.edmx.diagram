@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="4ac86997579647be8ce979ad5ad18e5f" Name="Diagram1">
+      <Diagram DiagramId="4b7af882ea5c410a9d43ad717c0aa283" Name="Diagram1">
         <EntityTypeShape EntityType="MicroSystemDBModel.Coordenada" Width="1.5" PointX="1.5" PointY="9.5" IsExpanded="true" />
         <EntityTypeShape EntityType="MicroSystemDBModel.HistorialDiario" Width="1.5" PointX="7.5" PointY="5.5" IsExpanded="true" />
         <EntityTypeShape EntityType="MicroSystemDBModel.HistorialIdaVuelta" Width="1.5" PointX="9.75" PointY="6" IsExpanded="true" />
@@ -15,8 +15,8 @@
         <EntityTypeShape EntityType="MicroSystemDBModel.MicroParadero" Width="1.5" PointX="3" PointY="6.125" IsExpanded="true" />
         <EntityTypeShape EntityType="MicroSystemDBModel.Paradero" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
         <EntityTypeShape EntityType="MicroSystemDBModel.Ruta" Width="1.5" PointX="1.5" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.Usuario" Width="1.5" PointX="9.75" PointY="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.UsuarioParadero" Width="1.5" PointX="12" PointY="2.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.Usuario" Width="1.5" PointX="9.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.UsuarioParadero" Width="1.5" PointX="12" PointY="2.75" IsExpanded="true" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId" ManuallyRouted="false" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_Ruta_dbo_Coordenada_InicioId" ManuallyRouted="false" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_HistorialDiario_dbo_Micro_IdMicro" ManuallyRouted="false" />

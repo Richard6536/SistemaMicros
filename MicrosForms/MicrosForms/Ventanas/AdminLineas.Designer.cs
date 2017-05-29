@@ -53,6 +53,7 @@
             this.btnAsignarVuelta = new System.Windows.Forms.Button();
             this.btnCambiarNombreLinea = new System.Windows.Forms.Button();
             this.btnVerMicros = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -375,5 +376,6 @@
         private System.Windows.Forms.Button btnAsignarVuelta;
         private System.Windows.Forms.Button btnCambiarNombreLinea;
         private System.Windows.Forms.Button btnVerMicros;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }

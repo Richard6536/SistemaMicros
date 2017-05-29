@@ -67,6 +67,9 @@ namespace RestService2
             actualizarPosicion.Parameter<double>("Latitud");
             actualizarPosicion.Parameter<double>("Longitud");
 
+            ActionConfiguration detenerPosicion = builder.Entity<Usuario>().Action("DetenerPosicionUpdate");
+            detenerPosicion.Returns<IHttpActionResult>();
+
             ActionConfiguration obtenerMicro = builder.Entity<Usuario>().Action("ObtenerMicro");
             obtenerMicro.ReturnsFromEntitySet<Micro>("Micros");
 

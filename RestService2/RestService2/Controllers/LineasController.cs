@@ -28,7 +28,7 @@ namespace RestService2.Controllers
     */
     public class LineasController : ODataController
     {
-        private MicroSystemDBEntities3 db = new MicroSystemDBEntities3();
+        private MicroSystemDBEntities4 db = new MicroSystemDBEntities4();
 
 
 

@@ -29,12 +29,13 @@ namespace RestService2.Controllers
     */
     public class UsuariosController : ODataController
     {
-        private MicroSystemDBEntities3 db = new MicroSystemDBEntities3();
+        private MicroSystemDBEntities4 db = new MicroSystemDBEntities4();
 
         //Validar
         //Editar
         //existe mail
         //actualizar posicion
+        //detener actualizacion de posicion
         //Obtener micro de chofer
         //Seleccionar paradero (id paradero)
         //Deseleccionar paradero (sin id)
@@ -105,9 +106,22 @@ namespace RestService2.Controllers
 
             Usuario user = db.Usuario.Where(u => u.Id == key).FirstOrDefault();
 
+            user.TransmitiendoPosicion = true;
             user.Latitud = latitud;
             user.Longitud = longitud;
 
+            db.SaveChanges();
+
+            return Ok();
+        }
+
+        //POST: odata/Usuarios(5)/DetenerPosicionUpdate
+        [HttpPost]
+        public IHttpActionResult DetenerPosicionUpdate([FromODataUri] int key)
+        {
+            Usuario user = db.Usuario.Where(u => u.Id == key).FirstOrDefault();
+
+            user.TransmitiendoPosicion = false;
             db.SaveChanges();
 
             return Ok();
