@@ -267,7 +267,7 @@ namespace MicrosForms.Ventanas.Creaciones
             double distancia = MapController.DistanciaEntrePuntos(posVerticesIda.Last(), puntoFinal.Position);
 
             if(posVerticesIda.Last() != puntoFinal.Position
-                && distancia < 1)
+                && distancia < 100)
             {
                 posVerticesIda[posVerticesIda.Count - 1] = new PointLatLng(puntoFinal.Position.Lat, puntoFinal.Position.Lng);
             }

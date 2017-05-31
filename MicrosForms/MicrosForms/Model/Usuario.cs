@@ -12,6 +12,10 @@ using System.Diagnostics;
 using MicrosForms.Classes;
 
 using System.Windows.Forms;
+using GMap.NET;
+using GMap.NET.MapProviders;
+using GMap.NET.WindowsForms;
+using GMap.NET.WindowsForms.Markers;
 
 namespace MicrosForms.Model
 {
@@ -162,7 +166,9 @@ namespace MicrosForms.Model
                 mc.Micro = microNueva;
                 mc.Chofer = user;
                 user.MicroChofer = mc;
-                microNueva.MicroChofer = mc;             
+                microNueva.MicroChofer = mc;
+
+                user.Rol = RolUsuario.Chofer;
             }
 
             if(user.MicroChoferId != null && _micro == null)
@@ -188,6 +194,8 @@ namespace MicrosForms.Model
                 microAntigua.MicroChofer = null;
                 microNueva.MicroChofer = mc;
                 mc.Micro = microNueva;
+
+                user.Rol = RolUsuario.Chofer;
             }
 
             try
@@ -337,8 +345,6 @@ namespace MicrosForms.Model
 
         }
 
-
-
         public static void Eliminar(int _id)
         {
             var BD = new MicroSystemContext();
@@ -350,7 +356,32 @@ namespace MicrosForms.Model
             BD.SaveChanges();
         }
 
+        public static List<Usuario> CalibrarMarcadoresMapa(Dictionary<int, GMarkerGoogle> _marcadores, GMapOverlay _overlay  )
+        {   
+            //actualiza la posiciond de todos (activos e inactivos)
+            //el filtrado tan solo quita o agrega los marcadores al overlay
 
+            var BD = new MicroSystemContext();
+            List<Usuario> choferesEstadoActualizado = new List<Usuario>();
+
+            foreach(KeyValuePair<int, GMarkerGoogle> par in _marcadores)
+            {
+                Usuario choferActual = BD.Usuarios.Where(u => u.Id == par.Key).FirstOrDefault();
+                choferesEstadoActualizado.Add(choferActual);
+                par.Value.Position = new PointLatLng(choferActual.Latitud, choferActual.Longitud);
+
+                if (choferActual.TransmitiendoPosicion == false)
+                {
+                    _overlay.Markers.Remove(_marcadores[choferActual.Id]);
+                }
+                else if (choferActual.TransmitiendoPosicion == true && _overlay.Markers.Contains(_marcadores[choferActual.Id]) == false)
+                {
+                    _overlay.Markers.Add(_marcadores[choferActual.Id]);
+                }
+            }
+
+            return choferesEstadoActualizado;
+        }
 
     }
 }

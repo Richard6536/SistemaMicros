@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.gmapController = new GMap.NET.WindowsForms.GMapControl();
             this.cmbLinea = new System.Windows.Forms.ComboBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -38,7 +39,10 @@
             this.cerrarSesiónToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.label1 = new System.Windows.Forms.Label();
             this.datagridMicros = new System.Windows.Forms.DataGridView();
+            this.Patente = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.NombreChofer = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label2 = new System.Windows.Forms.Label();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.datagridMicros)).BeginInit();
             this.SuspendLayout();
@@ -65,7 +69,7 @@
             this.gmapController.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
             this.gmapController.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.gmapController.ShowTileGridLines = false;
-            this.gmapController.Size = new System.Drawing.Size(455, 337);
+            this.gmapController.Size = new System.Drawing.Size(595, 365);
             this.gmapController.TabIndex = 0;
             this.gmapController.Zoom = 0D;
             // 
@@ -73,9 +77,9 @@
             // 
             this.cmbLinea.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLinea.FormattingEnabled = true;
-            this.cmbLinea.Location = new System.Drawing.Point(494, 81);
+            this.cmbLinea.Location = new System.Drawing.Point(643, 73);
             this.cmbLinea.Name = "cmbLinea";
-            this.cmbLinea.Size = new System.Drawing.Size(228, 21);
+            this.cmbLinea.Size = new System.Drawing.Size(258, 21);
             this.cmbLinea.TabIndex = 3;
             this.cmbLinea.SelectedIndexChanged += new System.EventHandler(this.cmbLinea_SelectedIndexChanged_1);
             // 
@@ -86,7 +90,7 @@
             this.cerrarSesiónToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(764, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(913, 24);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -132,7 +136,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(494, 62);
+            this.label1.Location = new System.Drawing.Point(643, 54);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(40, 13);
             this.label1.TabIndex = 8;
@@ -140,26 +144,49 @@
             // 
             // datagridMicros
             // 
+            this.datagridMicros.AllowUserToAddRows = false;
+            this.datagridMicros.AllowUserToDeleteRows = false;
             this.datagridMicros.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.datagridMicros.Location = new System.Drawing.Point(494, 133);
+            this.datagridMicros.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Patente,
+            this.NombreChofer});
+            this.datagridMicros.Location = new System.Drawing.Point(643, 125);
             this.datagridMicros.Name = "datagridMicros";
-            this.datagridMicros.Size = new System.Drawing.Size(228, 255);
+            this.datagridMicros.ReadOnly = true;
+            this.datagridMicros.Size = new System.Drawing.Size(258, 255);
             this.datagridMicros.TabIndex = 9;
+            // 
+            // Patente
+            // 
+            this.Patente.HeaderText = "Patente";
+            this.Patente.Name = "Patente";
+            this.Patente.ReadOnly = true;
+            // 
+            // NombreChofer
+            // 
+            this.NombreChofer.HeaderText = "Chofer";
+            this.NombreChofer.Name = "NombreChofer";
+            this.NombreChofer.ReadOnly = true;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(494, 114);
+            this.label2.Location = new System.Drawing.Point(643, 106);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 13);
+            this.label2.Size = new System.Drawing.Size(75, 13);
             this.label2.TabIndex = 10;
-            this.label2.Text = "Micros";
+            this.label2.Text = "Micros activas";
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // InicioReal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(764, 428);
+            this.ClientSize = new System.Drawing.Size(913, 428);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.datagridMicros);
             this.Controls.Add(this.label1);
@@ -192,5 +219,8 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridView datagridMicros;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Patente;
+        private System.Windows.Forms.DataGridViewTextBoxColumn NombreChofer;
     }
 }

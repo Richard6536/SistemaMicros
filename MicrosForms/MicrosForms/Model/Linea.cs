@@ -202,6 +202,25 @@ namespace MicrosForms.Model
             return micros;
         }
 
+        public static List<Usuario> ObtenerChoferes(int _idLinea)
+        {
+            var BD = new MicroSystemContext();
+
+            Linea linea = BD.Lineas.Where(l => l.Id == _idLinea).FirstOrDefault();
+
+            List<Usuario> choferes = new List<Usuario>();
+
+            foreach(Micro m in linea.Micros)
+            {
+                if(m.MicroChofer != null)
+                {
+                    choferes.Add(m.MicroChofer.Chofer);
+                }
+            }
+
+            return choferes;
+        }
+
         public static void EliminarLinea(int _idLinea)
         {
             //asumiendo que no hay rutas asociadas
