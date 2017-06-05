@@ -117,6 +117,10 @@ namespace RestService2
 
             #endregion
 
+            #region Linea
+            ActionConfiguration choferesActivos = builder.Entity<Linea>().Action("ObtenerChoferesActivos");
+            choferesActivos.ReturnsCollectionFromEntitySet<Usuario>("Usuarios");
+            #endregion
 
             config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
         }

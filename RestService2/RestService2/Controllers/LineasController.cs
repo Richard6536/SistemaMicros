@@ -30,6 +30,28 @@ namespace RestService2.Controllers
     {
         private MicroSystemDBEntities4 db = new MicroSystemDBEntities4();
 
+        //POST: odata/Lineas(5)/ObtenerChoferesActivos
+        //Parametros: 
+        [HttpPost]
+        public List<Usuario> ObtenerChoferesActivos([FromODataUri] int key)
+        {
+            Linea linea = db.Linea.Where(l => l.Id == key).FirstOrDefault();
+            List<Micro> microsLinea = linea.Micro.ToList();
+            List<Usuario> choferesActivos = new List<Usuario>();
+
+            for (int i = 0; i < microsLinea.Count; i++)
+            {
+                if(microsLinea[i].MicroChoferId != null)
+                {
+                    if(microsLinea[i].MicroChofer.Usuario.TransmitiendoPosicion == true)
+                    {
+                        choferesActivos.Add(microsLinea[i].MicroChofer.Usuario);
+                    }
+                }
+            }
+
+            return choferesActivos;         
+        }
 
 
         // GET: odata/Lineas
