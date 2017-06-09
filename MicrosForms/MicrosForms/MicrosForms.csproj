@@ -88,17 +88,13 @@
     <Compile Include="Classes\FormManager.cs" />
     <Compile Include="Classes\MapController.cs" />
     <Compile Include="Classes\PasswordHash.cs" />
-    <Compile Include="Migrations\201705031706319_Historiales.cs" />
-    <Compile Include="Migrations\201705031706319_Historiales.Designer.cs">
-      <DependentUpon>201705031706319_Historiales.cs</DependentUpon>
+    <Compile Include="Migrations\201706080209037_siguienteVertice.cs" />
+    <Compile Include="Migrations\201706080209037_siguienteVertice.Designer.cs">
+      <DependentUpon>201706080209037_siguienteVertice.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201705031737562_calificacionDetalle.cs" />
-    <Compile Include="Migrations\201705031737562_calificacionDetalle.Designer.cs">
-      <DependentUpon>201705031737562_calificacionDetalle.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201705291917235_transmitirPos.cs" />
-    <Compile Include="Migrations\201705291917235_transmitirPos.Designer.cs">
-      <DependentUpon>201705291917235_transmitirPos.cs</DependentUpon>
+    <Compile Include="Migrations\201706082203381_distanciaParadero.cs" />
+    <Compile Include="Migrations\201706082203381_distanciaParadero.Designer.cs">
+      <DependentUpon>201706082203381_distanciaParadero.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Coordenada.cs" />
     <Compile Include="Model\HistorialDiario.cs" />
@@ -241,14 +237,11 @@
     <Compile Include="Ventanas\Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Migrations\201705031706319_Historiales.resx">
-      <DependentUpon>201705031706319_Historiales.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201706080209037_siguienteVertice.resx">
+      <DependentUpon>201706080209037_siguienteVertice.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705031737562_calificacionDetalle.resx">
-      <DependentUpon>201705031737562_calificacionDetalle.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201705291917235_transmitirPos.resx">
-      <DependentUpon>201705291917235_transmitirPos.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201706082203381_distanciaParadero.resx">
+      <DependentUpon>201706082203381_distanciaParadero.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

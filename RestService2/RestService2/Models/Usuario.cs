@@ -28,9 +28,9 @@ namespace RestService2.Models
         public int Rol { get; set; }
         public double Latitud { get; set; }
         public double Longitud { get; set; }
+        public bool TransmitiendoPosicion { get; set; }
         public Nullable<int> UsuarioParaderoId { get; set; }
         public Nullable<int> MicroChoferId { get; set; }
-        public bool TransmitiendoPosicion { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MicroChofer> MicroChofer { get; set; }

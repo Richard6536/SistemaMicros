@@ -12,6 +12,11 @@ using System.Web.Http.OData;
 using System.Web.Http.OData.Routing;
 using RestService2.Models;
 
+using System.Device.Location;
+using GMap.NET;
+using GMap.NET.MapProviders;
+using GMap.NET.WindowsForms;
+
 namespace RestService2.Controllers
 {
     /*
@@ -29,47 +34,146 @@ namespace RestService2.Controllers
     */
     public class ParaderosController : ODataController
     {
-        private MicroSystemDBEntities4 db = new MicroSystemDBEntities4();
+        private MicroSystemDBEntities6 db = new MicroSystemDBEntities6();
 
 
         //Entregar usuarios que seleccionaron tal paradero
         //Obtener micros dirigiendose a tal paradero
 
 
-        // POST: odata/Paraderos(5)/UsuariosQueSeleccionaron
-        [HttpPost]
-        public List<Usuario> UsuariosQueSeleccionaron([FromODataUri] int key)
-        {
-            List<Usuario> usuarios = new List<Usuario>();
-            Paradero paradero = db.Paradero.Where(p => p.Id == key).FirstOrDefault();
 
+        // POST: odata/Paraderos(5)/UsuariosQueSeleccionaron
+        // nota: retorna en campo DistanciaEntre valor -1 si esque hay algun error de internet o más probablemente la ruta es imposible
+        [HttpPost]
+        public List<UsuarioParadero> UsuariosQueSeleccionaron([FromODataUri] int key)
+        {
+            Paradero paradero = db.Paradero.Where(p => p.Id == key).FirstOrDefault();
             List<UsuarioParadero> usuarioParaderos = paradero.UsuarioParadero.ToList();
 
-            foreach(UsuarioParadero up in usuarioParaderos)
+            Usuario user;
+
+            foreach(UsuarioParadero usuarioParadero in usuarioParaderos)
             {
-                usuarios.Add(up.Usuario1);
+                //crear ruta por medio de gmap desde el usuario al paradero
+                //sacar y asignar distancia
+                //no es necesario registrar la ruta en si en ningun lado, solo distancia
+
+                user = usuarioParadero.Usuario1;
+
+                GDirections direccion;
+
+                PointLatLng puntoInicio = new PointLatLng(user.Latitud, user.Longitud);
+                PointLatLng puntoFinal = new PointLatLng(paradero.Latitud, paradero.Longitud);
+
+                var rutasDireccion = GMapProviders.GoogleMap.GetDirections(out direccion, puntoInicio, puntoFinal, false, false, true, false, false);
+
+                double distancia;
+                if (direccion == null)
+                {
+                    //problemas de internet o ruta imposible
+                    usuarioParadero.DistanciaEntre = -1;
+                    continue;
+                }
+
+                GMapRoute ultimoFragmentoRuta = new GMapRoute(direccion.Route, "rutaUserParadero");
+                distancia = ultimoFragmentoRuta.Distance;
+                usuarioParadero.DistanciaEntre = distancia;
+
             }
 
-            return usuarios;
+            return usuarioParaderos;
         }
 
-        // POST: odata/Paraderos(5)/MicrosQueSeleecionaron
+        // POST: odata/Paraderos(5)/MicrosQueSeleccionaron
         [HttpPost]
-        public List<Micro> MicrosQueSeleecionaron([FromODataUri] int key)
+        public List<MicroParadero> MicrosQueSeleccionaron([FromODataUri] int key)
         {
-            List<Micro> micros = new List<Micro>();
             Paradero paradero = db.Paradero.Where(p => p.Id == key).FirstOrDefault();
 
             List<MicroParadero> microParaderos = paradero.MicroParadero.ToList();
 
-            foreach (MicroParadero mp in microParaderos)
+            List<Coordenada> coorHastaParadero;
+            Ruta rutaIda;
+            Ruta rutaVuelta;
+            Micro micro;
+            Coordenada sigCoor;
+
+            foreach (MicroParadero microParadero in microParaderos)
             {
-                micros.Add(mp.Micro1);
+                coorHastaParadero = new List<Coordenada>();
+
+                micro = microParadero.Micro1;
+                rutaIda = micro.Linea.Ruta;
+                rutaVuelta = micro.Linea.Ruta1;
+                sigCoor = micro.Coordenada;
+
+                coorHastaParadero.Add(sigCoor);
+
+                bool encontrado = false;
+
+                while(sigCoor != null)
+                {
+                    sigCoor = sigCoor.Coordenada2;
+                    coorHastaParadero.Add(sigCoor);
+
+                    if(sigCoor.Latitud == paradero.Latitud && sigCoor.Longitud == paradero.Longitud)
+                    {
+                        encontrado = true;
+                        break;
+                    }
+                }
+
+                //si encontrado sigue en falso significa que
+                //la ruta que se reviso antes era la de ida y falta revisar la de vuelta
+                if(encontrado == false)
+                {
+                    sigCoor = rutaVuelta.Coordenada;
+                    coorHastaParadero.Add(sigCoor);
+
+                    while (sigCoor != null)
+                    {
+                        sigCoor = sigCoor.Coordenada2;
+                        coorHastaParadero.Add(sigCoor);
+
+                        if (sigCoor.Latitud == paradero.Latitud && sigCoor.Longitud == paradero.Longitud)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                //sacar distancia siguiendo la ruta entre micro y el paradero
+
+                double distMetros = DistanciaEntrePuntos(new PointLatLng(micro.MicroChofer.Usuario.Latitud, micro.MicroChofer.Usuario.Longitud),
+                                                        new PointLatLng(coorHastaParadero[0].Latitud, coorHastaParadero[0].Longitud));
+
+                for (int i = 0; i < coorHastaParadero.Count - 1; i++)
+                {
+                    distMetros += DistanciaEntrePuntos(new PointLatLng(coorHastaParadero[i].Latitud, coorHastaParadero[i].Longitud),
+                                                        new PointLatLng(coorHastaParadero[i+1].Latitud, coorHastaParadero[i+1].Longitud));
+                }
+
+                microParadero.DistanciaEntre = distMetros;
             }
 
-            return micros;
+            return microParaderos;
         }
 
+        private double DistanciaEntrePuntos(PointLatLng punto1, PointLatLng punto2)
+        {
+            //GMapRoute r = new GMapRoute("asdf");
+            //r.Points.Add(punto1);
+            //r.Points.Add(punto2);
+
+            //double distance = r.Distance;
+
+            var sCoord = new GeoCoordinate(punto1.Lat, punto1.Lng);
+            var eCoord = new GeoCoordinate(punto2.Lat, punto2.Lng);
+
+            return sCoord.GetDistanceTo(eCoord);
+        }
+
+        #region metodos originales
 
         // GET: odata/Paraderos
         [EnableQuery]
@@ -226,4 +330,7 @@ namespace RestService2.Controllers
             return db.Paradero.Count(e => e.Id == key) > 0;
         }
     }
+    #endregion
+
+
 }

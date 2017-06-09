@@ -31,7 +31,7 @@ namespace RestService2.Controllers
     */
     public class MicrosController : ODataController
     {
-        private MicroSystemDBEntities4 db = new MicroSystemDBEntities4();
+        private MicroSystemDBEntities6 db = new MicroSystemDBEntities6();
 
         //Obtener posicion
         //Seleccionar paradero
@@ -63,7 +63,7 @@ namespace RestService2.Controllers
             Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
             int idParadero = (int)parameters["IdParadero"];
             Paradero paradero = db.Paradero.Where(p => p.Id == idParadero).FirstOrDefault();
-
+            Coordenada coor = db.Coordenada.Where(c => c.Latitud == paradero.Latitud && c.Longitud == paradero.Longitud).FirstOrDefault();
             if (micro.MicroParaderoId != null)
             {
                 MicroParadero mp = micro.MicroParadero;
@@ -75,6 +75,7 @@ namespace RestService2.Controllers
             mpNuevo.Paradero = paradero;
 
             micro.MicroParadero = mpNuevo;
+            micro.Coordenada = coor;
 
             db.MicroParadero.Add(mpNuevo);
             db.SaveChanges();

@@ -13,6 +13,8 @@ using System.Web.Http.OData.Routing;
 using RestService2.Models;
 using RestService2.Classes;
 
+using System.Device.Location;
+
 namespace RestService2.Controllers
 {
     /*
@@ -29,7 +31,7 @@ namespace RestService2.Controllers
     */
     public class UsuariosController : ODataController
     {
-        private MicroSystemDBEntities4 db = new MicroSystemDBEntities4();
+        private MicroSystemDBEntities6 db = new MicroSystemDBEntities6();
 
         //Validar
         //Editar
@@ -109,6 +111,93 @@ namespace RestService2.Controllers
             user.TransmitiendoPosicion = true;
             user.Latitud = latitud;
             user.Longitud = longitud;
+
+            //Si es chofer y si esta asociado a un paradero 
+            //ir actualizando siguientes paraderos y siguientes vertices
+            if (user.Rol == 1 && user.MicroChoferId != null)
+            {
+                Micro micro = user.MicroChofer1.Micro1;
+                if (micro.MicroParaderoId != null && micro.LineaId != null)
+                {
+                    Linea lineaAsociada = micro.Linea;         
+                    Paradero sigParadero = micro.MicroParadero.Paradero;
+                    Coordenada sigCoor = micro.Coordenada;
+
+                    //Distancia desde chofer al siguiente vertice/paradero
+                    var choferCoordenada = new GeoCoordinate(user.Latitud, user.Longitud);
+                    var sigVerticeCoordenada = new GeoCoordinate(sigCoor.Latitud, sigCoor.Longitud);
+                    var sigParaderoCoordenada = new GeoCoordinate(sigParadero.Latitud, sigParadero.Longitud);
+
+                    double distSigCoor = choferCoordenada.GetDistanceTo(sigVerticeCoordenada);
+                    double distSigParadero = choferCoordenada.GetDistanceTo(sigParaderoCoordenada);
+
+                    //Obtener distancia hasta paraderoACtual y coorACtual
+                    //si esta dentro del rango hay que actualizar a los siguientes
+                    if (distSigCoor <= 30)
+                    {
+                        List<Coordenada> coordenadasLinea = ObtenerCoordenadasLinea(lineaAsociada.Id);
+                        for (int i = 0; i < coordenadasLinea.Count; i++)
+                        {
+                            if(coordenadasLinea[i].Id == sigCoor.Id)
+                            {
+                                int c = 1;
+                                Coordenada posibleSig = coordenadasLinea[i + c];
+                                double distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud,posibleSig.Longitud));
+
+                                while(distPosibleSig <= 30)
+                                {
+                                    c++;
+                                    posibleSig = coordenadasLinea[i + c];
+                                    distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
+                                }
+                                micro.Coordenada = posibleSig;
+                            }
+                        }
+
+                        //Identificar siguiente coordendada 
+                        //si la siguiente coordenada sigue dentro del rango pasar al siguiente
+                        //el primero fuera del rango se actualiza
+                    }
+
+                    if(distSigParadero <= 30)
+                    {
+                        List<Paradero> paraderosLinea = new List<Paradero>();
+                        List<Paradero> paraderosIda = lineaAsociada.Ruta.Paradero.ToList();
+                        List<Paradero> paraderosVuelta = lineaAsociada.Ruta1.Paradero.ToList();
+
+                        for (int i = 0; i < paraderosIda.Count; i++) //ida
+                        {
+                            paraderosLinea.Add(paraderosIda[i]);
+                        }
+
+                        for (int i = 0; i < paraderosVuelta.Count; i++)//ida
+                        {
+                            paraderosLinea.Add(paraderosVuelta[i]);
+                        }
+
+                        for (int i = 0; i < paraderosLinea.Count; i++)
+                        {
+                            if(sigParadero.Id == paraderosLinea[i].Id)
+                            {
+                                int c = 1;
+                                Paradero posibleSig = paraderosLinea[i + c];
+                                double distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
+
+                                while (distPosibleSig <= 30)
+                                {
+                                    c++;
+                                    posibleSig = paraderosLinea[i + c];
+                                    distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
+                                }
+
+                                micro.MicroParadero.Paradero.MicroParadero = null;
+                                micro.MicroParadero.Paradero = posibleSig;
+                            }
+                        }
+                    }
+
+                }
+            }
 
             db.SaveChanges();
 
@@ -391,6 +480,34 @@ namespace RestService2.Controllers
         {
             return db.Usuario.Count(e => e.Id == key) > 0;
         }
-#endregion
+        #endregion
+
+        #region Metodos Extra
+        public List<Coordenada> ObtenerCoordenadasLinea(int _idLinea)
+        {
+            Linea linea = db.Linea.Where(l => l.Id == _idLinea).FirstOrDefault();
+            List<Coordenada> coordenadas = new List<Coordenada>();
+            Ruta rutaIda = linea.Ruta;
+            Ruta rutaVuelta = linea.Ruta1;
+
+            Coordenada siguiente = rutaIda.Coordenada;
+
+            while (siguiente != null)
+            {
+                coordenadas.Add(siguiente);
+                siguiente = siguiente.Coordenada2;
+            }
+
+            siguiente = rutaVuelta.Coordenada;
+
+            while (siguiente != null)
+            {
+                coordenadas.Add(siguiente);
+                siguiente = siguiente.Coordenada2;
+            }
+
+            return coordenadas;
+        }
+        #endregion
     }
 }

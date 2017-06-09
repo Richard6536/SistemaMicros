@@ -28,7 +28,7 @@ namespace RestService2.Controllers
     */
     public class HistorialesDiariosController : ODataController
     {
-        private MicroSystemDBEntities4 db = new MicroSystemDBEntities4();
+        private MicroSystemDBEntities6 db = new MicroSystemDBEntities6();
 
         // GET: odata/HistorialesDiarios
         [EnableQuery]

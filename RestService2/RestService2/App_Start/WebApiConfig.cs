@@ -92,10 +92,10 @@ namespace RestService2
             #region Paradero
 
             ActionConfiguration usuariosSelecionaron = builder.Entity<Paradero>().Action("UsuariosQueSeleccionaron");
-            usuariosSelecionaron.ReturnsCollectionFromEntitySet<Usuario>("Usuarios");
+            usuariosSelecionaron.ReturnsCollectionFromEntitySet<UsuarioParadero>("UsuarioParaderos");
 
-            ActionConfiguration microsSeleccionaron = builder.Entity<Paradero>().Action("MicrosQueSeleecionaron");
-            microsSeleccionaron.ReturnsCollectionFromEntitySet<Micro>("Micros");
+            ActionConfiguration microsSeleccionaron = builder.Entity<Paradero>().Action("MicrosQueSeleccionaron");
+            microsSeleccionaron.ReturnsCollectionFromEntitySet<MicroParadero>("MicroParaderos");
 
             #endregion
 
@@ -118,7 +118,7 @@ namespace RestService2
             #endregion
 
             #region Linea
-            ActionConfiguration choferesActivos = builder.Entity<Linea>().Action("ObtenerChoferesActivos");
+            ActionConfiguration choferesActivos = builder.Entity<Linea>().Action("ObtenerChoferes");
             choferesActivos.ReturnsCollectionFromEntitySet<Usuario>("Usuarios");
             #endregion
 

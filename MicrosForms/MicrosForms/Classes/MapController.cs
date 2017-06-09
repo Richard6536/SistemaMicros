@@ -201,11 +201,6 @@ namespace MicrosForms.Classes
 
         public static double DistanciaEntrePuntos(PointLatLng punto1, PointLatLng punto2)
         {
-            GMapRoute r = new GMapRoute("asdf");
-            r.Points.Add(punto1);
-            r.Points.Add(punto2);
-
-            double distance = r.Distance;
         
             var sCoord = new GeoCoordinate(punto1.Lat, punto1.Lng);
             var eCoord = new GeoCoordinate(punto2.Lat, punto2.Lng);

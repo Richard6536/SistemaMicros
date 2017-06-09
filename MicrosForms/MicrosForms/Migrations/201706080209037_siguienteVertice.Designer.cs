@@ -7,13 +7,13 @@ namespace MicrosForms.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Historiales : IMigrationMetadata
+    public sealed partial class siguienteVertice : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Historiales));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(siguienteVertice));
         
         string IMigrationMetadata.Id
         {
-            get { return "201705031706319_Historiales"; }
+            get { return "201706080209037_siguienteVertice"; }
         }
         
         string IMigrationMetadata.Source

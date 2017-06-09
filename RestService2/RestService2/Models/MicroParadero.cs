@@ -23,6 +23,7 @@ namespace RestService2.Models
         public int Id { get; set; }
         public int ParaderoId { get; set; }
         public int MicroId { get; set; }
+        public double DistanciaEntre { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Micro> Micro { get; set; }

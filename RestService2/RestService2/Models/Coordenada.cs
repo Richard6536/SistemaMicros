@@ -18,6 +18,7 @@ namespace RestService2.Models
         public Coordenada()
         {
             this.Coordenada1 = new HashSet<Coordenada>();
+            this.Micro = new HashSet<Micro>();
             this.Ruta = new HashSet<Ruta>();
         }
     
@@ -29,6 +30,8 @@ namespace RestService2.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Coordenada> Coordenada1 { get; set; }
         public virtual Coordenada Coordenada2 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Micro> Micro { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Ruta> Ruta { get; set; }
     }

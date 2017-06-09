@@ -14,6 +14,8 @@ namespace MicrosForms.Model
         [Key]
         public int Id { get; set; }
 
+        public double DistanciaEntre { get; set; }
+
         public int ParaderoId { get; set; }
         [ForeignKey("ParaderoId")]
         public virtual Paradero Paradero { get; set; }

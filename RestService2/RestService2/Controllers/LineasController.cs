@@ -12,6 +12,11 @@ using System.Web.Http.OData;
 using System.Web.Http.OData.Routing;
 using RestService2.Models;
 
+using System.Device.Location;
+
+using GMap.NET;
+
+
 namespace RestService2.Controllers
 {
     /*
@@ -28,12 +33,12 @@ namespace RestService2.Controllers
     */
     public class LineasController : ODataController
     {
-        private MicroSystemDBEntities4 db = new MicroSystemDBEntities4();
+        private MicroSystemDBEntities6 db = new MicroSystemDBEntities6();
 
         //POST: odata/Lineas(5)/ObtenerChoferesActivos
         //Parametros: 
         [HttpPost]
-        public List<Usuario> ObtenerChoferesActivos([FromODataUri] int key)
+        public List<Usuario> ObtenerChoferes([FromODataUri] int key)
         {
             Linea linea = db.Linea.Where(l => l.Id == key).FirstOrDefault();
             List<Micro> microsLinea = linea.Micro.ToList();
@@ -43,17 +48,53 @@ namespace RestService2.Controllers
             {
                 if(microsLinea[i].MicroChoferId != null)
                 {
-                    if(microsLinea[i].MicroChofer.Usuario.TransmitiendoPosicion == true)
-                    {
-                        choferesActivos.Add(microsLinea[i].MicroChofer.Usuario);
-                    }
+                    choferesActivos.Add(microsLinea[i].MicroChofer.Usuario);
                 }
             }
 
             return choferesActivos;         
         }
 
+        //POST: odata/Lineas/RecomendarRuta
+        //Parametros: latInicio,lngInicio, latFinal,lngFinal
 
+        [HttpPost]
+        public List<Coordenada> RecomendarRuta(ODataActionParameters parameters)
+        {
+            List<Coordenada> vertices = new List<Coordenada>();
+
+            if (parameters == null)
+                return vertices;
+
+            double latInicio = (double)parameters["latInicio"];
+            double lngInicio = (double)parameters["lngInicio"];
+            double latFinal = (double)parameters["latFinal"];
+            double lngFinal = (double)parameters["lngFinal"];
+
+            PointLatLng inicio = new PointLatLng(latInicio, lngInicio);
+            PointLatLng final = new PointLatLng(latFinal, lngFinal);
+
+            //Recorrer cada linea y por cada linea
+
+            //Desde punto inicio generar ruta a cada paradero
+            //Desde punto final generar ruta a cada paradero
+            //Seleccionar el de distancia menor en cada caso
+            //recorriendo la ruta se calcula la distancia desde ese paradero al otro 
+            //Se descarta si estan en direccion contraria en la que se dirige la ruta
+            //Se suman distancia inicio al paradero + final al paradero + distancia entre paraderos siguiendo la ruta
+
+            //Se debe obtener la distancia menor y recomendar la linea con esa id
+            //y retornar la suma de esas 3 partes de la ruta para resaltarla
+
+
+
+
+
+
+            return vertices;
+        }
+
+        #region Originales
         // GET: odata/Lineas
         [EnableQuery]
         public IQueryable<Linea> GetLineas()
@@ -219,5 +260,27 @@ namespace RestService2.Controllers
         {
             return db.Linea.Count(e => e.Id == key) > 0;
         }
+        #endregion
+
+        #region Metodos Extra
+        private double DistanciaEntrePuntos(PointLatLng punto1, PointLatLng punto2)
+        {
+            //GMapRoute r = new GMapRoute("asdf");
+            //r.Points.Add(punto1);
+            //r.Points.Add(punto2);
+
+            //double distance = r.Distance;
+
+
+            var sCoord = new GeoCoordinate(punto1.Lat, punto1.Lng);
+            var eCoord = new GeoCoordinate(punto2.Lat, punto2.Lng);
+
+            return sCoord.GetDistanceTo(eCoord);
+        }
+
+
+
+
+        #endregion
     }
 }

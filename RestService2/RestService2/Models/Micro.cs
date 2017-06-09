@@ -29,7 +29,9 @@ namespace RestService2.Models
         public Nullable<int> LineaId { get; set; }
         public Nullable<int> MicroParaderoId { get; set; }
         public Nullable<int> MicroChoferId { get; set; }
+        public Nullable<int> SiguienteVerticeId { get; set; }
     
+        public virtual Coordenada Coordenada { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<HistorialDiario> HistorialDiario { get; set; }
         public virtual Linea Linea { get; set; }

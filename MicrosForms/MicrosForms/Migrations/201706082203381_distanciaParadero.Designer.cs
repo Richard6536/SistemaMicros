@@ -7,13 +7,13 @@ namespace MicrosForms.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class calificacionDetalle : IMigrationMetadata
+    public sealed partial class distanciaParadero : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(calificacionDetalle));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(distanciaParadero));
         
         string IMigrationMetadata.Id
         {
-            get { return "201705031737562_calificacionDetalle"; }
+            get { return "201706082203381_distanciaParadero"; }
         }
         
         string IMigrationMetadata.Source
