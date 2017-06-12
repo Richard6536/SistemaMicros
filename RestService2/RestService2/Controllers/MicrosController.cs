@@ -55,6 +55,40 @@ namespace RestService2.Controllers
             return pos;
         }
 
+
+        // POST: odata/Micros(5)/IniciarRecorrido
+        [HttpPost]
+        public IHttpActionResult IniciarRecorrido([FromODataUri] int key)
+        {
+            Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
+
+            if(micro.LineaId == null)
+            {
+                Ruta rIda = micro.Linea.Ruta;
+
+                Paradero primerParadero = rIda.Paradero.OrderBy(p => p.Id).ToList()[0];
+                Coordenada primerCoordenada = ObtenerCoordenadasRuta(rIda.Id)[0];
+
+                if (micro.MicroParaderoId != null)
+                {
+                    MicroParadero mp = micro.MicroParadero;
+                    db.MicroParadero.Remove(mp);
+                }
+
+                MicroParadero mpNuevo = new MicroParadero();
+                mpNuevo.Micro1 = micro;
+                mpNuevo.Paradero = primerParadero;
+
+                micro.MicroParadero = mpNuevo;
+                micro.Coordenada = primerCoordenada;
+
+                db.MicroParadero.Add(mpNuevo);
+                db.SaveChanges();
+            }
+
+            return Ok();
+        }
+
         //POST: odata/Micros(5)/SeleccionarParadero
         //Parametros: IdParadero
         [HttpPost]
@@ -127,7 +161,7 @@ namespace RestService2.Controllers
 
 
 
-
+        #region metodo originales
         // GET: odata/Micros
         [EnableQuery]
         public IQueryable<Micro> GetMicros()
@@ -284,9 +318,28 @@ namespace RestService2.Controllers
             base.Dispose(disposing);
         }
 
+
         private bool MicroExists(int key)
         {
             return db.Micro.Count(e => e.Id == key) > 0;
+        }
+        #endregion
+
+        public List<Coordenada> ObtenerCoordenadasRuta(int _idRuta)
+        {
+            List<Coordenada> coordenadas = new List<Coordenada>();
+            Ruta ruta = db.Ruta.Where(r => r.Id == _idRuta).FirstOrDefault();
+
+
+            Coordenada siguiente = ruta.Coordenada;
+
+            while (siguiente != null)
+            {
+                coordenadas.Add(siguiente);
+                siguiente = siguiente.Coordenada2;
+            }
+
+            return coordenadas;
         }
     }
 }

@@ -80,6 +80,9 @@ namespace RestService2
             ActionConfiguration deseleccionarParadero = builder.Entity<Usuario>().Action("DeseleccionarParadero");
             deseleccionarParadero.Returns<IHttpActionResult>();
 
+            ActionConfiguration obtenerPosUsuario = builder.Entity<Usuario>().Action("ObtenerPosicion");
+            obtenerPosUsuario.Returns<Posicion>();
+
             #endregion
 
             #region Ruta
@@ -94,8 +97,8 @@ namespace RestService2
             ActionConfiguration usuariosSelecionaron = builder.Entity<Paradero>().Action("UsuariosQueSeleccionaron");
             usuariosSelecionaron.ReturnsCollectionFromEntitySet<UsuarioParadero>("UsuarioParaderos");
 
-            ActionConfiguration microsSeleccionaron = builder.Entity<Paradero>().Action("MicrosQueSeleccionaron");
-            microsSeleccionaron.ReturnsCollectionFromEntitySet<MicroParadero>("MicroParaderos");
+            ActionConfiguration microMasCercana = builder.Entity<Paradero>().Action("MicroParaderoMasCercano");
+            microMasCercana.ReturnsFromEntitySet<MicroParadero>("MicroParaderos");
 
             #endregion
 
@@ -103,6 +106,9 @@ namespace RestService2
 
             ActionConfiguration microPosicion = builder.Entity<Micro>().Action("ObtenerPosicion");
             microPosicion.Returns<Posicion>();
+
+            ActionConfiguration iniciarRecorrido = builder.Entity<Micro>().Action("IniciarRecorrido");
+            iniciarRecorrido.Returns<IHttpActionResult>();
 
             ActionConfiguration microSeleccionParadero = builder.Entity<Micro>().Action("SeleccionarParadero");
             microSeleccionParadero.Returns<IHttpActionResult>();

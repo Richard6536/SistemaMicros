@@ -44,6 +44,7 @@ namespace RestService2.Controllers
 
         // POST: odata/Paraderos(5)/UsuariosQueSeleccionaron
         // nota: retorna en campo DistanciaEntre valor -1 si esque hay algun error de internet o más probablemente la ruta es imposible
+        //regresa distancia en kilometros
         [HttpPost]
         public List<UsuarioParadero> UsuariosQueSeleccionaron([FromODataUri] int key)
         {
@@ -75,8 +76,8 @@ namespace RestService2.Controllers
                     continue;
                 }
 
-                GMapRoute ultimoFragmentoRuta = new GMapRoute(direccion.Route, "rutaUserParadero");
-                distancia = ultimoFragmentoRuta.Distance;
+                GMapRoute ruta = new GMapRoute(direccion.Route, "rutaUserParadero");
+                distancia = ruta.Distance;
                 usuarioParadero.DistanciaEntre = distancia;
 
             }
@@ -84,39 +85,120 @@ namespace RestService2.Controllers
             return usuarioParaderos;
         }
 
-        // POST: odata/Paraderos(5)/MicrosQueSeleccionaron
+
+        // POST: odata/Paraderos(5)/MicroParaderoMasCercano
+        //regresa distancia en metros
         [HttpPost]
-        public List<MicroParadero> MicrosQueSeleccionaron([FromODataUri] int key)
+        public MicroParadero MicroParaderoMasCercano([FromODataUri] int key)
         {
+            double distEntreParaderos = 0;
+
             Paradero paradero = db.Paradero.Where(p => p.Id == key).FirstOrDefault();
 
-            List<MicroParadero> microParaderos = paradero.MicroParadero.ToList();
+            if(paradero == null)
+            {
+                return new MicroParadero() { Id = -1 };
+            }
 
-            List<Coordenada> coorHastaParadero;
-            Ruta rutaIda;
-            Ruta rutaVuelta;
+            Ruta rutaIda = paradero.Ruta.Linea2.Ruta;
+            Ruta rutaVuelta = paradero.Ruta.Linea2.Ruta1;
+
+            List<MicroParadero> microParaderos = paradero.MicroParadero.ToList();            
             Micro micro;
             Coordenada sigCoor;
 
+            //suma distancia entre paradero y el anterior
+            //queda asignado como paradero el anterior
+            //si el anterior tampoco tiene microparaderos se repite el proceso
+            //retorna un microparadero con id -1 si no existen micros desde ese paradero al inicio
+
+            while(microParaderos.Count == 0 )
+            {
+                //buscar paradero anterior
+                List<Paradero> paraderosRuta;
+                Ruta rutaAUsar;
+
+                if(paradero.Ruta.Id == rutaIda.Id)
+                {
+                    rutaAUsar = rutaIda;
+                }
+                else
+                {
+                    rutaAUsar = rutaVuelta;
+
+                    if(rutaVuelta.Paradero.ToList()[0].Id == paradero.Id)
+                    {
+                        //si entra aqui es que el paradero era el primero de la ruta de vuelta
+                        //se suma la distancia desde ese paradero al ultimo paradero dela ruta de ida
+                        //se asigna ese paradero como punto de inicio
+
+                        distEntreParaderos +=
+                            DistanciaVerticesSiguiendoRuta(rutaVuelta.Coordenada.Latitud, rutaVuelta.Coordenada.Longitud, paradero.Latitud, paradero.Longitud);
+
+                        paradero = rutaIda.Paradero.ToList().Last();
+                        microParaderos = paradero.MicroParadero.ToList();
+
+                        distEntreParaderos +=
+                            DistanciaVerticesSiguiendoRuta(paradero.Latitud, paradero.Longitud, rutaVuelta.Coordenada.Latitud, rutaVuelta.Coordenada.Longitud);
+
+                        continue;
+                    }
+                }
+
+                paraderosRuta = rutaAUsar.Paradero.ToList().OrderBy(p => p.Id).ToList();
+
+                //busca paradero
+                //suma distancia con paradero anterior
+                //reasigna paradero y microparaderos con los datos del anterior
+
+                for (int i = 0; i < paraderosRuta.Count; i++)
+                {
+                    if (paraderosRuta[i].Id == paradero.Id)
+                    {
+                        Paradero par = paraderosRuta[i];
+
+                        if (par == paraderosRuta.First())
+                        {
+                            //es el primer paradero dela ruta de ida
+                            return new MicroParadero() { Id = -1 };
+                        }
+                        else
+                        {
+                            Paradero anterior = paraderosRuta[i - 1];
+                            //saca distancia entre estos paraderos
+                            distEntreParaderos +=
+                                DistanciaVerticesSiguiendoRuta(anterior.Latitud, anterior.Longitud, paradero.Latitud, paradero.Longitud);
+
+                            paradero = paraderosRuta[i - 1];
+                            microParaderos = paradero.MicroParadero.ToList();
+                        }
+                        break;
+                    }
+                }
+            }
+
+            List<Coordenada> coorHastaParadero;
+            double distMenor = double.MaxValue;
+            MicroParadero mpMenor = null;
+            bool sw = true;
             foreach (MicroParadero microParadero in microParaderos)
             {
                 coorHastaParadero = new List<Coordenada>();
 
                 micro = microParadero.Micro1;
-                rutaIda = micro.Linea.Ruta;
-                rutaVuelta = micro.Linea.Ruta1;
                 sigCoor = micro.Coordenada;
 
                 coorHastaParadero.Add(sigCoor);
 
+                #region Rellenar coordenadas hasta paradero
                 bool encontrado = false;
 
-                while(sigCoor != null)
+                while (sigCoor != null)
                 {
                     sigCoor = sigCoor.Coordenada2;
                     coorHastaParadero.Add(sigCoor);
 
-                    if(sigCoor.Latitud == paradero.Latitud && sigCoor.Longitud == paradero.Longitud)
+                    if (sigCoor.Latitud == paradero.Latitud && sigCoor.Longitud == paradero.Longitud)
                     {
                         encontrado = true;
                         break;
@@ -125,7 +207,7 @@ namespace RestService2.Controllers
 
                 //si encontrado sigue en falso significa que
                 //la ruta que se reviso antes era la de ida y falta revisar la de vuelta
-                if(encontrado == false)
+                if (encontrado == false)
                 {
                     sigCoor = rutaVuelta.Coordenada;
                     coorHastaParadero.Add(sigCoor);
@@ -141,22 +223,41 @@ namespace RestService2.Controllers
                         }
                     }
                 }
+                #endregion
 
-                //sacar distancia siguiendo la ruta entre micro y el paradero
-
+                #region Sacar distancia entre Micro y paradero siguiendo la ruta
                 double distMetros = DistanciaEntrePuntos(new PointLatLng(micro.MicroChofer.Usuario.Latitud, micro.MicroChofer.Usuario.Longitud),
                                                         new PointLatLng(coorHastaParadero[0].Latitud, coorHastaParadero[0].Longitud));
 
                 for (int i = 0; i < coorHastaParadero.Count - 1; i++)
                 {
                     distMetros += DistanciaEntrePuntos(new PointLatLng(coorHastaParadero[i].Latitud, coorHastaParadero[i].Longitud),
-                                                        new PointLatLng(coorHastaParadero[i+1].Latitud, coorHastaParadero[i+1].Longitud));
+                                                        new PointLatLng(coorHastaParadero[i + 1].Latitud, coorHastaParadero[i + 1].Longitud));
                 }
 
                 microParadero.DistanciaEntre = distMetros;
+
+
+                #endregion
+
+                if (sw)
+                {
+                    mpMenor = microParadero;
+                    distMenor = distMetros;
+                }
+                else
+                {
+                    if(distMetros < distMenor)
+                    {
+                        distMenor = distMetros;
+                        mpMenor = microParadero;
+                    }
+                }
             }
 
-            return microParaderos;
+            mpMenor.DistanciaEntre = distMenor + distEntreParaderos;
+
+            return mpMenor;
         }
 
         private double DistanciaEntrePuntos(PointLatLng punto1, PointLatLng punto2)
@@ -172,6 +273,50 @@ namespace RestService2.Controllers
 
             return sCoord.GetDistanceTo(eCoord);
         }
+
+        private double DistanciaVerticesSiguiendoRuta(double latInicio, double lngInicio, double latFinal, double lngFinal)
+        {
+            Coordenada coorInicio = db.Coordenada.Where(c => c.Latitud == latInicio && c.Longitud == lngInicio).FirstOrDefault();
+            Coordenada coorFinal = db.Coordenada.Where(c => c.Latitud == latFinal && c.Longitud == lngFinal).FirstOrDefault();
+
+            List<Coordenada> coorHastaFinal = new List<Coordenada>();
+
+            #region Rellenar lista de coordenadas
+            coorHastaFinal.Add(coorInicio);
+
+            Coordenada sigCoor = coorInicio.Coordenada2;
+            bool encontrado = false;
+            while (sigCoor != null)
+            {
+                coorHastaFinal.Add(sigCoor);
+
+                if (sigCoor.Latitud == latFinal && sigCoor.Longitud == lngFinal)
+                {
+                    encontrado = true;
+                    break;
+                }
+
+                sigCoor = sigCoor.Coordenada2;
+            }
+            #endregion
+
+            if (encontrado == false)
+            {
+                //No se puede llegar al punto final siguiendo la ruta
+                return -1;
+            }
+
+            double distMetros = 0;
+
+            for (int i = 0; i < coorHastaFinal.Count - 1; i++)
+            {
+                distMetros += DistanciaEntrePuntos(new PointLatLng(coorHastaFinal[i].Latitud, coorHastaFinal[i].Longitud),
+                                                    new PointLatLng(coorHastaFinal[i + 1].Latitud, coorHastaFinal[i + 1].Longitud));
+            }
+
+            return distMetros;
+        }
+
 
         #region metodos originales
 
