@@ -16,6 +16,8 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 
+using System.Device.Location;
+
 namespace PositionTester
 {
     public partial class Form1 : Form
@@ -340,9 +342,13 @@ namespace PositionTester
                 BD.MicroParaderos.Remove(mp);
             }
 
+            var geoMicro = new GeoCoordinate(userActual.Latitud, userActual.Longitud);
+            var geoParadero = new GeoCoordinate(primerParadero.Latitud, primerParadero.Longitud);
+
             MicroParadero mpNuevo = new MicroParadero();
             mpNuevo.Micro = micro;
             mpNuevo.Paradero = primerParadero;
+            mpNuevo.DistanciaEntre = geoMicro.GetDistanceTo(geoParadero);
 
             micro.MicroParadero = mpNuevo;
             micro.SiguienteVertice = primerCoordenada;

@@ -13,6 +13,8 @@ using System.Web.Http.OData.Routing;
 using RestService2.Models;
 using RestService2.Classes;
 
+using System.Device.Location;
+
 namespace RestService2.Controllers
 {
     /*
@@ -75,9 +77,13 @@ namespace RestService2.Controllers
                     db.MicroParadero.Remove(mp);
                 }
 
+                var geoMicro = new GeoCoordinate(micro.MicroChofer.Usuario.Latitud, micro.MicroChofer.Usuario.Longitud);
+                var geoParadero = new GeoCoordinate(primerParadero.Latitud, primerParadero.Longitud);
+
                 MicroParadero mpNuevo = new MicroParadero();
                 mpNuevo.Micro1 = micro;
                 mpNuevo.Paradero = primerParadero;
+                mpNuevo.DistanciaEntre = geoMicro.GetDistanceTo(geoParadero);
 
                 micro.MicroParadero = mpNuevo;
                 micro.Coordenada = primerCoordenada;

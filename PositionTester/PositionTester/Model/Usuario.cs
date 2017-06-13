@@ -306,11 +306,16 @@ namespace MicrosForms.Model
 
                         if (micro.MicroParaderoId != null)
                         {
+                            double DistanciaLimiteParadero = 100;
                             Paradero sigParadero = micro.MicroParadero.Paradero;
+
+                            double distAntigua = micro.MicroParadero.DistanciaEntre;
+
                             var sigParaderoCoordenada = new GeoCoordinate(sigParadero.Latitud, sigParadero.Longitud);
                             double distSigParadero = choferCoordenada.GetDistanceTo(sigParaderoCoordenada);
 
-                            if (distSigParadero <= 30)
+                            //si salio del radio determinado del paradero, se actualiza el siguiente paradero
+                            if (distSigParadero >= DistanciaLimiteParadero && distAntigua <= DistanciaLimiteParadero)
                             {
                                 List<Paradero> paraderosLinea = new List<Paradero>();
 
@@ -349,7 +354,7 @@ namespace MicrosForms.Model
                                         Paradero posibleSig = paraderosLinea[i + c];
                                         double distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
 
-                                        while (distPosibleSig <= 30)
+                                        while (distPosibleSig <= DistanciaLimiteParadero)
                                         {
                                             c++;
 
@@ -369,8 +374,14 @@ namespace MicrosForms.Model
                                         }
 
                                         micro.MicroParadero.Paradero = posibleSig;
+                                        micro.MicroParadero.DistanciaEntre = distPosibleSig;
                                     }
                                 }
+                            }
+                            else
+                            {
+                                //caso contrario se actualiza la distancia del microparadero
+                                micro.MicroParadero.DistanciaEntre = distSigParadero;
                             }
 
                         }
@@ -379,11 +390,13 @@ namespace MicrosForms.Model
 
                         #region Manejar Coordenadas
 
+                        double distLimiteVertices = 100;
+
                         Coordenada sigCoor = micro.SiguienteVertice;
                         var sigVerticeCoordenada = new GeoCoordinate(sigCoor.Latitud, sigCoor.Longitud);
                         double distSigCoor = choferCoordenada.GetDistanceTo(sigVerticeCoordenada);
 
-                        if (distSigCoor <= 30)
+                        if (distSigCoor <= distLimiteVertices)
                         {
                             List<Coordenada> coordenadasLinea = Usuario.ObtenerCoordenadasLinea(BD, lineaAsociada.Id);
                             for (int i = 0; i < coordenadasLinea.Count; i++)
@@ -406,7 +419,7 @@ namespace MicrosForms.Model
                                     Coordenada posibleSig = coordenadasLinea[i + c];
                                     double distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
 
-                                    while (distPosibleSig <= 30)
+                                    while (distPosibleSig <= distLimiteVertices)
                                     {
                                         c++;
                                         indexSiguiente = Clamp(i + c, 0, coordenadasLinea.Count - 1);
@@ -423,6 +436,7 @@ namespace MicrosForms.Model
                                         distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
                                     }
                                     micro.SiguienteVertice = posibleSig;
+                                    
                                 }
                             }
 

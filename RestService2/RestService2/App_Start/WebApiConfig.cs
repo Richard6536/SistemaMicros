@@ -95,7 +95,7 @@ namespace RestService2
             #region Paradero
 
             ActionConfiguration usuariosSelecionaron = builder.Entity<Paradero>().Action("UsuariosQueSeleccionaron");
-            usuariosSelecionaron.ReturnsCollectionFromEntitySet<UsuarioParadero>("UsuarioParaderos");
+            usuariosSelecionaron.ReturnsCollection<UsuarioParaderoDeluxe>();
 
             ActionConfiguration microMasCercana = builder.Entity<Paradero>().Action("MicroParaderoMasCercano");
             microMasCercana.ReturnsFromEntitySet<MicroParadero>("MicroParaderos");

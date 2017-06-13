@@ -212,6 +212,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Classes\PasswordHash.cs" />
     <Compile Include="Classes\Posicion.cs" />
+    <Compile Include="Classes\UsuarioParaderoDeluxe.cs" />
     <Compile Include="Controllers\HistorialesDiariosController.cs" />
     <Compile Include="Controllers\HistorialesIdaVueltaController.cs" />
     <Compile Include="Controllers\HomeController.cs" />

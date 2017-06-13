@@ -33,7 +33,7 @@ namespace MicrosForms.Classes
             foreach (Paradero p in paraderos) //Crear paraderos en el mapa
             {
                 GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Latitud, p.Longitud), GMarkerGoogleType.purple_pushpin);
-
+                paraderoMarker.ToolTipText = p.Id + "";
                 _paraderosOverlay.Markers.Add(paraderoMarker);
             }
 

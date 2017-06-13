@@ -17,6 +17,8 @@ using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 
+using RestService2.Classes;
+
 namespace RestService2.Controllers
 {
     /*
@@ -46,10 +48,12 @@ namespace RestService2.Controllers
         // nota: retorna en campo DistanciaEntre valor -1 si esque hay algun error de internet o más probablemente la ruta es imposible
         //regresa distancia en kilometros
         [HttpPost]
-        public List<UsuarioParadero> UsuariosQueSeleccionaron([FromODataUri] int key)
+        public List<UsuarioParaderoDeluxe> UsuariosQueSeleccionaron([FromODataUri] int key)
         {
             Paradero paradero = db.Paradero.Where(p => p.Id == key).FirstOrDefault();
             List<UsuarioParadero> usuarioParaderos = paradero.UsuarioParadero.ToList();
+
+            List<UsuarioParaderoDeluxe> upDeluxe = new List<UsuarioParaderoDeluxe>();
 
             Usuario user;
 
@@ -72,6 +76,7 @@ namespace RestService2.Controllers
                 if (direccion == null)
                 {
                     //problemas de internet o ruta imposible
+                    user.Id = -1;
                     usuarioParadero.DistanciaEntre = -1;
                     continue;
                 }
@@ -80,9 +85,12 @@ namespace RestService2.Controllers
                 distancia = ruta.Distance;
                 usuarioParadero.DistanciaEntre = distancia;
 
+                upDeluxe.Add(new UsuarioParaderoDeluxe()
+                { UsuarioId = user.Id, Latitud = user.Latitud, Longitud = user.Longitud, Distancia = distancia });
+
             }
 
-            return usuarioParaderos;
+            return upDeluxe;
         }
 
 

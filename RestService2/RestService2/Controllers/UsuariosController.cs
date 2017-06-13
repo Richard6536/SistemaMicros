@@ -125,13 +125,18 @@ namespace RestService2.Controllers
 
                     #region Manejar Paraderos
 
-                    if(micro.MicroParaderoId != null)
+                    if (micro.MicroParaderoId != null)
                     {
+                        double DistanciaLimiteParadero = 100;
                         Paradero sigParadero = micro.MicroParadero.Paradero;
+
+                        double distAntigua = micro.MicroParadero.DistanciaEntre;
+
                         var sigParaderoCoordenada = new GeoCoordinate(sigParadero.Latitud, sigParadero.Longitud);
                         double distSigParadero = choferCoordenada.GetDistanceTo(sigParaderoCoordenada);
 
-                        if (distSigParadero <= 30)
+                        //si salio del radio determinado del paradero, se actualiza el siguiente paradero
+                        if (distSigParadero >= DistanciaLimiteParadero && distAntigua <= DistanciaLimiteParadero)
                         {
                             List<Paradero> paraderosLinea = new List<Paradero>();
 
@@ -170,14 +175,14 @@ namespace RestService2.Controllers
                                     Paradero posibleSig = paraderosLinea[i + c];
                                     double distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
 
-                                    while (distPosibleSig <= 30)
+                                    while (distPosibleSig <= DistanciaLimiteParadero)
                                     {
                                         c++;
 
                                         //if para ver si se llego al paradero final
                                         if (i + c == paraderosLinea.Count)
                                         {
-                                            
+
                                             i = int.MaxValue;
                                             MicroParadero mp = micro.MicroParadero;
                                             micro.MicroParadero = null;
@@ -189,10 +194,15 @@ namespace RestService2.Controllers
                                         distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
                                     }
 
-                                    
                                     micro.MicroParadero.Paradero = posibleSig;
+                                    micro.MicroParadero.DistanciaEntre = distPosibleSig;
                                 }
                             }
+                        }
+                        else
+                        {
+                            //caso contrario se actualiza la distancia del microparadero
+                            micro.MicroParadero.DistanciaEntre = distSigParadero;
                         }
 
                     }
@@ -200,24 +210,26 @@ namespace RestService2.Controllers
                     #endregion
 
                     #region Manejar Coordenadas
-                    
+
+                    double distLimiteVertices = 100;
+
                     Coordenada sigCoor = micro.Coordenada;
                     var sigVerticeCoordenada = new GeoCoordinate(sigCoor.Latitud, sigCoor.Longitud);
                     double distSigCoor = choferCoordenada.GetDistanceTo(sigVerticeCoordenada);
 
-                    if (distSigCoor <= 30)
+                    if (distSigCoor <= distLimiteVertices)
                     {
-                        List<Coordenada> coordenadasLinea = ObtenerCoordenadasLinea(lineaAsociada.Id);
+                        List<Coordenada> coordenadasLinea = ObtenerCoordenadasLinea( lineaAsociada.Id);
                         for (int i = 0; i < coordenadasLinea.Count; i++)
                         {
-                            if(coordenadasLinea[i].Id == sigCoor.Id)
+                            if (coordenadasLinea[i].Id == sigCoor.Id)
                             {
 
                                 int c = 1;
 
                                 int indexSiguiente = Clamp(i + c, 0, coordenadasLinea.Count - 1);
 
-                                if(indexSiguiente == coordenadasLinea.Count-1)
+                                if (indexSiguiente == coordenadasLinea.Count - 1)
                                 {
                                     //termina recorrido
                                     user.MicroChofer1.Micro1.Coordenada = null;
@@ -226,9 +238,9 @@ namespace RestService2.Controllers
                                 }
 
                                 Coordenada posibleSig = coordenadasLinea[i + c];
-                                double distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud,posibleSig.Longitud));
+                                double distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
 
-                                while(distPosibleSig <= 30)
+                                while (distPosibleSig <= distLimiteVertices)
                                 {
                                     c++;
                                     indexSiguiente = Clamp(i + c, 0, coordenadasLinea.Count - 1);
@@ -245,6 +257,7 @@ namespace RestService2.Controllers
                                     distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
                                 }
                                 micro.Coordenada = posibleSig;
+
                             }
                         }
 
@@ -253,7 +266,6 @@ namespace RestService2.Controllers
                         //el primero fuera del rango se actualiza
                     }
                     #endregion
-
 
                 }
             }
