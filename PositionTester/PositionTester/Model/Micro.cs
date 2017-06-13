@@ -33,8 +33,8 @@ namespace MicrosForms.Model
 
         public int? MicroParaderoId { get; set; }
         public int? MicroChoferId { get; set; }
+        public int? SiguienteVerticeId { get; set; }
 
-        
         [ForeignKey("LineaId")]
         public virtual Linea Linea { get; set; }
 
@@ -43,6 +43,9 @@ namespace MicrosForms.Model
 
         [ForeignKey("MicroChoferId")]
         public virtual MicroChofer MicroChofer { get; set; }
+
+        [ForeignKey("SiguienteVerticeId")]
+        public virtual Coordenada SiguienteVertice { get; set; }
 
         public virtual List<HistorialDiario> HistorialesDiarios { get; set; }
 

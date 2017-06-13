@@ -40,6 +40,8 @@
             this.label3 = new System.Windows.Forms.Label();
             this.lblUserMoviendo = new System.Windows.Forms.Label();
             this.btnDetenerTodo = new System.Windows.Forms.Button();
+            this.btnIniciarRecorrido = new System.Windows.Forms.Button();
+            this.btnDetenerRecorrido = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // gmapController
@@ -159,11 +161,33 @@
             this.btnDetenerTodo.UseVisualStyleBackColor = true;
             this.btnDetenerTodo.Click += new System.EventHandler(this.btnDetenerTodo_Click);
             // 
+            // btnIniciarRecorrido
+            // 
+            this.btnIniciarRecorrido.Location = new System.Drawing.Point(713, 213);
+            this.btnIniciarRecorrido.Name = "btnIniciarRecorrido";
+            this.btnIniciarRecorrido.Size = new System.Drawing.Size(154, 23);
+            this.btnIniciarRecorrido.TabIndex = 20;
+            this.btnIniciarRecorrido.Text = "Iniciar recorrido";
+            this.btnIniciarRecorrido.UseVisualStyleBackColor = true;
+            this.btnIniciarRecorrido.Click += new System.EventHandler(this.btnIniciarRecorrido_Click);
+            // 
+            // btnDetenerRecorrido
+            // 
+            this.btnDetenerRecorrido.Location = new System.Drawing.Point(713, 242);
+            this.btnDetenerRecorrido.Name = "btnDetenerRecorrido";
+            this.btnDetenerRecorrido.Size = new System.Drawing.Size(154, 23);
+            this.btnDetenerRecorrido.TabIndex = 21;
+            this.btnDetenerRecorrido.Text = "Detener recorrido";
+            this.btnDetenerRecorrido.UseVisualStyleBackColor = true;
+            this.btnDetenerRecorrido.Click += new System.EventHandler(this.btnDetenerRecorrido_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(891, 500);
+            this.ClientSize = new System.Drawing.Size(895, 500);
+            this.Controls.Add(this.btnDetenerRecorrido);
+            this.Controls.Add(this.btnIniciarRecorrido);
             this.Controls.Add(this.btnDetenerTodo);
             this.Controls.Add(this.lblUserMoviendo);
             this.Controls.Add(this.label3);
@@ -194,6 +218,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblUserMoviendo;
         private System.Windows.Forms.Button btnDetenerTodo;
+        private System.Windows.Forms.Button btnIniciarRecorrido;
+        private System.Windows.Forms.Button btnDetenerRecorrido;
     }
 }
 

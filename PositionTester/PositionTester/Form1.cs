@@ -149,6 +149,8 @@ namespace PositionTester
 
             usuariosControlados.Add(userActual);
             usersMarkers.Add(userMarker);
+            Usuario.ActualizarPosicion(userActual.Id, userMarker.Position.Lat, userMarker.Position.Lng);
+
         }
 
 
@@ -224,6 +226,89 @@ namespace PositionTester
 
             usersMarkers.Clear();
             usuariosControlados.Clear();
+        }
+
+        private void btnIniciarRecorrido_Click(object sender, EventArgs e)
+        {
+            var BD = new MicroSystemContext();
+            Usuario userActual = BD.Usuarios.Where(u => u.Email == txtEmail.Text).FirstOrDefault();
+
+            if (userActual == null)
+            {
+                MessageBox.Show("No existe ese mail");
+                return;
+            }
+            if (userActual.Rol != Usuario.RolUsuario.Chofer)
+            {
+                MessageBox.Show("Usuario no es chofer.");
+                return;
+            }
+            if(userActual.MicroChoferId == null)
+            {
+                MessageBox.Show("Usuario sin micro asignada");
+                return;
+            }
+            if (userActual.MicroChofer.Micro.LineaId == null)
+            {
+                MessageBox.Show("Micro del chofer no asignada a una linea");
+                return;
+            }
+
+            Micro micro = userActual.MicroChofer.Micro;
+
+            Ruta rIda = micro.Linea.RutaIda;
+
+            Paradero primerParadero = rIda.Paraderos.OrderBy(p => p.Id).ToList()[0];
+            Coordenada primerCoordenada = rIda.Inicio;
+
+            if (micro.MicroParaderoId != null)
+            {
+                MicroParadero mp = micro.MicroParadero;
+                BD.MicroParaderos.Remove(mp);
+            }
+
+            MicroParadero mpNuevo = new MicroParadero();
+            mpNuevo.Micro = micro;
+            mpNuevo.Paradero = primerParadero;
+
+            micro.MicroParadero = mpNuevo;
+            micro.SiguienteVertice = primerCoordenada;
+
+            BD.MicroParaderos.Add(mpNuevo);
+            BD.SaveChanges();
+            
+
+        }
+
+        private void btnDetenerRecorrido_Click(object sender, EventArgs e)
+        {
+            var BD = new MicroSystemContext();
+            Usuario userActual = BD.Usuarios.Where(u => u.Email == txtEmail.Text).FirstOrDefault();
+
+            if (userActual == null)
+            {
+                MessageBox.Show("No existe ese mail");
+                return;
+            }
+            if (userActual.MicroChoferId == null)
+            {
+                MessageBox.Show("Usuario sin micro asignada");
+                return;
+            }
+            if (userActual.MicroChofer.Micro.LineaId == null)
+            {
+                MessageBox.Show("Micro del chofer no asignada a una linea");
+                return;
+            }
+
+            Micro micro = userActual.MicroChofer.Micro;
+
+            if (micro.MicroParaderoId != null)
+            {
+                MicroParadero mp = micro.MicroParadero;
+                BD.MicroParaderos.Remove(mp);
+            }
+            BD.SaveChanges();
         }
     }
 }

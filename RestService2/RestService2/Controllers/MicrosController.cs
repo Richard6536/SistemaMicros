@@ -62,12 +62,12 @@ namespace RestService2.Controllers
         {
             Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
 
-            if(micro.LineaId == null)
+            if(micro.LineaId != null)
             {
                 Ruta rIda = micro.Linea.Ruta;
 
                 Paradero primerParadero = rIda.Paradero.OrderBy(p => p.Id).ToList()[0];
-                Coordenada primerCoordenada = ObtenerCoordenadasRuta(rIda.Id)[0];
+                Coordenada primerCoordenada = rIda.Coordenada;
 
                 if (micro.MicroParaderoId != null)
                 {

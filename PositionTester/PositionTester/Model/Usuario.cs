@@ -312,6 +312,19 @@ namespace MicrosForms.Model
             foreach(Usuario u in todos)
             {
                 u.TransmitiendoPosicion = false;
+
+                if(u.Rol == RolUsuario.Chofer)
+                {
+                    if(u.MicroChoferId != null)
+                    {
+                        Micro m = u.MicroChofer.Micro;
+                        if(m.MicroParaderoId != null)
+                        {
+                            MicroParadero mp = m.MicroParadero;
+                            BD.MicroParaderos.Remove(mp);
+                        }
+                    }
+                }
             }
 
             BD.SaveChanges();
