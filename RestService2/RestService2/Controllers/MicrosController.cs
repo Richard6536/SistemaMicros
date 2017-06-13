@@ -178,6 +178,23 @@ namespace RestService2.Controllers
             return micro.Calificacion;
         }
 
+        //POST: odata/Micros(5)/ObtenerMiParadero
+        //Parametros: nop
+        [HttpPost]
+        public Paradero ObtenerMiParadero([FromODataUri] int key)
+        {
+            Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
+
+            if (micro.MicroParaderoId == null)
+            {
+                return new Paradero() { Id = -1 };
+            }
+            else
+            {
+                Paradero p = micro.MicroParadero.Paradero;
+                return p;
+            }
+        }
 
 
         #region metodo originales

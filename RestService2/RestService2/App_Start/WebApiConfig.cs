@@ -124,6 +124,9 @@ namespace RestService2
             nuevaCalificacion.Returns<float>();
             nuevaCalificacion.Parameter<int>("Calificacion");
 
+            ActionConfiguration obtenerMiParadero = builder.Entity<Micro>().Action("ObtenerMiParadero");
+            obtenerMiParadero.ReturnsCollectionFromEntitySet<Paradero>("Paraderos");
+
             #endregion
 
             #region Linea
