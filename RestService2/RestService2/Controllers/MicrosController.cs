@@ -89,6 +89,25 @@ namespace RestService2.Controllers
             return Ok();
         }
 
+        // POST: odata/Micros(5)/DetenerRecorrido
+        [HttpPost]
+        public IHttpActionResult DetenerRecorrido([FromODataUri] int key)
+        {
+            Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
+
+            micro.Coordenada = null;
+            micro.SiguienteVerticeId = null;
+
+            if (micro.MicroParaderoId != null)
+            {
+                MicroParadero mp = micro.MicroParadero;
+                db.MicroParadero.Remove(mp);
+            }
+            db.SaveChanges();
+
+            return Ok();
+        }
+
         //POST: odata/Micros(5)/SeleccionarParadero
         //Parametros: IdParadero
         [HttpPost]

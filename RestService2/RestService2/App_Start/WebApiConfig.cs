@@ -110,6 +110,9 @@ namespace RestService2
             ActionConfiguration iniciarRecorrido = builder.Entity<Micro>().Action("IniciarRecorrido");
             iniciarRecorrido.Returns<IHttpActionResult>();
 
+            ActionConfiguration detenerRecorrido = builder.Entity<Micro>().Action("DetenerRecorrido");
+            detenerRecorrido.Returns<IHttpActionResult>();
+
             ActionConfiguration microSeleccionParadero = builder.Entity<Micro>().Action("SeleccionarParadero");
             microSeleccionParadero.Returns<IHttpActionResult>();
             microSeleccionParadero.Parameter<int>("IdParadero");

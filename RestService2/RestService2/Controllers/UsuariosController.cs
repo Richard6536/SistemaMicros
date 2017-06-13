@@ -189,7 +189,7 @@ namespace RestService2.Controllers
                                         distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
                                     }
 
-                                    micro.MicroParadero.Paradero.MicroParadero = null;
+                                    
                                     micro.MicroParadero.Paradero = posibleSig;
                                 }
                             }
@@ -221,6 +221,7 @@ namespace RestService2.Controllers
                                 {
                                     //termina recorrido
                                     user.MicroChofer1.Micro1.Coordenada = null;
+                                    user.MicroChofer1.Micro1.SiguienteVerticeId = null;
                                     break;
                                 }
 
@@ -235,6 +236,7 @@ namespace RestService2.Controllers
                                     {
                                         i = int.MaxValue; //sale del for
                                         user.MicroChofer1.Micro1.Coordenada = null;
+                                        user.MicroChofer1.Micro1.SiguienteVerticeId = null;
                                         //termina recorrido
                                         break;
                                     }

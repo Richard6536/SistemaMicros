@@ -244,6 +244,7 @@ namespace RestService2.Controllers
                 {
                     mpMenor = microParadero;
                     distMenor = distMetros;
+                    sw = false;
                 }
                 else
                 {

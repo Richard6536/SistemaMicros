@@ -23,5 +23,27 @@ namespace MicrosForms.Model
         public virtual Micro Micro { get; set; }
 
         public MicroParadero() { }
+
+
+        public static Micro GetMicro(int _microParaderoId)
+        {
+            var BD = new MicroSystemContext();
+
+            MicroParadero microParadero = BD.MicroParaderos.Where(mp => mp.Id == _microParaderoId).FirstOrDefault();
+
+            Micro micro = BD.Micros.Where(m => m.Id == microParadero.MicroId).FirstOrDefault();
+
+            return micro;
+        }
+
+        public static Paradero GetParadero(int _microParaderoId)
+        {
+            var BD = new MicroSystemContext();
+            MicroParadero microParadero = BD.MicroParaderos.Where(mp => mp.Id == _microParaderoId).FirstOrDefault();
+
+            Paradero paradero = BD.Paraderos.Where(u => u.Id == microParadero.ParaderoId).FirstOrDefault();
+
+            return paradero;
+        }
     }
 }

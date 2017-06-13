@@ -12,6 +12,7 @@ using System.Diagnostics;
 using MicrosForms.Classes;
 
 using System.Windows.Forms;
+using System.Device.Location;
 
 namespace MicrosForms.Model
 {
@@ -282,14 +283,160 @@ namespace MicrosForms.Model
             BD.SaveChanges();
         }
 
-        public static void ActualizarPosicion(int _id, double _lat, double _lng)
+        public static void ActualizarPosicion(int _id, double _lat, double _lng, bool _actualizarRecorrido)
         {
             var BD = new MicroSystemContext();
-            var usuarioSeleccionado = BD.Usuarios.Where(u => u.Id == _id).FirstOrDefault();
+            var user = BD.Usuarios.Where(u => u.Id == _id).FirstOrDefault();
 
-            usuarioSeleccionado.Latitud = _lat;
-            usuarioSeleccionado.Longitud = _lng;
-            usuarioSeleccionado.TransmitiendoPosicion = true;
+            user.Latitud = _lat;
+            user.Longitud = _lng;
+            user.TransmitiendoPosicion = true;
+
+            if (_actualizarRecorrido)
+            {
+                if (user.Rol == RolUsuario.Chofer && user.MicroChoferId != null)
+                {
+                    Micro micro = user.MicroChofer.Micro;
+                    if (micro.SiguienteVerticeId != null && micro.LineaId != null)
+                    {
+                        Linea lineaAsociada = micro.Linea;
+                        var choferCoordenada = new GeoCoordinate(user.Latitud, user.Longitud);
+
+                        #region Manejar Paraderos
+
+                        if (micro.MicroParaderoId != null)
+                        {
+                            Paradero sigParadero = micro.MicroParadero.Paradero;
+                            var sigParaderoCoordenada = new GeoCoordinate(sigParadero.Latitud, sigParadero.Longitud);
+                            double distSigParadero = choferCoordenada.GetDistanceTo(sigParaderoCoordenada);
+
+                            if (distSigParadero <= 30)
+                            {
+                                List<Paradero> paraderosLinea = new List<Paradero>();
+
+                                #region LLenar los paraderos de la linea
+                                List<Paradero> paraderosIda = lineaAsociada.RutaIda.Paraderos.ToList();
+                                List<Paradero> paraderosVuelta = lineaAsociada.RutaVuelta.Paraderos.ToList();
+
+                                for (int i = 0; i < paraderosIda.Count; i++) //ida
+                                {
+                                    paraderosLinea.Add(paraderosIda[i]);
+                                }
+
+                                for (int i = 0; i < paraderosVuelta.Count; i++)//ida
+                                {
+                                    paraderosLinea.Add(paraderosVuelta[i]);
+                                }
+
+                                paraderosLinea = paraderosLinea.OrderBy(p => p.Id).ToList();
+                                #endregion
+
+                                for (int i = 0; i < paraderosLinea.Count; i++)
+                                {
+                                    if (sigParadero.Id == paraderosLinea[i].Id)
+                                    {
+                                        //if para ver si se llego al paradero final
+                                        if (i + 1 == paraderosLinea.Count)
+                                        {
+                                            //Se llego al paradero final
+                                            MicroParadero mp = micro.MicroParadero;
+                                            micro.MicroParadero = null;
+                                            BD.MicroParaderos.Remove(mp);
+                                            break;
+                                        }
+
+                                        int c = 1;
+                                        Paradero posibleSig = paraderosLinea[i + c];
+                                        double distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
+
+                                        while (distPosibleSig <= 30)
+                                        {
+                                            c++;
+
+                                            //if para ver si se llego al paradero final
+                                            if (i + c == paraderosLinea.Count)
+                                            {
+
+                                                i = int.MaxValue;
+                                                MicroParadero mp = micro.MicroParadero;
+                                                micro.MicroParadero = null;
+                                                BD.MicroParaderos.Remove(mp);
+                                                break;
+                                            }
+
+                                            posibleSig = paraderosLinea[i + c];
+                                            distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
+                                        }
+
+                                        micro.MicroParadero.Paradero = posibleSig;
+                                    }
+                                }
+                            }
+
+                        }
+
+                        #endregion
+
+                        #region Manejar Coordenadas
+
+                        Coordenada sigCoor = micro.SiguienteVertice;
+                        var sigVerticeCoordenada = new GeoCoordinate(sigCoor.Latitud, sigCoor.Longitud);
+                        double distSigCoor = choferCoordenada.GetDistanceTo(sigVerticeCoordenada);
+
+                        if (distSigCoor <= 30)
+                        {
+                            List<Coordenada> coordenadasLinea = Usuario.ObtenerCoordenadasLinea(BD, lineaAsociada.Id);
+                            for (int i = 0; i < coordenadasLinea.Count; i++)
+                            {
+                                if (coordenadasLinea[i].Id == sigCoor.Id)
+                                {
+
+                                    int c = 1;
+
+                                    int indexSiguiente = Clamp(i + c, 0, coordenadasLinea.Count - 1);
+
+                                    if (indexSiguiente == coordenadasLinea.Count - 1)
+                                    {
+                                        //termina recorrido
+                                        user.MicroChofer.Micro.SiguienteVertice = null;
+                                        user.MicroChofer.Micro.SiguienteVerticeId = null;
+                                        break;
+                                    }
+
+                                    Coordenada posibleSig = coordenadasLinea[i + c];
+                                    double distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
+
+                                    while (distPosibleSig <= 30)
+                                    {
+                                        c++;
+                                        indexSiguiente = Clamp(i + c, 0, coordenadasLinea.Count - 1);
+                                        if (indexSiguiente == coordenadasLinea.Count - 1)
+                                        {
+                                            i = int.MaxValue; //sale del for
+                                            user.MicroChofer.Micro.SiguienteVertice = null;
+                                            user.MicroChofer.Micro.SiguienteVerticeId = null;
+                                            //termina recorrido
+                                            break;
+                                        }
+
+                                        posibleSig = coordenadasLinea[i + c];
+                                        distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
+                                    }
+                                    micro.SiguienteVertice = posibleSig;
+                                }
+                            }
+
+                            //Identificar siguiente coordendada 
+                            //si la siguiente coordenada sigue dentro del rango pasar al siguiente
+                            //el primero fuera del rango se actualiza
+                        }
+                        #endregion
+
+
+                    }
+                }
+            }
+
             BD.SaveChanges();
         }
 
@@ -299,6 +446,21 @@ namespace MicrosForms.Model
             var usuarioSeleccionado = BD.Usuarios.Where(u => u.Id == _id).FirstOrDefault();
 
             usuarioSeleccionado.TransmitiendoPosicion = false;
+
+            if (usuarioSeleccionado.Rol == RolUsuario.Chofer)
+            {
+                if (usuarioSeleccionado.MicroChoferId != null)
+                {
+                    Micro m = usuarioSeleccionado.MicroChofer.Micro;
+                    m.SiguienteVertice = null;
+                    m.SiguienteVerticeId = null;
+                    if (m.MicroParaderoId != null)
+                    {
+                        MicroParadero mp = m.MicroParadero;
+                        BD.MicroParaderos.Remove(mp);
+                    }
+                }
+            }
             BD.SaveChanges();
 
         }
@@ -318,7 +480,9 @@ namespace MicrosForms.Model
                     if(u.MicroChoferId != null)
                     {
                         Micro m = u.MicroChofer.Micro;
-                        if(m.MicroParaderoId != null)
+                        m.SiguienteVertice = null;
+                        m.SiguienteVerticeId = null;
+                        if (m.MicroParaderoId != null)
                         {
                             MicroParadero mp = m.MicroParadero;
                             BD.MicroParaderos.Remove(mp);
@@ -330,5 +494,37 @@ namespace MicrosForms.Model
             BD.SaveChanges();
         }
 
+        public static List<Coordenada> ObtenerCoordenadasLinea(MicroSystemContext db, int _idLinea)
+        {
+            Linea linea = db.Lineas.Where(l => l.Id == _idLinea).FirstOrDefault();
+            List<Coordenada> coordenadas = new List<Coordenada>();
+            Ruta rutaIda = linea.RutaIda;
+            Ruta rutaVuelta = linea.RutaVuelta;
+
+            Coordenada siguiente = rutaIda.Inicio;
+
+            while (siguiente != null)
+            {
+                coordenadas.Add(siguiente);
+                siguiente = siguiente.Siguiente;
+            }
+
+            siguiente = rutaVuelta.Inicio;
+
+            while (siguiente != null)
+            {
+                coordenadas.Add(siguiente);
+                siguiente = siguiente.Siguiente;
+            }
+
+            return coordenadas;
+        }
+
+        public static int Clamp(int val, int min, int max)
+        {
+            if (val < min) return min;
+            else if (val > max) return max;
+            else return val;
+        }
     }
 }
