@@ -75,5 +75,10 @@ namespace MicrosForms.Ventanas
             FormManager.cerrandoAplicacion = true;
             Application.Exit();
         }
+
+        private void Login_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

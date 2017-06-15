@@ -191,7 +191,11 @@ namespace RestService2.Controllers
         {
             Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
 
-            if (micro.MicroParaderoId == null)
+            if(micro == null)
+            {
+                return new Paradero() { Id = -1 };
+            }
+            else if (micro.MicroParaderoId == null)
             {
                 return new Paradero() { Id = -1 };
             }

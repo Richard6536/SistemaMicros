@@ -208,7 +208,7 @@ namespace MicrosForms.Ventanas
             {
                 return;
             }
-
+            
             if (marcadoresMicros.Count > 0)
             {
                 microsOverlay.Markers.Clear();
