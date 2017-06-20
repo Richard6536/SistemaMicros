@@ -35,27 +35,9 @@ namespace RestService2.Controllers
     {
         private MicroSystemDBEntities6 db = new MicroSystemDBEntities6();
 
-        //Obtener posicion
         //Seleccionar paradero
         //Deseleccionar paradero
         //NuevaCalificacion
-
-        // POST: odata/Micros(5)/ObtenerPosicion
-        [HttpPost]
-        public Posicion ObtenerPosicion([FromODataUri] int key)
-        {
-            Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
-
-            Posicion pos = null;
-
-            if (micro.MicroChoferId != null)
-            {
-                Usuario chofer = micro.MicroChofer.Usuario;
-                pos = new Posicion(chofer.Latitud, chofer.Longitud);
-            }
-
-            return pos;
-        }
 
 
         // POST: odata/Micros(5)/IniciarRecorrido

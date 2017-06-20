@@ -104,9 +104,6 @@ namespace RestService2
 
             #region Micro
 
-            ActionConfiguration microPosicion = builder.Entity<Micro>().Action("ObtenerPosicion");
-            microPosicion.Returns<Posicion>();
-
             ActionConfiguration iniciarRecorrido = builder.Entity<Micro>().Action("IniciarRecorrido");
             iniciarRecorrido.Returns<IHttpActionResult>();
 

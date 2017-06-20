@@ -60,8 +60,6 @@ namespace MicrosForms.Ventanas.Creaciones
             btnDeshacer.Enabled = false;
             btnAceptarRuta.Enabled = false;
 
-           
-
         }
 
         double latOsorno = -40.574984;

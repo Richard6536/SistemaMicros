@@ -99,8 +99,7 @@ namespace MicrosForms.Ventanas.Creaciones
             otrosMarkersList = new List<GMarkerGoogle>();
             posVerticesIda = new List<PointLatLng>();
 
-        }   
-      
+        }       
 
         void RefreshMap()
         {

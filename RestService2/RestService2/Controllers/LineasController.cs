@@ -59,7 +59,6 @@ namespace RestService2.Controllers
 
         //POST: odata/Lineas/RecomendarRuta
         //Parametros: latInicio,lngInicio, latFinal,lngFinal
-
         [HttpPost]
         public List<Coordenada> RecomendarRuta(ODataActionParameters parameters)
         {
@@ -90,6 +89,7 @@ namespace RestService2.Controllers
             {
                 paraderosLinea = obtenerParaderoLinea(linea);
 
+                #region Busca el paradero más cercano (junto con la ruta hasta ahí) a partir del punto de Inicio
                 GMapRoute rutaInicioParaderoMenor = null;
                 Paradero pInicio = null;
                 foreach(Paradero p in paraderosLinea)
@@ -107,7 +107,9 @@ namespace RestService2.Controllers
                         pInicio = p;
                     }
                 }
+                #endregion
 
+                #region Buscar el paradero más cercano (junto a la ruta hasta ahi) a partir del punto final
                 GMapRoute rutaFinalParaderoMenor = null;
                 Paradero pFinal = null;
                 foreach(Paradero p in paraderosLinea)
@@ -125,18 +127,15 @@ namespace RestService2.Controllers
                         pFinal = p;
                     }
                 }
-
-                //Ya se seleccionaron la ruta con menor distancia hasta un paradero de esa linea
-                //se debe recorrer la linea desde ese paradero al siguiente siguiendo la ruta
-                //almacenar puntos y distancia
+                #endregion
 
                 List<Coordenada> coorEntreParaderos = CoordenadasSiguiendoLaRuta(pInicio.Latitud, pInicio.Longitud, pFinal.Latitud, pFinal.Longitud);
                 
                 if(coorEntreParaderos != null)
                 {
-                    double distancia = DistanciaCoordenadas(coorEntreParaderos);
-                    double distInicioParadero = rutaInicioParaderoMenor.Distance;
-                    double distFinalParadero = rutaFinalParaderoMenor.Distance;
+                    double distancia = DistanciaCoordenadas(coorEntreParaderos); //distancia del paradero de inicio al final
+                    double distInicioParadero = rutaInicioParaderoMenor.Distance; //distancia desde punto inicio al paradero inicio
+                    double distFinalParadero = rutaFinalParaderoMenor.Distance; //distancia desde punto final al paradero final
 
                     double distTotal = distancia + distInicioParadero + distFinalParadero;
 
@@ -152,15 +151,47 @@ namespace RestService2.Controllers
                 }
 
             }
-           
-            //Se debe obtener la distancia menor y recomendar la linea con esa id
-            //y retornar la suma de esas 3 partes de la ruta para resaltarla
+            
+            if(lineaMenor != null)
+            {
+                List<Coordenada> coordenadasRecomendacion = new List<Coordenada>();
+
+                #region Rellenar las coor recomendadas con las 3 rutas hechas
+                List<PointLatLng> puntosInicio = rutaInicioMenor.Points;
+                List<PointLatLng> puntosFinal = rutaFinalMenor.Points;
+
+                for (int i = 0; i < puntosInicio.Count; i++)
+                {
+                    PointLatLng punto = puntosInicio[i];
+                    Coordenada c = new Coordenada() { Id = lineaMenor.Id, Latitud = punto.Lat, Longitud = punto.Lng };
+
+                    coordenadasRecomendacion.Add(c);
+                }
+
+                for (int i = 0; i < coordenadasMenor.Count; i++)
+                {
+                    coordenadasMenor[i].Id = lineaMenor.Id;
+                    coordenadasRecomendacion.Add(coordenadasMenor[i]);
+                }
+
+                for (int i = 0; i < puntosFinal.Count ; i++)
+                {
+                    PointLatLng punto = puntosFinal[i];
+                    Coordenada c = new Coordenada() { Id = lineaMenor.Id, Latitud = punto.Lat, Longitud = punto.Lng };
+
+                    coordenadasRecomendacion.Add(c);
+                }
+                #endregion
+
+                return coordenadasRecomendacion;
+            }
+            else
+            {
+                return new List<Coordenada>();
+            }
 
 
-            //sumar las coordenadas de las gmaproutes a coordenadas menor
-
-
-            return coordenadasMenor;
+            
         }
 
         #region Originales

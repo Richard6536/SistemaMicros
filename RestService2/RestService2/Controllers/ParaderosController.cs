@@ -51,6 +51,12 @@ namespace RestService2.Controllers
         public List<UsuarioParaderoDeluxe> UsuariosQueSeleccionaron([FromODataUri] int key)
         {
             Paradero paradero = db.Paradero.Where(p => p.Id == key).FirstOrDefault();
+
+            if(paradero == null)
+            {
+                return new List<UsuarioParaderoDeluxe>();
+            }
+
             List<UsuarioParadero> usuarioParaderos = paradero.UsuarioParadero.ToList();
 
             List<UsuarioParaderoDeluxe> upDeluxe = new List<UsuarioParaderoDeluxe>();
@@ -78,6 +84,7 @@ namespace RestService2.Controllers
                     //problemas de internet o ruta imposible
                     user.Id = -1;
                     usuarioParadero.DistanciaEntre = -1;
+                    upDeluxe.Add(new UsuarioParaderoDeluxe(){ UsuarioId = -1 });
                     continue;
                 }
 

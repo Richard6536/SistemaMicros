@@ -223,10 +223,22 @@ namespace MicrosForms.Ventanas
             CargarComboboxLineas();
         }
 
-        private void btnVerMicros_Click(object sender, EventArgs e)
+        private void btnCambiarNombreLinea_Click(object sender, EventArgs e)
         {
+            if (lineaActual == null)
+                return;
 
+            var form = new CambiarNombreLinea(lineaActual.Id);
+            DialogResult dr = FormManager.MostrarShowDialog(this, form);
+
+            if (dr == DialogResult.OK)
+            {
+                int idLinea = lineaActual.Id;
+                CargarComboboxLineas();
+                cmbLinea.SelectedValue = idLinea;
+            }
         }
+
 
         private void btnCrearIda_Click(object sender, EventArgs e)
         {
@@ -435,21 +447,6 @@ namespace MicrosForms.Ventanas
             FormManager.MostrarShowDialog(this, form);
         }
 
-        private void btnCambiarNombreLinea_Click(object sender, EventArgs e)
-        {
-            if (lineaActual == null)
-                return;
-
-            var form = new CambiarNombreLinea(lineaActual.Id);
-            DialogResult dr = FormManager.MostrarShowDialog(this, form);
-
-            if(dr == DialogResult.OK)
-            {
-                int idLinea = lineaActual.Id;
-                CargarComboboxLineas();
-                cmbLinea.SelectedValue = idLinea;
-            }
-        }
 
         private void AdminLineas_FormClosing(object sender, FormClosingEventArgs e)
         {
