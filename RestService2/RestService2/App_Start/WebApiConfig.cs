@@ -73,8 +73,8 @@ namespace RestService2
             ActionConfiguration obtenerMicro = builder.Entity<Usuario>().Action("ObtenerMicro");
             obtenerMicro.ReturnsFromEntitySet<Micro>("Micros");
 
-            ActionConfiguration seleccionarParadero = builder.Entity<Usuario>().Action("SeleccionarParadero");
-            seleccionarParadero.Returns<IHttpActionResult>();
+            ActionConfiguration seleccionarParadero = builder.Entity<Usuario>().Action("SeleccionarParaderoDX");
+            seleccionarParadero.Returns<string>();
             seleccionarParadero.Parameter<int>("IdParadero");
 
             ActionConfiguration deseleccionarParadero = builder.Entity<Usuario>().Action("DeseleccionarParadero");
@@ -129,6 +129,13 @@ namespace RestService2
             #region Linea
             ActionConfiguration choferesActivos = builder.Entity<Linea>().Action("ObtenerChoferes");
             choferesActivos.ReturnsCollectionFromEntitySet<Usuario>("Usuarios");
+
+            ActionConfiguration recRuta = builder.Entity<Linea>().Collection.Action("RecomendarRutaDX");
+            recRuta.Parameter<double>("latInicio");
+            recRuta.Parameter<double>("lngInicio");
+            recRuta.Parameter<double>("latFinal");
+            recRuta.Parameter<double>("lngFinal");
+            recRuta.ReturnsCollectionFromEntitySet<Coordenada>("Coordenadas");
             #endregion
 
             config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());

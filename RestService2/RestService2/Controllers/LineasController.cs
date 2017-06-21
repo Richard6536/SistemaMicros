@@ -57,10 +57,10 @@ namespace RestService2.Controllers
             return choferesActivos;         
         }
 
-        //POST: odata/Lineas/RecomendarRuta
+        //POST: odata/Lineas/RecomendarRutaDX
         //Parametros: latInicio,lngInicio, latFinal,lngFinal
         [HttpPost]
-        public List<Coordenada> RecomendarRuta(ODataActionParameters parameters)
+        public List<Coordenada> RecomendarRutaDX(ODataActionParameters parameters)
         {
             List<Coordenada> vertices = new List<Coordenada>();
 
@@ -84,6 +84,8 @@ namespace RestService2.Controllers
             List<Coordenada> coordenadasMenor = null;
             GMapRoute rutaInicioMenor = null;
             GMapRoute rutaFinalMenor = null;
+
+            bool pFinalEnRutaVuelta = false;
 
             foreach(Linea linea in todasLineas)
             {
@@ -114,7 +116,7 @@ namespace RestService2.Controllers
                 Paradero pFinal = null;
                 foreach(Paradero p in paraderosLinea)
                 {
-                    GMapRoute ruta = RutaCaminando(inicio, new PointLatLng(p.Latitud, p.Longitud));
+                    GMapRoute ruta = RutaCaminando(final, new PointLatLng(p.Latitud, p.Longitud));
 
                     if (rutaFinalParaderoMenor == null)
                     {
@@ -127,9 +129,17 @@ namespace RestService2.Controllers
                         pFinal = p;
                     }
                 }
+
+                if(pFinal != null)
+                {
+                    if(pFinal.Ruta == pFinal.Ruta.Linea2.Ruta1) //si es la ruta una ruta de vuelta
+                    {
+                        pFinalEnRutaVuelta = true;
+                    }
+                }
                 #endregion
 
-                List<Coordenada> coorEntreParaderos = CoordenadasSiguiendoLaRuta(pInicio.Latitud, pInicio.Longitud, pFinal.Latitud, pFinal.Longitud);
+                List<Coordenada> coorEntreParaderos = CoordenadasSiguiendoLaRuta(pInicio.Latitud, pInicio.Longitud, pFinal.Latitud, pFinal.Longitud, pFinalEnRutaVuelta, pFinal);
                 
                 if(coorEntreParaderos != null)
                 {
@@ -189,8 +199,6 @@ namespace RestService2.Controllers
             {
                 return new List<Coordenada>();
             }
-
-
             
         }
 
@@ -409,7 +417,7 @@ namespace RestService2.Controllers
             return ruta;
         }
 
-        private List<Coordenada> CoordenadasSiguiendoLaRuta(double latInicio, double lngInicio, double latFinal, double lngFinal)
+        private List<Coordenada> CoordenadasSiguiendoLaRuta(double latInicio, double lngInicio, double latFinal, double lngFinal, bool _finalEnRutaVuelta, Paradero _pFinal)
         {
             Coordenada coorInicio = db.Coordenada.Where(c => c.Latitud == latInicio && c.Longitud == lngInicio).FirstOrDefault();
             Coordenada coorFinal = db.Coordenada.Where(c => c.Latitud == latFinal && c.Longitud == lngFinal).FirstOrDefault();
@@ -430,9 +438,28 @@ namespace RestService2.Controllers
                     encontrado = true;
                     break;
                 }
-
                 sigCoor = sigCoor.Coordenada2;
             }
+
+            //si elparadero final esta en la ruta de vuelta repite el proceso desde el principio de la otra ruta
+            if(_finalEnRutaVuelta)
+            {
+                Ruta rutaVuelta = _pFinal.Ruta;
+                sigCoor = rutaVuelta.Coordenada;
+
+                while (sigCoor != null)
+                {
+                    coorHastaFinal.Add(sigCoor);
+
+                    if (sigCoor.Latitud == latFinal && sigCoor.Longitud == lngFinal)
+                    {
+                        encontrado = true;
+                        break;
+                    }
+                    sigCoor = sigCoor.Coordenada2;
+                }
+            }
+
             #endregion
 
             if (encontrado == false)

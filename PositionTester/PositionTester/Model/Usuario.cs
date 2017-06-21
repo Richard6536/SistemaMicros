@@ -454,6 +454,7 @@ namespace MicrosForms.Model
             BD.SaveChanges();
         }
 
+
         public static void PararActualizaciónPosicion(int _id)
         {
             var BD = new MicroSystemContext();

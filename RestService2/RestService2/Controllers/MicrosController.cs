@@ -39,15 +39,16 @@ namespace RestService2.Controllers
         //Deseleccionar paradero
         //NuevaCalificacion
 
-
         // POST: odata/Micros(5)/IniciarRecorrido
         [HttpPost]
         public IHttpActionResult IniciarRecorrido([FromODataUri] int key)
         {
             Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
 
-            if(micro.LineaId != null)
+            if(micro.LineaId != null && micro.MicroChoferId != null)
             {
+                IniciarRecorridoHistorial(micro);
+
                 Ruta rIda = micro.Linea.Ruta;
 
                 Paradero primerParadero = rIda.Paradero.OrderBy(p => p.Id).ToList()[0];
@@ -77,11 +78,75 @@ namespace RestService2.Controllers
             return Ok();
         }
 
+        private void IniciarRecorridoHistorial(Micro _micro)
+        {
+            List<HistorialDiario> hDiarios = _micro.HistorialDiario.ToList();
+
+            //con lista vacia se crea un nuevo historial diario y de idavuelta
+            if(hDiarios.Count == 0)
+            {
+                HistorialDiario HDnuevo = new HistorialDiario();
+                HDnuevo.Fecha = DateTime.Today;
+                HDnuevo.NombreChofer = _micro.MicroChofer.Usuario.Nombre;
+                HDnuevo.HoraInicio = DateTime.Now;
+                HDnuevo.HoraFinal = DateTime.Now;
+
+                _micro.HistorialDiario.Add(HDnuevo);
+
+                HistorialIdaVuelta HIVnuevo = new HistorialIdaVuelta();
+                HIVnuevo.HoraInicio = DateTime.Now;
+                HIVnuevo.HoraTermino = DateTime.Now;
+                HIVnuevo.DuracionRecorrido = new TimeSpan(0, 0, 0);
+
+                HDnuevo.HistorialIdaVuelta.Add(HIVnuevo);
+                db.SaveChanges();
+                return;
+            }
+
+            HistorialDiario hDiaro = null;
+            //se busca si ya hay un historial diario con la fecha de hoy y se trabaja con ese
+            //solo se crea un nuevo historia idavuelta
+            for (int i = 0; i < hDiarios.Count; i++)
+            {
+                hDiaro = hDiarios[i];
+
+                if(hDiaro.Fecha == DateTime.Today)
+                {
+                    HistorialIdaVuelta HIVnuevo = new HistorialIdaVuelta();
+                    HIVnuevo.HoraInicio = DateTime.Now;
+                    HIVnuevo.HoraTermino = DateTime.Now;
+                    hDiaro.HistorialIdaVuelta.Add(HIVnuevo);
+                }
+
+            }
+            //caso contrario se crea un nuevo historial diario y idavuelta para el dia de hoy
+            if(hDiaro == null)
+            {
+                HistorialDiario HDnuevo = new HistorialDiario();
+                HDnuevo.Fecha = DateTime.Today;
+                HDnuevo.NombreChofer = _micro.MicroChofer.Usuario.Nombre;
+                HDnuevo.HoraInicio = DateTime.Now;
+                HDnuevo.HoraFinal = DateTime.Now;
+
+                _micro.HistorialDiario.Add(HDnuevo);
+
+                HistorialIdaVuelta HIVnuevo = new HistorialIdaVuelta();
+                HIVnuevo.HoraInicio = DateTime.Now;
+                HIVnuevo.HoraTermino = DateTime.Now;
+
+                HDnuevo.HistorialIdaVuelta.Add(HIVnuevo);
+            }
+
+            db.SaveChanges();
+        }
+
         // POST: odata/Micros(5)/DetenerRecorrido
         [HttpPost]
         public IHttpActionResult DetenerRecorrido([FromODataUri] int key)
         {
             Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
+
+            TerminarRecorridoHistorial(micro);
 
             micro.Coordenada = null;
             micro.SiguienteVerticeId = null;
@@ -187,7 +252,6 @@ namespace RestService2.Controllers
                 return p;
             }
         }
-
 
         #region metodo originales
         // GET: odata/Micros
@@ -368,6 +432,33 @@ namespace RestService2.Controllers
             }
 
             return coordenadas;
+        }
+
+        private void TerminarRecorridoHistorial(Micro _micro)
+        {
+            List<HistorialDiario> hDiarios = _micro.HistorialDiario.ToList();
+
+            HistorialDiario hDiario = null;
+            //se busca el historial diario con la fecha de hoy (siempre deberia haber uno)
+            //se editan los tiempos finales del historial diario y del ultimo historial idavuelta
+            for (int i = 0; i < hDiarios.Count; i++)
+            {
+                hDiario = hDiarios[i];
+
+                if (hDiario.Fecha == DateTime.Today)
+                {
+                    hDiario.HoraFinal = DateTime.Now;
+                    hDiario.NumeroIdaVueltas = hDiario.NumeroIdaVueltas + 1;
+
+                    HistorialIdaVuelta ultimoHiv = hDiario.HistorialIdaVuelta.OrderBy(h => h.Id).ToList().Last();
+
+                    ultimoHiv.HoraTermino = DateTime.Now;
+                    ultimoHiv.DuracionRecorrido = DateTime.Now - ultimoHiv.HoraInicio;
+                }
+
+            }
+            db.SaveChanges();
+
         }
     }
 }

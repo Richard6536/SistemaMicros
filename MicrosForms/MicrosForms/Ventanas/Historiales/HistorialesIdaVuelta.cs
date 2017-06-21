@@ -29,5 +29,10 @@ namespace MicrosForms.Ventanas.Historiales
 
             historialesIdaVuelta = MicrosForms.Model.HistorialDiario.ObtenerHistorialesIdaVuelta(_idHistorialDiario);
         }
+
+        private void datagridHistorial_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
 }

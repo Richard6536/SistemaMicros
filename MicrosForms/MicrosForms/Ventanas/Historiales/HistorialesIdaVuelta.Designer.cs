@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.datagridHistorial = new System.Windows.Forms.DataGridView();
-            this.lblPatente = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lblFecha = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.NumeroRecorrido = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.HoraInicio = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.HoraFin = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.DuracionRecorrido = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.NumeroPasajeros = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.HistorialParaderos = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.lblPatente = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lblFecha = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.datagridHistorial)).BeginInit();
             this.SuspendLayout();
@@ -60,42 +60,7 @@
             this.datagridHistorial.ReadOnly = true;
             this.datagridHistorial.Size = new System.Drawing.Size(638, 242);
             this.datagridHistorial.TabIndex = 0;
-            // 
-            // lblPatente
-            // 
-            this.lblPatente.AutoSize = true;
-            this.lblPatente.Location = new System.Drawing.Point(127, 64);
-            this.lblPatente.Name = "lblPatente";
-            this.lblPatente.Size = new System.Drawing.Size(50, 13);
-            this.lblPatente.TabIndex = 11;
-            this.lblPatente.Text = "asdf-asfd";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(43, 64);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(78, 13);
-            this.label2.TabIndex = 10;
-            this.label2.Text = "Patente micro: ";
-            // 
-            // lblFecha
-            // 
-            this.lblFecha.AutoSize = true;
-            this.lblFecha.Location = new System.Drawing.Point(127, 92);
-            this.lblFecha.Name = "lblFecha";
-            this.lblFecha.Size = new System.Drawing.Size(65, 13);
-            this.lblFecha.TabIndex = 13;
-            this.lblFecha.Text = "20/12/2020";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(43, 92);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(37, 13);
-            this.label3.TabIndex = 12;
-            this.label3.Text = "Fecha";
+            this.datagridHistorial.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.datagridHistorial_CellContentClick);
             // 
             // NumeroRecorrido
             // 
@@ -133,6 +98,42 @@
             this.HistorialParaderos.HeaderText = "Ver historial de paraderos";
             this.HistorialParaderos.Name = "HistorialParaderos";
             this.HistorialParaderos.ReadOnly = true;
+            // 
+            // lblPatente
+            // 
+            this.lblPatente.AutoSize = true;
+            this.lblPatente.Location = new System.Drawing.Point(127, 64);
+            this.lblPatente.Name = "lblPatente";
+            this.lblPatente.Size = new System.Drawing.Size(50, 13);
+            this.lblPatente.TabIndex = 11;
+            this.lblPatente.Text = "asdf-asfd";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(43, 64);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(78, 13);
+            this.label2.TabIndex = 10;
+            this.label2.Text = "Patente micro: ";
+            // 
+            // lblFecha
+            // 
+            this.lblFecha.AutoSize = true;
+            this.lblFecha.Location = new System.Drawing.Point(127, 92);
+            this.lblFecha.Name = "lblFecha";
+            this.lblFecha.Size = new System.Drawing.Size(65, 13);
+            this.lblFecha.TabIndex = 13;
+            this.lblFecha.Text = "20/12/2020";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(43, 92);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(37, 13);
+            this.label3.TabIndex = 12;
+            this.label3.Text = "Fecha";
             // 
             // label1
             // 
