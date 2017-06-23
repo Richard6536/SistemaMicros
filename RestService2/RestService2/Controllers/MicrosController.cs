@@ -253,6 +253,18 @@ namespace RestService2.Controllers
             }
         }
 
+        //POST: odata/Micros(5)/ObtenerHistorialesDiarios
+        [HttpPost]
+        public List<HistorialDiario> ObtenerHistorialesDiarios([FromODataUri] int key)
+        {
+            Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
+
+            List<HistorialDiario> hDiarios = micro.HistorialDiario.ToList();
+
+            return hDiarios;
+        }
+
+
         #region metodo originales
         // GET: odata/Micros
         [EnableQuery]

@@ -124,6 +124,9 @@ namespace RestService2
             ActionConfiguration obtenerMiParadero = builder.Entity<Micro>().Action("ObtenerMiParadero");
             obtenerMiParadero.ReturnsCollectionFromEntitySet<Paradero>("Paraderos");
 
+            ActionConfiguration obtenerHistoriales = builder.Entity<Micro>().Action("ObtenerHistorialesDiarios");
+            obtenerHistoriales.ReturnsCollectionFromEntitySet<HistorialDiario>("HistorialesDiarios");
+
             #endregion
 
             #region Linea
@@ -136,6 +139,16 @@ namespace RestService2
             recRuta.Parameter<double>("latFinal");
             recRuta.Parameter<double>("lngFinal");
             recRuta.ReturnsCollectionFromEntitySet<Coordenada>("Coordenadas");
+            #endregion
+
+            #region Historiales
+
+            ActionConfiguration obtHistorialIdaVuelta = builder.Entity<HistorialDiario>().Action("ObtenerHistorialesIdaVuelta");
+            obtHistorialIdaVuelta.ReturnsCollectionFromEntitySet<HistorialIdaVuelta>("HistorialesIdaVuelta");
+
+            ActionConfiguration obtHistoralParadero = builder.Entity<HistorialIdaVuelta>().Action("ObtenerHistorialesParaderos");
+            obtHistoralParadero.ReturnsCollectionFromEntitySet<HistorialParadero>("HistorialesParaderos");
+
             #endregion
 
             config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());

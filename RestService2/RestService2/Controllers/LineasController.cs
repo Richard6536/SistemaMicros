@@ -97,6 +97,11 @@ namespace RestService2.Controllers
                 foreach(Paradero p in paraderosLinea)
                 {
                     GMapRoute ruta = RutaCaminando(inicio, new PointLatLng(p.Latitud, p.Longitud));
+
+                    while(ruta == null)
+                    {
+                        ruta = RutaCaminando(inicio, new PointLatLng(p.Latitud, p.Longitud));
+                    }
                     
                     if(rutaInicioParaderoMenor == null)
                     {
@@ -117,6 +122,11 @@ namespace RestService2.Controllers
                 foreach(Paradero p in paraderosLinea)
                 {
                     GMapRoute ruta = RutaCaminando(final, new PointLatLng(p.Latitud, p.Longitud));
+
+                    while(ruta == null)
+                    {
+                        RutaCaminando(final, new PointLatLng(p.Latitud, p.Longitud));
+                    }
 
                     if (rutaFinalParaderoMenor == null)
                     {
@@ -184,7 +194,7 @@ namespace RestService2.Controllers
                     coordenadasRecomendacion.Add(coordenadasMenor[i]);
                 }
 
-                for (int i = 0; i < puntosFinal.Count ; i++)
+                for (int i = puntosFinal.Count - 1; i >= 0 ; i--)
                 {
                     PointLatLng punto = puntosFinal[i];
                     Coordenada c = new Coordenada() { Id = lineaMenor.Id, Latitud = punto.Lat, Longitud = punto.Lng };

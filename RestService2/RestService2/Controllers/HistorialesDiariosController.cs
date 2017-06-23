@@ -30,6 +30,18 @@ namespace RestService2.Controllers
     {
         private MicroSystemDBEntities6 db = new MicroSystemDBEntities6();
 
+        // POST: odata/HistorialesDiarios(5)/ObtenerHistorialesIdaVuelta
+        [EnableQuery]
+        public List<HistorialIdaVuelta> ObtenerHistorialesIdaVuelta([FromODataUri] int key)
+        {
+            HistorialDiario hDiario = db.HistorialDiario.Where(h => h.Id == key).FirstOrDefault();
+
+            List<HistorialIdaVuelta> hiv = hDiario.HistorialIdaVuelta.OrderBy(h => h.Id).ToList();
+
+            return hiv;
+        }
+
+
         // GET: odata/HistorialesDiarios
         [EnableQuery]
         public IQueryable<HistorialDiario> GetHistorialesDiarios()
