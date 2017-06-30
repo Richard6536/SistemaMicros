@@ -41,8 +41,12 @@ namespace RestService2
             builder.EntitySet<HistorialDiario>("HistorialesDiarios");
             builder.EntitySet<HistorialIdaVuelta>("HistorialesIdaVuelta");
             builder.EntitySet<HistorialParadero>("HistorialesParaderos");
+            builder.EntitySet<MicroPasajero>("MicroPasajeros");
 
             #region Usuario
+            ActionConfiguration mensajeNormal = builder.Entity<Usuario>().Collection.Action("Mensaje");
+            mensajeNormal.Returns<string>();
+
             ActionConfiguration mensajeParametros = builder.Entity<Usuario>().Collection.Action("MensajeParametros");
             mensajeParametros.Returns<string>();
             mensajeParametros.Parameter<int>("Edad");

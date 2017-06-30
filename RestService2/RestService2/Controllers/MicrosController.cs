@@ -33,7 +33,7 @@ namespace RestService2.Controllers
     */
     public class MicrosController : ODataController
     {
-        private MicroSystemDBEntities6 db = new MicroSystemDBEntities6();
+        private MicroSystemDBEntities10 db = new MicroSystemDBEntities10();
 
         //Seleccionar paradero
         //Deseleccionar paradero

@@ -4,19 +4,20 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="50e3b0437b4f4834a2d17fc5a58ef3f8" Name="Diagram1">
-        <EntityTypeShape EntityType="MicroSystemDBModel.Coordenada" Width="1.5" PointX="0.75" PointY="9.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.HistorialDiario" Width="1.5" PointX="5.25" PointY="12.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.HistorialIdaVuelta" Width="1.5" PointX="7.5" PointY="13.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.HistorialParadero" Width="1.5" PointX="9.75" PointY="13.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.Linea" Width="1.5" PointX="8.25" PointY="7.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.Micro" Width="1.5" PointX="3" PointY="8.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.MicroChofer" Width="1.5" PointX="5.25" PointY="5.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.MicroParadero" Width="1.5" PointX="12.5" PointY="12.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.Paradero" Width="1.5" PointX="8.25" PointY="16.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.Ruta" Width="1.5" PointX="6" PointY="9" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.Usuario" Width="1.5" PointX="7.5" PointY="2.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="MicroSystemDBModel.UsuarioParadero" Width="1.5" PointX="10.5" PointY="8.75" IsExpanded="true" />
+      <Diagram DiagramId="8dc8c8cce41949c9ad18de048fc0bdfe" Name="Diagram1">
+        <EntityTypeShape EntityType="MicroSystemDBModel.Coordenada" Width="1.5" PointX="0.75" PointY="10.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.HistorialDiario" Width="1.5" PointX="5.25" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.HistorialIdaVuelta" Width="1.5" PointX="7.5" PointY="14.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.HistorialParadero" Width="1.5" PointX="9.75" PointY="14.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.Linea" Width="1.5" PointX="8.25" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.Micro" Width="1.5" PointX="3" PointY="9.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.MicroChofer" Width="1.5" PointX="5.25" PointY="6.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.MicroParadero" Width="1.5" PointX="12.5" PointY="13.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.MicroPasajero" Width="1.5" PointX="10.75" PointY="7.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.Paradero" Width="1.5" PointX="8.25" PointY="18.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.Ruta" Width="1.5" PointX="6" PointY="10.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.Usuario" Width="1.5" PointX="7.5" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MicroSystemDBModel.UsuarioParadero" Width="1.5" PointX="13.5" PointY="9.875" IsExpanded="true" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId" ManuallyRouted="false" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_Micro_dbo_Coordenada_SiguienteVerticeId" ManuallyRouted="false" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_Ruta_dbo_Coordenada_InicioId" ManuallyRouted="false" />
@@ -31,9 +32,11 @@
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_Micro_dbo_MicroParadero_MicroParaderoId" ManuallyRouted="false" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_MicroChofer_dbo_Micro_MicroId" ManuallyRouted="false" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_MicroParadero_dbo_Micro_MicroId" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroSystemDBModel.FK_dbo_MicroPasajero_dbo_Micro_MicroId" ManuallyRouted="false" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_MicroChofer_dbo_Usuario_ChoferId" ManuallyRouted="false" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_Usuario_dbo_MicroChofer_MicroChoferId" ManuallyRouted="false" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_MicroParadero_dbo_Paradero_ParaderoId" ManuallyRouted="false" />
+        <AssociationConnector Association="MicroSystemDBModel.FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId" ManuallyRouted="false" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_Paradero_dbo_Ruta_RutaId" ManuallyRouted="false" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_UsuarioParadero_dbo_Paradero_ParaderoId" ManuallyRouted="false" />
         <AssociationConnector Association="MicroSystemDBModel.FK_dbo_Usuario_dbo_UsuarioParadero_UsuarioParaderoId" ManuallyRouted="false" />

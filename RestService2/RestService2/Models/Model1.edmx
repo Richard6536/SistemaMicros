@@ -86,9 +86,21 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DistanciaEntre" Type="float" Nullable="false" />
           <Property Name="ParaderoId" Type="int" Nullable="false" />
           <Property Name="MicroId" Type="int" Nullable="false" />
-          <Property Name="DistanciaEntre" Type="float" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MicroPasajero">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Estado" Type="nvarchar(max)" />
+          <Property Name="MicroId" Type="int" Nullable="false" />
+          <Property Name="PasajeroId" Type="int" Nullable="false" />
+          <Property Name="HoraCreacion" Type="datetime" Nullable="false" />
+          <Property Name="LatitudCreacion" Type="float" Nullable="false" />
+          <Property Name="LongitudCreacion" Type="float" Nullable="false" />
         </EntityType>
         <EntityType Name="Paradero">
           <Key>
@@ -129,9 +141,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DistanciaEntre" Type="float" Nullable="false" />
           <Property Name="ParaderoId" Type="int" Nullable="false" />
           <Property Name="UsuarioId" Type="int" Nullable="false" />
-          <Property Name="DistanciaEntre" Type="float" Nullable="false" />
         </EntityType>
         <Association Name="FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId">
           <End Role="Coordenada" Type="Self.Coordenada" Multiplicity="0..1" />
@@ -315,6 +327,34 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_dbo_MicroPasajero_dbo_Micro_MicroId">
+          <End Role="Micro" Type="Self.Micro" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="MicroPasajero" Type="Self.MicroPasajero" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Micro">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MicroPasajero">
+              <PropertyRef Name="MicroId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="MicroPasajero" Type="Self.MicroPasajero" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MicroPasajero">
+              <PropertyRef Name="PasajeroId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_Paradero_dbo_Ruta_RutaId">
           <End Role="Ruta" Type="Self.Ruta" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -416,6 +456,7 @@
           <EntitySet Name="Micro" EntityType="Self.Micro" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MicroChofer" EntityType="Self.MicroChofer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MicroParadero" EntityType="Self.MicroParadero" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MicroPasajero" EntityType="Self.MicroPasajero" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Paradero" EntityType="Self.Paradero" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ruta" EntityType="Self.Ruta" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
@@ -475,6 +516,14 @@
           <AssociationSet Name="FK_dbo_MicroParadero_dbo_Paradero_ParaderoId" Association="Self.FK_dbo_MicroParadero_dbo_Paradero_ParaderoId">
             <End Role="Paradero" EntitySet="Paradero" />
             <End Role="MicroParadero" EntitySet="MicroParadero" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_MicroPasajero_dbo_Micro_MicroId" Association="Self.FK_dbo_MicroPasajero_dbo_Micro_MicroId">
+            <End Role="Micro" EntitySet="Micro" />
+            <End Role="MicroPasajero" EntitySet="MicroPasajero" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId" Association="Self.FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="MicroPasajero" EntitySet="MicroPasajero" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_Paradero_dbo_Ruta_RutaId" Association="Self.FK_dbo_Paradero_dbo_Ruta_RutaId">
             <End Role="Ruta" EntitySet="Ruta" />
@@ -597,6 +646,7 @@
           <NavigationProperty Name="MicroParadero" Relationship="Self.FK_dbo_Micro_dbo_MicroParadero_MicroParaderoId" FromRole="Micro" ToRole="MicroParadero" />
           <NavigationProperty Name="MicroChofer1" Relationship="Self.FK_dbo_MicroChofer_dbo_Micro_MicroId" FromRole="Micro" ToRole="MicroChofer" />
           <NavigationProperty Name="MicroParadero1" Relationship="Self.FK_dbo_MicroParadero_dbo_Micro_MicroId" FromRole="Micro" ToRole="MicroParadero" />
+          <NavigationProperty Name="MicroPasajero" Relationship="Self.FK_dbo_MicroPasajero_dbo_Micro_MicroId" FromRole="Micro" ToRole="MicroPasajero" />
         </EntityType>
         <EntityType Name="MicroChofer">
           <Key>
@@ -615,12 +665,26 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DistanciaEntre" Type="Double" Nullable="false" />
           <Property Name="ParaderoId" Type="Int32" Nullable="false" />
           <Property Name="MicroId" Type="Int32" Nullable="false" />
-          <Property Name="DistanciaEntre" Type="Double" Nullable="false" />
           <NavigationProperty Name="Micro" Relationship="Self.FK_dbo_Micro_dbo_MicroParadero_MicroParaderoId" FromRole="MicroParadero" ToRole="Micro" />
           <NavigationProperty Name="Micro1" Relationship="Self.FK_dbo_MicroParadero_dbo_Micro_MicroId" FromRole="MicroParadero" ToRole="Micro" />
           <NavigationProperty Name="Paradero" Relationship="Self.FK_dbo_MicroParadero_dbo_Paradero_ParaderoId" FromRole="MicroParadero" ToRole="Paradero" />
+        </EntityType>
+        <EntityType Name="MicroPasajero">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Estado" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MicroId" Type="Int32" Nullable="false" />
+          <Property Name="PasajeroId" Type="Int32" Nullable="false" />
+          <Property Name="HoraCreacion" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LatitudCreacion" Type="Double" Nullable="false" />
+          <Property Name="LongitudCreacion" Type="Double" Nullable="false" />
+          <NavigationProperty Name="Micro" Relationship="Self.FK_dbo_MicroPasajero_dbo_Micro_MicroId" FromRole="MicroPasajero" ToRole="Micro" />
+          <NavigationProperty Name="Usuario" Relationship="Self.FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId" FromRole="MicroPasajero" ToRole="Usuario" />
         </EntityType>
         <EntityType Name="Paradero">
           <Key>
@@ -665,6 +729,7 @@
           <Property Name="MicroChoferId" Type="Int32" />
           <NavigationProperty Name="MicroChofer" Relationship="Self.FK_dbo_MicroChofer_dbo_Usuario_ChoferId" FromRole="Usuario" ToRole="MicroChofer" />
           <NavigationProperty Name="MicroChofer1" Relationship="Self.FK_dbo_Usuario_dbo_MicroChofer_MicroChoferId" FromRole="Usuario" ToRole="MicroChofer" />
+          <NavigationProperty Name="MicroPasajero" Relationship="Self.FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId" FromRole="Usuario" ToRole="MicroPasajero" />
           <NavigationProperty Name="UsuarioParadero" Relationship="Self.FK_dbo_Usuario_dbo_UsuarioParadero_UsuarioParaderoId" FromRole="Usuario" ToRole="UsuarioParadero" />
           <NavigationProperty Name="UsuarioParadero1" Relationship="Self.FK_dbo_UsuarioParadero_dbo_Usuario_UsuarioId" FromRole="Usuario" ToRole="UsuarioParadero" />
         </EntityType>
@@ -673,9 +738,9 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DistanciaEntre" Type="Double" Nullable="false" />
           <Property Name="ParaderoId" Type="Int32" Nullable="false" />
           <Property Name="UsuarioId" Type="Int32" Nullable="false" />
-          <Property Name="DistanciaEntre" Type="Double" Nullable="false" />
           <NavigationProperty Name="Paradero" Relationship="Self.FK_dbo_UsuarioParadero_dbo_Paradero_ParaderoId" FromRole="UsuarioParadero" ToRole="Paradero" />
           <NavigationProperty Name="Usuario" Relationship="Self.FK_dbo_Usuario_dbo_UsuarioParadero_UsuarioParaderoId" FromRole="UsuarioParadero" ToRole="Usuario" />
           <NavigationProperty Name="Usuario1" Relationship="Self.FK_dbo_UsuarioParadero_dbo_Usuario_UsuarioId" FromRole="UsuarioParadero" ToRole="Usuario" />
@@ -860,6 +925,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_dbo_MicroPasajero_dbo_Micro_MicroId">
+          <End Role="Micro" Type="Self.Micro" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="MicroPasajero" Type="Self.MicroPasajero" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Micro">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MicroPasajero">
+              <PropertyRef Name="MicroId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_MicroChofer_dbo_Usuario_ChoferId">
           <End Role="Usuario" Type="Self.Usuario" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -897,6 +976,20 @@
             </Principal>
             <Dependent Role="MicroParadero">
               <PropertyRef Name="ParaderoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId">
+          <End Role="Usuario" Type="Self.Usuario" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="MicroPasajero" Type="Self.MicroPasajero" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Usuario">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MicroPasajero">
+              <PropertyRef Name="PasajeroId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -954,7 +1047,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="MicroSystemDBEntities6" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="MicroSystemDBEntities10" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Coordenada" EntityType="Self.Coordenada" />
           <EntitySet Name="HistorialDiario" EntityType="Self.HistorialDiario" />
           <EntitySet Name="HistorialIdaVuelta" EntityType="Self.HistorialIdaVuelta" />
@@ -963,6 +1056,7 @@
           <EntitySet Name="Micro" EntityType="Self.Micro" />
           <EntitySet Name="MicroChofer" EntityType="Self.MicroChofer" />
           <EntitySet Name="MicroParadero" EntityType="Self.MicroParadero" />
+          <EntitySet Name="MicroPasajero" EntityType="Self.MicroPasajero" />
           <EntitySet Name="Paradero" EntityType="Self.Paradero" />
           <EntitySet Name="Ruta" EntityType="Self.Ruta" />
           <EntitySet Name="Usuario" EntityType="Self.Usuario" />
@@ -1023,6 +1117,10 @@
             <End Role="Micro" EntitySet="Micro" />
             <End Role="MicroParadero" EntitySet="MicroParadero" />
           </AssociationSet>
+          <AssociationSet Name="FK_dbo_MicroPasajero_dbo_Micro_MicroId" Association="Self.FK_dbo_MicroPasajero_dbo_Micro_MicroId">
+            <End Role="Micro" EntitySet="Micro" />
+            <End Role="MicroPasajero" EntitySet="MicroPasajero" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_MicroChofer_dbo_Usuario_ChoferId" Association="Self.FK_dbo_MicroChofer_dbo_Usuario_ChoferId">
             <End Role="Usuario" EntitySet="Usuario" />
             <End Role="MicroChofer" EntitySet="MicroChofer" />
@@ -1034,6 +1132,10 @@
           <AssociationSet Name="FK_dbo_MicroParadero_dbo_Paradero_ParaderoId" Association="Self.FK_dbo_MicroParadero_dbo_Paradero_ParaderoId">
             <End Role="Paradero" EntitySet="Paradero" />
             <End Role="MicroParadero" EntitySet="MicroParadero" />
+          </AssociationSet>
+          <AssociationSet Name="FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId" Association="Self.FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId">
+            <End Role="Usuario" EntitySet="Usuario" />
+            <End Role="MicroPasajero" EntitySet="MicroPasajero" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_Paradero_dbo_Ruta_RutaId" Association="Self.FK_dbo_Paradero_dbo_Ruta_RutaId">
             <End Role="Ruta" EntitySet="Ruta" />
@@ -1057,7 +1159,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="MicroSystemDBModelStoreContainer" CdmEntityContainer="MicroSystemDBEntities6">
+        <EntityContainerMapping StorageEntityContainer="MicroSystemDBModelStoreContainer" CdmEntityContainer="MicroSystemDBEntities10">
           <EntitySetMapping Name="Coordenada">
             <EntityTypeMapping TypeName="MicroSystemDBModel.Coordenada">
               <MappingFragment StoreEntitySet="Coordenada">
@@ -1145,9 +1247,22 @@
             <EntityTypeMapping TypeName="MicroSystemDBModel.MicroParadero">
               <MappingFragment StoreEntitySet="MicroParadero">
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DistanciaEntre" ColumnName="DistanciaEntre" />
                 <ScalarProperty Name="ParaderoId" ColumnName="ParaderoId" />
                 <ScalarProperty Name="MicroId" ColumnName="MicroId" />
-                <ScalarProperty Name="DistanciaEntre" ColumnName="DistanciaEntre" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MicroPasajero">
+            <EntityTypeMapping TypeName="MicroSystemDBModel.MicroPasajero">
+              <MappingFragment StoreEntitySet="MicroPasajero">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Estado" ColumnName="Estado" />
+                <ScalarProperty Name="MicroId" ColumnName="MicroId" />
+                <ScalarProperty Name="PasajeroId" ColumnName="PasajeroId" />
+                <ScalarProperty Name="HoraCreacion" ColumnName="HoraCreacion" />
+                <ScalarProperty Name="LatitudCreacion" ColumnName="LatitudCreacion" />
+                <ScalarProperty Name="LongitudCreacion" ColumnName="LongitudCreacion" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1192,9 +1307,9 @@
             <EntityTypeMapping TypeName="MicroSystemDBModel.UsuarioParadero">
               <MappingFragment StoreEntitySet="UsuarioParadero">
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DistanciaEntre" ColumnName="DistanciaEntre" />
                 <ScalarProperty Name="ParaderoId" ColumnName="ParaderoId" />
                 <ScalarProperty Name="UsuarioId" ColumnName="UsuarioId" />
-                <ScalarProperty Name="DistanciaEntre" ColumnName="DistanciaEntre" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

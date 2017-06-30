@@ -302,6 +302,7 @@ namespace MicrosForms.Model
                         Linea lineaAsociada = micro.Linea;
                         var choferCoordenada = new GeoCoordinate(user.Latitud, user.Longitud);
 
+                        Paradero pActualizado = null; //null o con valor para actualizar vertice
                         #region Manejar Paraderos
 
                         if (micro.MicroParaderoId != null)
@@ -313,6 +314,11 @@ namespace MicrosForms.Model
 
                             var sigParaderoCoordenada = new GeoCoordinate(sigParadero.Latitud, sigParadero.Longitud);
                             double distSigParadero = choferCoordenada.GetDistanceTo(sigParaderoCoordenada);
+
+                            if (distSigParadero <= DistanciaLimiteParadero/2)
+                            {
+                                pActualizado = sigParadero;
+                            }
 
                             //si salio del radio determinado del paradero, se actualiza el siguiente paradero
                             if (distSigParadero >= DistanciaLimiteParadero && distAntigua <= DistanciaLimiteParadero)
@@ -350,33 +356,14 @@ namespace MicrosForms.Model
                                             break;
                                         }
 
-                                        int c = 1;
-                                        Paradero posibleSig = paraderosLinea[i + c];
-                                        double distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
+                                        Paradero siguiente = paraderosLinea[i + 1];
+                                        double distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(siguiente.Latitud, siguiente.Longitud));
 
-                                        while (distPosibleSig <= DistanciaLimiteParadero)
-                                        {
-                                            c++;
-
-                                            //if para ver si se llego al paradero final
-                                            if (i + c == paraderosLinea.Count)
-                                            {
-
-                                                i = int.MaxValue;
-                                                MicroParadero mp = micro.MicroParadero;
-                                                micro.MicroParadero = null;
-                                                BD.MicroParaderos.Remove(mp);
-                                                break;
-                                            }
-
-                                            posibleSig = paraderosLinea[i + c];
-                                            distPosibleSig = choferCoordenada.GetDistanceTo(new GeoCoordinate(posibleSig.Latitud, posibleSig.Longitud));
-                                        }
-
-                                        micro.MicroParadero.Paradero = posibleSig;
+                                        micro.MicroParadero.Paradero = siguiente;
                                         micro.MicroParadero.DistanciaEntre = distPosibleSig;
                                     }
                                 }
+                                
                             }
                             else
                             {
@@ -395,6 +382,18 @@ namespace MicrosForms.Model
                         Coordenada sigCoor = micro.SiguienteVertice;
                         var sigVerticeCoordenada = new GeoCoordinate(sigCoor.Latitud, sigCoor.Longitud);
                         double distSigCoor = choferCoordenada.GetDistanceTo(sigVerticeCoordenada);
+
+                        if (pActualizado != null)
+                        {
+                            sigCoor = BD.Coordenadas.Where(c => c.Latitud == pActualizado.Latitud && c.Longitud == pActualizado.Longitud).FirstOrDefault();
+                            sigVerticeCoordenada = new GeoCoordinate(pActualizado.Latitud, pActualizado.Longitud);
+                            distSigCoor = choferCoordenada.GetDistanceTo(sigVerticeCoordenada);
+
+                            if(sigCoor != null)
+                            {
+                                micro.SiguienteVertice = sigCoor;
+                            }
+                        }
 
                         if (distSigCoor <= distLimiteVertices)
                         {

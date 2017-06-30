@@ -29,7 +29,7 @@ namespace RestService2.Controllers
     */
     public class RutasController : ODataController
     {
-        private MicroSystemDBEntities6 db = new MicroSystemDBEntities6();
+        private MicroSystemDBEntities10 db = new MicroSystemDBEntities10();
 
         //entregar lista de coordenadas completa
 

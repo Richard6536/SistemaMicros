@@ -31,8 +31,11 @@ namespace RestService2.Controllers
     */
     public class UsuariosController : ODataController
     {
-        private MicroSystemDBEntities6 db = new MicroSystemDBEntities6();
+        private MicroSystemDBEntities10 db = new MicroSystemDBEntities10();
         private TimeSpan timeSpanCero = new TimeSpan(0, 0, 0);
+        private TimeSpan tiempoParaSubirMicro = new TimeSpan(0,1,0);
+        private double metrosUserDeteccionMicro = 10;
+        private double metrosDifParaSubirMicro = 150;
 
         //Validar
         //Editar
@@ -124,9 +127,132 @@ namespace RestService2.Controllers
                     Linea lineaAsociada = micro.Linea;
                     var choferCoordenada = new GeoCoordinate(user.Latitud, user.Longitud);
 
-                    ActualizarParaderos(micro, choferCoordenada, lineaAsociada);
+                    Paradero p = ActualizarParaderos(micro, choferCoordenada, lineaAsociada);
+                    ActualizarVertices(micro, user, choferCoordenada, lineaAsociada, p);
+                }
+            }
 
-                    ActualizarVertices(micro, user, choferCoordenada, lineaAsociada);
+            //si es usuario normal
+            else if(user.Rol == 0)
+            {            
+                GeoCoordinate posUser = new GeoCoordinate(user.Latitud, user.Longitud);
+                List<MicroPasajero> mPasajeros = user.MicroPasajero.ToList();
+                List<MicroPasajero> mPasajerosABorrar = new List<MicroPasajero>();
+
+                bool yaEstaEnMicro = false;
+                MicroPasajero mpArriba = null;
+                #region Revisa si ya esta subido en una micro
+                foreach(MicroPasajero mp in mPasajeros)
+                {
+                    if (mp.Estado == "Arriba")
+                    {
+                        yaEstaEnMicro = true;
+                        mpArriba = mp;
+                    }                   
+                }
+                #endregion
+
+                if(yaEstaEnMicro)
+                {
+                    //si ya esta arriba de la micro revisar si se baja
+                }
+                else
+                {
+                    bool subioAMicro = false;
+                    #region Revisar los de estado "PosiblePasajero" y comprobar si es pasajero real o se aleja
+                    foreach (MicroPasajero mpas in mPasajeros)
+                    {
+                        if (mpas.Estado == "PosiblePasajero")
+                        {
+                            GeoCoordinate posCreacion = new GeoCoordinate(mpas.LatitudCreacion, mpas.LongitudCreacion);
+
+                            double posMicroLat = mpas.Micro.MicroChofer.Usuario.Latitud;
+                            double posMicroLng = mpas.Micro.MicroChofer.Usuario.Longitud;
+                            GeoCoordinate posMicro = new GeoCoordinate(posMicroLat, posMicroLng);
+
+                            double distEntre = posUser.GetDistanceTo(posMicro);
+                            TimeSpan tiempoTranscurrido = DateTime.Now - mpas.HoraCreacion;
+                            double distDesdeCreacion = posUser.GetDistanceTo(posCreacion);
+
+                            if (tiempoTranscurrido < tiempoParaSubirMicro)
+                            {
+                                if (distEntre < metrosUserDeteccionMicro)
+                                {//paso el rango de tiempo y el usuario sigue al lado de la micro
+
+                                    if (distDesdeCreacion > metrosDifParaSubirMicro)
+                                    {//usuario se considera arriba de la micro
+
+                                        subioAMicro = true;
+                                        UsuarioParadero up = user.UsuarioParadero;
+                                        db.UsuarioParadero.Remove(up);
+                                        mpas.Estado = "Arriba";
+                                        
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        //como el usuario sigue al lado de la micro, pero la distancia no es suficiente
+                                        //para considerarlo arriba, se reinicia el contador
+                                        mpas.HoraCreacion = DateTime.Now;
+                                        mpas.LatitudCreacion = user.Latitud;
+                                        mpas.LongitudCreacion = user.Longitud;
+                                    }
+                                }
+                                else
+                                {
+                                    //el usuario esta lejos de la micro despues del rango de tiempo
+                                    //se deshecha esta relacion
+                                }
+
+                            }
+
+                            //revisar si se esta moviendo junto a la micro
+                        }
+                    }
+                    #endregion
+
+                    #region Si se subio a una micro deshechar las demas relaciones
+                    if (subioAMicro)
+                    {
+                        foreach (MicroPasajero mp in mPasajeros)
+                        {
+                            if (mp.Estado == "PosiblePasajero")
+                            {
+                                mPasajerosABorrar.Add(mp);
+                            }
+                        }
+
+                        for (int i = 0; i < mPasajerosABorrar.Count; i++)
+                        {
+                            db.MicroPasajero.Remove(mPasajerosABorrar[i]);
+                        }
+                    }
+                    #endregion
+                }
+
+
+                //si usuario tiene seleccionado un paradero esta vigilante de asociarse a las micros como "PosiblePasajero"
+                //cuando el user se considera que ya se subio a una micro deja de tener seleccionado el paradero y no entra aqui
+                if (user.UsuarioParaderoId != null)
+                {
+                    Paradero p = user.UsuarioParadero.Paradero;
+                    List<Micro> microsLLendo = new List<Micro>();
+                    foreach (MicroParadero mp in p.MicroParadero)
+                    {
+                        microsLLendo.Add(mp.Micro1);
+                    }
+                    //por cada micro revisar que tan lejos esta del pasajero
+
+                    foreach (Micro m in microsLLendo)
+                    {
+                        GeoCoordinate posMicro = new GeoCoordinate(m.MicroChofer.Usuario.Latitud, m.MicroChofer.Usuario.Longitud);
+                        double distEntre = posUser.GetDistanceTo(posMicro);
+
+                        if(distEntre < metrosUserDeteccionMicro)
+                        {
+                            //Crea asociacion MicroPasajero
+                        }
+                    }
                 }
             }
 
@@ -156,8 +282,8 @@ namespace RestService2.Controllers
                     Linea lineaAsociada = micro.Linea;
                     var choferCoordenada = new GeoCoordinate(user.Latitud, user.Longitud);
 
-                    ActualizarParaderos(micro,choferCoordenada,lineaAsociada);
-                    ActualizarVertices(micro,user,choferCoordenada,lineaAsociada);
+                    Paradero p = ActualizarParaderos(micro,choferCoordenada,lineaAsociada);
+                    ActualizarVertices(micro,user,choferCoordenada,lineaAsociada, p);
                 }
             }
             db.SaveChanges();
@@ -165,8 +291,10 @@ namespace RestService2.Controllers
             return pos;
         }
 
-        void ActualizarParaderos(Micro _micro, GeoCoordinate _choferCoordenada, Linea _lineaAsociada)
+        Paradero ActualizarParaderos(Micro _micro, GeoCoordinate _choferCoordenada, Linea _lineaAsociada)
         {
+            Paradero pAlcanzado = null;
+
             if (_micro.MicroParaderoId != null)
             {
                 double DistanciaLimiteParadero = 50;
@@ -182,6 +310,11 @@ namespace RestService2.Controllers
                     IniciarParaderoHistorial(_micro);
                 }
 
+                if(distSigParadero <= DistanciaLimiteParadero/2)
+                {
+                    pAlcanzado = sigParadero;
+                }
+
                 //si salio del radio determinado del paradero, se actualiza el siguiente paradero
                 if (distSigParadero >= DistanciaLimiteParadero && distAntigua <= DistanciaLimiteParadero)
                 {
@@ -189,7 +322,7 @@ namespace RestService2.Controllers
 
                     List<Paradero> paraderosLinea = new List<Paradero>();
 
-                    #region LLenar los paraderos de la linea
+#region LLenar los paraderos de la linea
                     List<Paradero> paraderosIda = _lineaAsociada.Ruta.Paradero.ToList();
                     List<Paradero> paraderosVuelta = _lineaAsociada.Ruta1.Paradero.ToList();
 
@@ -204,7 +337,7 @@ namespace RestService2.Controllers
                     }
 
                     paraderosLinea = paraderosLinea.OrderBy(p => p.Id).ToList();
-                    #endregion
+#endregion
 
                     for (int i = 0; i < paraderosLinea.Count; i++)
                     {
@@ -228,18 +361,18 @@ namespace RestService2.Controllers
                         }
                     }
                 }
-
-
                 else
                 {
                     //caso contrario se actualiza la distancia del microparadero
                     _micro.MicroParadero.DistanciaEntre = distSigParadero;
-                }
-
+                }         
             }
+
+            return pAlcanzado;
+            
         }
 
-        void ActualizarVertices(Micro _micro, Usuario _user, GeoCoordinate _choferCoordenada, Linea _lineaAsociada)
+        void ActualizarVertices(Micro _micro, Usuario _user, GeoCoordinate _choferCoordenada, Linea _lineaAsociada, Paradero _paraderoActualizado)
         {
 
             double distLimiteVertices = 100;
@@ -247,6 +380,17 @@ namespace RestService2.Controllers
             Coordenada sigCoor = _micro.Coordenada;
             var sigVerticeCoordenada = new GeoCoordinate(sigCoor.Latitud, sigCoor.Longitud);
             double distSigCoor = _choferCoordenada.GetDistanceTo(sigVerticeCoordenada);
+
+            if (_paraderoActualizado != null)
+            {
+                sigCoor = db.Coordenada.Where(c => c.Latitud == _paraderoActualizado.Latitud && c.Longitud == _paraderoActualizado.Latitud).FirstOrDefault();
+                sigVerticeCoordenada = new GeoCoordinate(_paraderoActualizado.Latitud, _paraderoActualizado.Longitud);
+                distSigCoor = _choferCoordenada.GetDistanceTo(sigVerticeCoordenada);
+                if(sigCoor != null)
+                {
+                    _micro.Coordenada = sigCoor;
+                }
+            }
 
             if (distSigCoor <= distLimiteVertices)
             {
@@ -429,6 +573,24 @@ namespace RestService2.Controllers
             
         }
 
+        //POST: odata/Usuarios(5)/DeseleccionarParadero
+        [HttpPost]
+        public Micro ObtenerMicroAbordada([FromODataUri] int key)
+        {
+            Usuario user = db.Usuario.Where(u => u.Id == key).FirstOrDefault();
+            Micro microAbordada = null;
+
+            foreach(MicroPasajero mp in user.MicroPasajero)
+            {
+                if(mp.Estado == "Arriba")
+                {
+                    microAbordada = mp.Micro;
+                }
+            }
+
+            return microAbordada;
+        }
+
 
         #region Originales
         // GET: odata/Usuarios
@@ -561,7 +723,7 @@ namespace RestService2.Controllers
             return SingleResult.Create(db.Usuario.Where(m => m.Id == key).Select(m => m.MicroChofer1));
         }
 
-
+        
         //[EnableQuery]
         [HttpGet]
         public IQueryable<Coordenada> GetRutaCompleta()
@@ -578,11 +740,10 @@ namespace RestService2.Controllers
             return devolver.AsQueryable<Coordenada>();
         }
 
-
+        // Post: odata/Usuarios/Mensaje
         [HttpPost]
         public string Mensaje()
         {
-
             return "Hola";
         }
 
@@ -631,9 +792,9 @@ namespace RestService2.Controllers
         {
             return db.Usuario.Count(e => e.Id == key) > 0;
         }
-        #endregion
+#endregion
 
-        #region Metodos Extra
+#region Metodos Extra
         public List<Coordenada> ObtenerCoordenadasLinea(int _idLinea)
         {
             Linea linea = db.Linea.Where(l => l.Id == _idLinea).FirstOrDefault();
@@ -669,6 +830,6 @@ namespace RestService2.Controllers
 
 
 
-        #endregion
+#endregion
     }
 }

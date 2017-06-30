@@ -34,7 +34,7 @@ namespace RestService2.Controllers
     */
     public class LineasController : ODataController
     {
-        private MicroSystemDBEntities6 db = new MicroSystemDBEntities6();
+        private MicroSystemDBEntities10 db = new MicroSystemDBEntities10();
 
         //POST: odata/Lineas(5)/ObtenerChoferesActivos
         //Parametros: 
@@ -90,28 +90,32 @@ namespace RestService2.Controllers
             foreach(Linea linea in todasLineas)
             {
                 paraderosLinea = obtenerParaderoLinea(linea);
-
+                int contador;
                 #region Busca el paradero más cercano (junto con la ruta hasta ahí) a partir del punto de Inicio
                 GMapRoute rutaInicioParaderoMenor = null;
                 Paradero pInicio = null;
                 foreach(Paradero p in paraderosLinea)
                 {
                     GMapRoute ruta = RutaCaminando(inicio, new PointLatLng(p.Latitud, p.Longitud));
-
-                    while(ruta == null)
+                    contador = 0;
+                    while(ruta == null && contador < 15)
                     {
                         ruta = RutaCaminando(inicio, new PointLatLng(p.Latitud, p.Longitud));
+                        contador++;
                     }
-                    
-                    if(rutaInicioParaderoMenor == null)
+
+                    if (ruta != null)
                     {
-                        rutaInicioParaderoMenor = ruta;
-                        pInicio = p;
-                    }
-                    else if(ruta.Distance < rutaInicioParaderoMenor.Distance)
-                    {
-                        rutaInicioParaderoMenor = ruta;
-                        pInicio = p;
+                        if (rutaInicioParaderoMenor == null)
+                        {
+                            rutaInicioParaderoMenor = ruta;
+                            pInicio = p;
+                        }
+                        else if (ruta.Distance < rutaInicioParaderoMenor.Distance)
+                        {
+                            rutaInicioParaderoMenor = ruta;
+                            pInicio = p;
+                        }
                     }
                 }
                 #endregion
@@ -122,21 +126,25 @@ namespace RestService2.Controllers
                 foreach(Paradero p in paraderosLinea)
                 {
                     GMapRoute ruta = RutaCaminando(final, new PointLatLng(p.Latitud, p.Longitud));
-
-                    while(ruta == null)
+                    contador = 0;
+                    while(ruta == null && contador < 15)
                     {
                         RutaCaminando(final, new PointLatLng(p.Latitud, p.Longitud));
+                        contador++;
                     }
 
-                    if (rutaFinalParaderoMenor == null)
+                    if (ruta != null)
                     {
-                        rutaFinalParaderoMenor = ruta;
-                        pFinal = p;
-                    }
-                    else if (ruta.Distance < rutaFinalParaderoMenor.Distance)
-                    {
-                        rutaFinalParaderoMenor = ruta;
-                        pFinal = p;
+                        if (rutaFinalParaderoMenor == null)
+                        {
+                            rutaFinalParaderoMenor = ruta;
+                            pFinal = p;
+                        }
+                        else if (ruta.Distance < rutaFinalParaderoMenor.Distance)
+                        {
+                            rutaFinalParaderoMenor = ruta;
+                            pFinal = p;
+                        }
                     }
                 }
 

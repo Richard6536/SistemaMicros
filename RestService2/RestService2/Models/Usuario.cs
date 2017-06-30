@@ -18,6 +18,7 @@ namespace RestService2.Models
         public Usuario()
         {
             this.MicroChofer = new HashSet<MicroChofer>();
+            this.MicroPasajero = new HashSet<MicroPasajero>();
             this.UsuarioParadero1 = new HashSet<UsuarioParadero>();
         }
     
@@ -35,6 +36,8 @@ namespace RestService2.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MicroChofer> MicroChofer { get; set; }
         public virtual MicroChofer MicroChofer1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MicroPasajero> MicroPasajero { get; set; }
         public virtual UsuarioParadero UsuarioParadero { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UsuarioParadero> UsuarioParadero1 { get; set; }

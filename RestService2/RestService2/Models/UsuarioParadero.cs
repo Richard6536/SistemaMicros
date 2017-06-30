@@ -21,9 +21,9 @@ namespace RestService2.Models
         }
     
         public int Id { get; set; }
+        public double DistanciaEntre { get; set; }
         public int ParaderoId { get; set; }
         public int UsuarioId { get; set; }
-        public double DistanciaEntre { get; set; }
     
         public virtual Paradero Paradero { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

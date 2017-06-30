@@ -13,10 +13,10 @@ namespace RestService2.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class MicroSystemDBEntities6 : DbContext
+    public partial class MicroSystemDBEntities10 : DbContext
     {
-        public MicroSystemDBEntities6()
-            : base("name=MicroSystemDBEntities6")
+        public MicroSystemDBEntities10()
+            : base("name=MicroSystemDBEntities10")
         {
         }
     
@@ -33,6 +33,7 @@ namespace RestService2.Models
         public virtual DbSet<Micro> Micro { get; set; }
         public virtual DbSet<MicroChofer> MicroChofer { get; set; }
         public virtual DbSet<MicroParadero> MicroParadero { get; set; }
+        public virtual DbSet<MicroPasajero> MicroPasajero { get; set; }
         public virtual DbSet<Paradero> Paradero { get; set; }
         public virtual DbSet<Ruta> Ruta { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
