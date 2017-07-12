@@ -9,12 +9,13 @@ using System.Data.Entity.Validation;
 using System.Data.Entity.Infrastructure;
 
 using System.Diagnostics;
-using MicrosForms.Classes;
 
 using System.Windows.Forms;
 using System.Device.Location;
+using System.IO;
+using System.Net;
 
-namespace MicrosForms.Model
+namespace PositionTester.Model
 {
     [Table("Usuario")]
     public class Usuario
@@ -285,15 +286,19 @@ namespace MicrosForms.Model
 
         public static void ActualizarPosicion(int _id, double _lat, double _lng, bool _actualizarRecorrido)
         {
+
             var BD = new MicroSystemContext();
             var user = BD.Usuarios.Where(u => u.Id == _id).FirstOrDefault();
-
             user.Latitud = _lat;
             user.Longitud = _lng;
-            user.TransmitiendoPosicion = true;
 
+
+
+
+            /*
             if (_actualizarRecorrido)
             {
+
                 if (user.Rol == RolUsuario.Chofer && user.MicroChoferId != null)
                 {
                     Micro micro = user.MicroChofer.Micro;
@@ -448,9 +453,11 @@ namespace MicrosForms.Model
 
                     }
                 }
+                
             }
-
+            */
             BD.SaveChanges();
+
         }
 
 
@@ -540,5 +547,36 @@ namespace MicrosForms.Model
             else if (val > max) return max;
             else return val;
         }
+
+        void POST(string url, string jsonContent)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "POST";
+
+            System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
+            Byte[] byteArray = encoding.GetBytes(jsonContent);
+
+            request.ContentLength = byteArray.Length;
+            request.ContentType = @"application/json";
+
+            using (Stream dataStream = request.GetRequestStream())
+            {
+                dataStream.Write(byteArray, 0, byteArray.Length);
+            }
+            long length = 0;
+            try
+            {
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    length = response.ContentLength;
+                }
+            }
+            catch (WebException ex)
+            {
+                // Log exception and throw as for GET example above
+                MessageBox.Show(ex.Message);
+            }
+        }
+        
     }
 }

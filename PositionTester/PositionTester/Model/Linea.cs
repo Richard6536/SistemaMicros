@@ -10,11 +10,9 @@ using System.Data.Entity.Validation;
 using System.Data.Entity.Infrastructure;
 
 using System.Diagnostics;
-using MicrosForms.Classes;
-
 using System.Windows.Forms;
 
-namespace MicrosForms.Model
+namespace PositionTester.Model
 {
     [Table("Linea")]
     public class Linea

@@ -8,8 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using MicrosForms.Classes;
-using MicrosForms.Model;
+using PositionTester.Model;
+using PositionTester.Classes;
+using PositionTester.Model.DatosTemporales;
 
 using GMap.NET;
 using GMap.NET.MapProviders;
@@ -22,7 +23,7 @@ namespace PositionTester
 {
     public partial class Form1 : Form
     {
-        Linea lineaActual;
+        LineaTP lineaActual;
 
         List<Usuario> usuariosControlados;
         List<Usuario> usuariosControlarRecorrido;
@@ -38,6 +39,10 @@ namespace PositionTester
 
         public Form1()
         {
+            if (!ConnectionTester.IsConnectionActive())
+                return;
+
+            CargarDatos();
             InitializeComponent();
             IniciarMapa();
             CargarComboboxLineas();
@@ -81,15 +86,18 @@ namespace PositionTester
         #region ComboBox lineas
         void CargarComboboxLineas()
         {
-            List<Linea> lineasCMB = Linea.ObtenerTodasLasLineas();
-            List<Linea> lineasCMBOrdenadas = lineasCMB.OrderBy(l => l.Nombre).ToList();
+            //List<Linea> lineasCMB = Linea.ObtenerTodasLasLineas();
+            //List<Linea> lineasCMBOrdenadas = lineasCMB.OrderBy(l => l.Nombre).ToList();
+
+            List<LineaTP> lineasCMB = LineaTP.todasLineas.OrderBy(l => l.Nombre).ToList();
             
-            cmbLineas.DataSource = lineasCMBOrdenadas;
+            cmbLineas.DataSource = lineasCMB;
 
             cmbLineas.DisplayMember = "Nombre";
             cmbLineas.ValueMember = "Id";
 
-            lineaActual = Linea.BuscarLinea(Convert.ToInt32(cmbLineas.SelectedValue));
+            //lineaActual = Linea.BuscarLinea(Convert.ToInt32(cmbLineas.SelectedValue));
+            lineaActual = LineaTP.todasLineas.Where(l => l.Id == Convert.ToInt32(cmbLineas.SelectedValue)).FirstOrDefault();
 
             if (lineaActual != null)
             {
@@ -103,12 +111,16 @@ namespace PositionTester
             paraderosOverlay.Clear();
             otrosMarkersOverlay.Clear();
 
-            Ruta rIda = Ruta.BuscarPorId(lineaActual.RutaIdaId.Value);
-            Ruta rVuelta = Ruta.BuscarPorId(lineaActual.RutaVueltaId.Value);
+            //Ruta rIda = Ruta.BuscarPorId(lineaActual.RutaIdaId.Value);
+            //Ruta rVuelta = Ruta.BuscarPorId(lineaActual.RutaVueltaId.Value);
+            RutaTP rIda = lineaActual.rutaIda;
+            RutaTP rVuelta = lineaActual.rutaVuelta;
 
-            MapController.CargarRutaEnMapa(rIda, gmapController, paraderosOverlay, previewOverlay, Color.Red);
-            MapController.CargarRutaEnMapa(rVuelta, gmapController, paraderosOverlay, previewOverlay, Color.Blue);
-            List<Coordenada> coor = Ruta.ObtenerVerticesDeInicioAFin(rIda);
+            MapController.CargarRutaEnMapaOffline(rIda, gmapController, paraderosOverlay, previewOverlay, Color.Red);
+            MapController.CargarRutaEnMapaOffline(rVuelta, gmapController, paraderosOverlay, previewOverlay, Color.Blue);
+
+            //List<Coordenada> coor = Ruta.ObtenerVerticesDeInicioAFin(rIda);
+            List<Coordenada> coor = rIda.listaCoordenadas;
             MapController.CrearMarcadorInicio(coor, gmapController, otrosMarkersOverlay, "Inicio ruta de Ida", GMarkerGoogleType.red);
         }
 
@@ -123,7 +135,8 @@ namespace PositionTester
         {
             try
             {
-                lineaActual = Linea.BuscarLinea(Convert.ToInt32(cmbLineas.SelectedValue));
+                //lineaActual = Linea.BuscarLinea(Convert.ToInt32(cmbLineas.SelectedValue));
+                lineaActual = LineaTP.todasLineas.Where(l => l.Id == Convert.ToInt32(cmbLineas.SelectedValue)).FirstOrDefault();
                 CargarLineaActual();
             }
             catch
@@ -146,7 +159,9 @@ namespace PositionTester
             }
 
             //crear marcador con su posicion
+
             GMarkerGoogle userMarker = new GMarkerGoogle(new PointLatLng(userActual.Latitud, userActual.Longitud), GMarkerGoogleType.green_small);
+
             userMarker.ToolTipText = userActual.Email;
             userMarker.Tag = userActual.Id;
             userControladoOverlay.Markers.Add(userMarker);
@@ -329,31 +344,31 @@ namespace PositionTester
             }
 
             usuariosControlarRecorrido.Add(userActual);
+            userActual.TransmitiendoPosicion = true;
+            //Micro micro = userActual.MicroChofer.Micro;
+            //Ruta rIda = micro.Linea.RutaIda;
 
-            Micro micro = userActual.MicroChofer.Micro;
-            Ruta rIda = micro.Linea.RutaIda;
+            //Paradero primerParadero = rIda.Paraderos.OrderBy(p => p.Id).ToList()[0];
+            //Coordenada primerCoordenada = rIda.Inicio;
 
-            Paradero primerParadero = rIda.Paraderos.OrderBy(p => p.Id).ToList()[0];
-            Coordenada primerCoordenada = rIda.Inicio;
+            //if (micro.MicroParaderoId != null)
+            //{
+            //    MicroParadero mp = micro.MicroParadero;
+            //    BD.MicroParaderos.Remove(mp);
+            //}
 
-            if (micro.MicroParaderoId != null)
-            {
-                MicroParadero mp = micro.MicroParadero;
-                BD.MicroParaderos.Remove(mp);
-            }
+            //var geoMicro = new GeoCoordinate(userActual.Latitud, userActual.Longitud);
+            //var geoParadero = new GeoCoordinate(primerParadero.Latitud, primerParadero.Longitud);
 
-            var geoMicro = new GeoCoordinate(userActual.Latitud, userActual.Longitud);
-            var geoParadero = new GeoCoordinate(primerParadero.Latitud, primerParadero.Longitud);
+            //MicroParadero mpNuevo = new MicroParadero();
+            //mpNuevo.Micro = micro;
+            //mpNuevo.Paradero = primerParadero;
+            //mpNuevo.DistanciaEntre = geoMicro.GetDistanceTo(geoParadero);
 
-            MicroParadero mpNuevo = new MicroParadero();
-            mpNuevo.Micro = micro;
-            mpNuevo.Paradero = primerParadero;
-            mpNuevo.DistanciaEntre = geoMicro.GetDistanceTo(geoParadero);
+            //micro.MicroParadero = mpNuevo;
+            //micro.SiguienteVertice = primerCoordenada;
 
-            micro.MicroParadero = mpNuevo;
-            micro.SiguienteVertice = primerCoordenada;
-
-            BD.MicroParaderos.Add(mpNuevo);
+            //BD.MicroParaderos.Add(mpNuevo);
             BD.SaveChanges();
             
 
@@ -393,6 +408,7 @@ namespace PositionTester
                 usuariosControlarRecorrido.Remove(aBorrar);
             #endregion
 
+            userActual.TransmitiendoPosicion = false;
             Micro micro = userActual.MicroChofer.Micro;
             micro.SiguienteVertice = null;
             micro.SiguienteVerticeId = null;
@@ -402,6 +418,52 @@ namespace PositionTester
                 BD.MicroParaderos.Remove(mp);
             }
             BD.SaveChanges();
+        }
+
+        private void CargarDatos()
+        {
+            MicroSystemContext db = new MicroSystemContext();
+
+            List<Linea> todasLineas = db.Lineas.ToList();
+            List<Ruta> todasRutas = db.Rutas.ToList();
+
+            List<LineaTP> lineasPrograma = new List<LineaTP>();
+            List<RutaTP> rutasPrograma = new List<RutaTP>();
+
+            foreach (Ruta r in todasRutas)
+            {
+                RutaTP rutaTP = new RutaTP();
+                rutaTP.Id = r.Id;
+                rutaTP.Nombre = r.Nombre;
+                rutaTP.TipoRuta = r.TipoDeRuta;
+                rutaTP.LineaId = r.LineaId;
+
+                List<Paradero> paraderos = Ruta.ObtenerParaderosRuta(r);
+                rutaTP.Paraderos = paraderos;
+
+                List<Coordenada> coors = Ruta.ObtenerVerticesDeInicioAFin(r);
+                rutaTP.listaCoordenadas = coors;
+
+                rutasPrograma.Add(rutaTP);
+            }
+
+            foreach (Linea l in todasLineas)
+            {
+                LineaTP lineaTP = new LineaTP();
+                lineaTP.Id = l.Id;
+                lineaTP.Nombre = l.Nombre;
+                lineaTP.Micros = Linea.ObtenerMicrosDeLinea(l.Id);
+
+                lineaTP.rutaIda = rutasPrograma.Where(r => r.Id == l.RutaIdaId).FirstOrDefault();
+                lineaTP.rutaVuelta = rutasPrograma.Where(r => r.Id == l.RutaVueltaId).FirstOrDefault();
+                lineaTP.rutasDeLinea = rutasPrograma.Where(r => r.LineaId == l.Id).ToList();
+
+                lineasPrograma.Add(lineaTP);
+            }
+
+            LineaTP.todasLineas = lineasPrograma;
+            RutaTP.todasRutas = rutasPrograma;
+
         }
     }
 }

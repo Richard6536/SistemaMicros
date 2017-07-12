@@ -156,6 +156,7 @@ namespace RestService2
             #endregion
 
             config.Routes.MapODataServiceRoute("odata", "odata", builder.GetEdmModel());
+            
         }
     }
 }

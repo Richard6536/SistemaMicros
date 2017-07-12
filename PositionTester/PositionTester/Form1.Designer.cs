@@ -43,19 +43,22 @@
             this.btnIniciarRecorrido = new System.Windows.Forms.Button();
             this.btnDetenerRecorrido = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.lblMicroId = new System.Windows.Forms.Label();
-            this.lblMicroPatente = new System.Windows.Forms.Label();
-            this.lblSigParadero = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.lblSigVertice = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.lblSigParadero = new System.Windows.Forms.Label();
+            this.lblMicroPatente = new System.Windows.Forms.Label();
+            this.lblMicroId = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // gmapController
             // 
+            this.gmapController.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gmapController.Bearing = 0F;
             this.gmapController.CanDragMap = true;
             this.gmapController.EmptyTileColor = System.Drawing.Color.Navy;
@@ -76,7 +79,7 @@
             this.gmapController.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
             this.gmapController.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.gmapController.ShowTileGridLines = false;
-            this.gmapController.Size = new System.Drawing.Size(671, 456);
+            this.gmapController.Size = new System.Drawing.Size(692, 503);
             this.gmapController.TabIndex = 9;
             this.gmapController.Zoom = 0D;
             this.gmapController.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.gmapController_OnMarkerClick);
@@ -85,15 +88,17 @@
             // 
             // txtEmail
             // 
-            this.txtEmail.Location = new System.Drawing.Point(713, 158);
+            this.txtEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtEmail.Location = new System.Drawing.Point(730, 158);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(154, 20);
             this.txtEmail.TabIndex = 10;
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(710, 142);
+            this.label1.Location = new System.Drawing.Point(727, 142);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(32, 13);
             this.label1.TabIndex = 11;
@@ -101,7 +106,8 @@
             // 
             // btnTomarControl
             // 
-            this.btnTomarControl.Location = new System.Drawing.Point(713, 184);
+            this.btnTomarControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnTomarControl.Location = new System.Drawing.Point(730, 184);
             this.btnTomarControl.Name = "btnTomarControl";
             this.btnTomarControl.Size = new System.Drawing.Size(154, 23);
             this.btnTomarControl.TabIndex = 12;
@@ -116,8 +122,9 @@
             // 
             // label2
             // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(710, 26);
+            this.label2.Location = new System.Drawing.Point(727, 26);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(79, 13);
             this.label2.TabIndex = 14;
@@ -125,9 +132,10 @@
             // 
             // cmbLineas
             // 
+            this.cmbLineas.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbLineas.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLineas.FormattingEnabled = true;
-            this.cmbLineas.Location = new System.Drawing.Point(713, 54);
+            this.cmbLineas.Location = new System.Drawing.Point(730, 54);
             this.cmbLineas.Name = "cmbLineas";
             this.cmbLineas.Size = new System.Drawing.Size(154, 21);
             this.cmbLineas.TabIndex = 15;
@@ -135,7 +143,8 @@
             // 
             // btnBorrarLinea
             // 
-            this.btnBorrarLinea.Location = new System.Drawing.Point(713, 82);
+            this.btnBorrarLinea.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnBorrarLinea.Location = new System.Drawing.Point(730, 82);
             this.btnBorrarLinea.Name = "btnBorrarLinea";
             this.btnBorrarLinea.Size = new System.Drawing.Size(154, 23);
             this.btnBorrarLinea.TabIndex = 16;
@@ -163,7 +172,8 @@
             // 
             // btnDetenerTodo
             // 
-            this.btnDetenerTodo.Location = new System.Drawing.Point(713, 451);
+            this.btnDetenerTodo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDetenerTodo.Location = new System.Drawing.Point(730, 451);
             this.btnDetenerTodo.Name = "btnDetenerTodo";
             this.btnDetenerTodo.Size = new System.Drawing.Size(154, 37);
             this.btnDetenerTodo.TabIndex = 19;
@@ -173,26 +183,29 @@
             // 
             // btnIniciarRecorrido
             // 
-            this.btnIniciarRecorrido.Location = new System.Drawing.Point(713, 213);
+            this.btnIniciarRecorrido.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnIniciarRecorrido.Location = new System.Drawing.Point(730, 213);
             this.btnIniciarRecorrido.Name = "btnIniciarRecorrido";
             this.btnIniciarRecorrido.Size = new System.Drawing.Size(154, 23);
             this.btnIniciarRecorrido.TabIndex = 20;
-            this.btnIniciarRecorrido.Text = "Iniciar recorrido";
+            this.btnIniciarRecorrido.Text = "Transmitir Posicion";
             this.btnIniciarRecorrido.UseVisualStyleBackColor = true;
             this.btnIniciarRecorrido.Click += new System.EventHandler(this.btnIniciarRecorrido_Click);
             // 
             // btnDetenerRecorrido
             // 
-            this.btnDetenerRecorrido.Location = new System.Drawing.Point(713, 242);
+            this.btnDetenerRecorrido.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDetenerRecorrido.Location = new System.Drawing.Point(730, 242);
             this.btnDetenerRecorrido.Name = "btnDetenerRecorrido";
             this.btnDetenerRecorrido.Size = new System.Drawing.Size(154, 23);
             this.btnDetenerRecorrido.TabIndex = 21;
-            this.btnDetenerRecorrido.Text = "Detener recorrido";
+            this.btnDetenerRecorrido.Text = "Detener transmisión";
             this.btnDetenerRecorrido.UseVisualStyleBackColor = true;
             this.btnDetenerRecorrido.Click += new System.EventHandler(this.btnDetenerRecorrido_Click);
             // 
             // panel1
             // 
+            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.Controls.Add(this.lblSigVertice);
             this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.lblSigParadero);
@@ -203,73 +216,10 @@
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.lblUserMoviendo);
             this.panel1.Controls.Add(this.label3);
-            this.panel1.Location = new System.Drawing.Point(714, 286);
+            this.panel1.Location = new System.Drawing.Point(731, 286);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(153, 138);
             this.panel1.TabIndex = 22;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(43, 44);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(47, 13);
-            this.label4.TabIndex = 19;
-            this.label4.Text = "Micro id:";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(15, 66);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(75, 13);
-            this.label5.TabIndex = 20;
-            this.label5.Text = "Micro patente:";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(15, 88);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(74, 13);
-            this.label6.TabIndex = 21;
-            this.label6.Text = "Sig. Paradero:";
-            // 
-            // lblMicroId
-            // 
-            this.lblMicroId.AutoSize = true;
-            this.lblMicroId.Location = new System.Drawing.Point(96, 44);
-            this.lblMicroId.Name = "lblMicroId";
-            this.lblMicroId.Size = new System.Drawing.Size(16, 13);
-            this.lblMicroId.TabIndex = 22;
-            this.lblMicroId.Text = "---";
-            // 
-            // lblMicroPatente
-            // 
-            this.lblMicroPatente.AutoSize = true;
-            this.lblMicroPatente.Location = new System.Drawing.Point(96, 66);
-            this.lblMicroPatente.Name = "lblMicroPatente";
-            this.lblMicroPatente.Size = new System.Drawing.Size(16, 13);
-            this.lblMicroPatente.TabIndex = 23;
-            this.lblMicroPatente.Text = "---";
-            // 
-            // lblSigParadero
-            // 
-            this.lblSigParadero.AutoSize = true;
-            this.lblSigParadero.Location = new System.Drawing.Point(95, 88);
-            this.lblSigParadero.Name = "lblSigParadero";
-            this.lblSigParadero.Size = new System.Drawing.Size(16, 13);
-            this.lblSigParadero.TabIndex = 24;
-            this.lblSigParadero.Text = "---";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(16, 111);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(64, 13);
-            this.label7.TabIndex = 25;
-            this.label7.Text = "Sig. Vertice:";
             // 
             // lblSigVertice
             // 
@@ -280,11 +230,74 @@
             this.lblSigVertice.TabIndex = 26;
             this.lblSigVertice.Text = "---";
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(16, 111);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(64, 13);
+            this.label7.TabIndex = 25;
+            this.label7.Text = "Sig. Vertice:";
+            // 
+            // lblSigParadero
+            // 
+            this.lblSigParadero.AutoSize = true;
+            this.lblSigParadero.Location = new System.Drawing.Point(95, 88);
+            this.lblSigParadero.Name = "lblSigParadero";
+            this.lblSigParadero.Size = new System.Drawing.Size(16, 13);
+            this.lblSigParadero.TabIndex = 24;
+            this.lblSigParadero.Text = "---";
+            // 
+            // lblMicroPatente
+            // 
+            this.lblMicroPatente.AutoSize = true;
+            this.lblMicroPatente.Location = new System.Drawing.Point(96, 66);
+            this.lblMicroPatente.Name = "lblMicroPatente";
+            this.lblMicroPatente.Size = new System.Drawing.Size(16, 13);
+            this.lblMicroPatente.TabIndex = 23;
+            this.lblMicroPatente.Text = "---";
+            // 
+            // lblMicroId
+            // 
+            this.lblMicroId.AutoSize = true;
+            this.lblMicroId.Location = new System.Drawing.Point(96, 44);
+            this.lblMicroId.Name = "lblMicroId";
+            this.lblMicroId.Size = new System.Drawing.Size(16, 13);
+            this.lblMicroId.TabIndex = 22;
+            this.lblMicroId.Text = "---";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(15, 88);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(74, 13);
+            this.label6.TabIndex = 21;
+            this.label6.Text = "Sig. Paradero:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(15, 66);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(75, 13);
+            this.label5.TabIndex = 20;
+            this.label5.Text = "Micro patente:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(43, 44);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(47, 13);
+            this.label4.TabIndex = 19;
+            this.label4.Text = "Micro id:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(895, 500);
+            this.ClientSize = new System.Drawing.Size(912, 547);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnDetenerRecorrido);
             this.Controls.Add(this.btnIniciarRecorrido);

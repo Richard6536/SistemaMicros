@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 using System.Data.Entity;
 
 
-namespace MicrosForms.Model
+namespace PositionTester.Model
 {
     public class MicroSystemContext : DbContext
     {
+        //public MicroSystemContext() : base("Data Source = 198.38.93.11; Initial Catalog = stappcl_microDB; User ID = stappcl_oscar; Password=121212.") { }
+        //public MicroSystemContext() : base("Data Source=stappserver.database.windows.net;Initial Catalog=microAzureDB;User ID=whisp;Password=MiSuperServer!") { }
         public MicroSystemContext() : base("name=MicroSystemDB") { }
 
         public DbSet<Usuario> Usuarios { get; set; }

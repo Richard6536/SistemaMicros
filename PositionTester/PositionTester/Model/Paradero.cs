@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 using System.Windows.Forms;
 
-namespace MicrosForms.Model
+namespace PositionTester.Model
 {
     [Table("Paradero")]
     public class Paradero

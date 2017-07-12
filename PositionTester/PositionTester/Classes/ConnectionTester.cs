@@ -5,14 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Windows.Forms;
+using PositionTester.Model;
 
-using MicrosForms.Model;
 
-namespace MicrosForms.Classes
+namespace PositionTester.Classes
 {
-    class ConnectionTester
+    public class ConnectionTester
     {
-
         public static bool IsConnectionActive()
         {
             try

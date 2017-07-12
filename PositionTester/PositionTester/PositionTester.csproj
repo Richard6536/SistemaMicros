@@ -92,6 +92,8 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="Model\Coordenada.cs" />
+    <Compile Include="Model\DatosTemporales\LineaTP.cs" />
+    <Compile Include="Model\DatosTemporales\RutaTP.cs" />
     <Compile Include="Model\HistorialDiario.cs" />
     <Compile Include="Model\HistorialIdaVuelta.cs" />
     <Compile Include="Model\HistorialParadero.cs" />
@@ -117,6 +119,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -133,6 +136,12 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\microMarkerMini.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\paradero2Mini.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Data.SQLite.Core.1.0.105.1\build\net451\System.Data.SQLite.Core.targets" Condition="Exists('..\packages\System.Data.SQLite.Core.1.0.105.1\build\net451\System.Data.SQLite.Core.targets')" />

@@ -5,8 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using System.Windows.Forms;
+using PositionTester.Model;
 
-namespace MicrosForms.Classes
+namespace PositionTester.Classes
 {
     public class FormManager
     {

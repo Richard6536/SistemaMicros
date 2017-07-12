@@ -11,7 +11,7 @@ using System.Data.Entity.Infrastructure;
 using System.Diagnostics;
 
 
-namespace MicrosForms.Model
+namespace PositionTester.Model
 {
     [Table("Coordenada")]
     public class Coordenada

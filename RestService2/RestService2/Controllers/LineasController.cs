@@ -37,7 +37,7 @@ namespace RestService2.Controllers
         private MicroSystemDBEntities10 db = new MicroSystemDBEntities10();
 
         //POST: odata/Lineas(5)/ObtenerChoferesActivos
-        //Parametros: 
+        //Parametros:      
         [HttpPost]
         public List<Usuario> ObtenerChoferes([FromODataUri] int key)
         {
@@ -56,6 +56,8 @@ namespace RestService2.Controllers
 
             return choferesActivos;         
         }
+
+
 
         //POST: odata/Lineas/RecomendarRutaDX
         //Parametros: latInicio,lngInicio, latFinal,lngFinal

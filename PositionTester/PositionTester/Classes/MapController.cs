@@ -8,18 +8,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using MicrosForms.Classes;
-using MicrosForms.Model;
 
 using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
-namespace MicrosForms.Classes
+
+using PositionTester.Model;
+using PositionTester.Classes;
+using PositionTester.Model.DatosTemporales;
+
+namespace PositionTester.Classes
 {
-    class MapController
+    public class MapController
     {
-        //imagenMarcadorParadero = new Bitmap(MicrosForms.Properties.Resources.marcadorParaderoMini);
+        public static Bitmap marcadorParadero = new Bitmap(PositionTester.Properties.Resources.paradero2Mini);
+        public static Bitmap marcadorMicro = new Bitmap(PositionTester.Properties.Resources.microMarkerMini);
 
         public static void CargarRutaEnMapa(Ruta _ruta, GMapControl _gmapController, GMapOverlay _paraderosOverlay, GMapOverlay _rutaOverlay, Color _colorRuta)
         {
@@ -32,7 +36,7 @@ namespace MicrosForms.Classes
 
             foreach (Paradero p in paraderos) //Crear paraderos en el mapa
             {
-                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Latitud, p.Longitud), GMarkerGoogleType.purple_pushpin);
+                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Latitud, p.Longitud), marcadorParadero);
                 paraderoMarker.ToolTipText = p.Id + "";
                 _paraderosOverlay.Markers.Add(paraderoMarker);
             }
@@ -61,6 +65,45 @@ namespace MicrosForms.Classes
 
         }
 
+        public static void CargarRutaEnMapaOffline(RutaTP _ruta, GMapControl _gmapController, GMapOverlay _paraderosOverlay, GMapOverlay _rutaOverlay, Color _colorRuta)
+        {
+            if (!ConnectionTester.IsConnectionActive())
+                return;
+
+            List<Paradero> paraderos = _ruta.Paraderos;
+            List<Coordenada> vertices = _ruta.listaCoordenadas;
+
+
+            foreach (Paradero p in paraderos) //Crear paraderos en el mapa
+            {
+                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Latitud, p.Longitud), marcadorParadero);
+                paraderoMarker.ToolTipText = p.Id + "";
+                _paraderosOverlay.Markers.Add(paraderoMarker);
+            }
+
+
+            Coordenada actual;
+            Coordenada siguiente;
+            for (int i = 0; i < vertices.Count - 1; i++)
+            {
+
+                actual = vertices[i];
+                siguiente = vertices[i + 1];
+
+                List<PointLatLng> puntos = new List<PointLatLng>();
+                puntos.Add(new PointLatLng(actual.Latitud, actual.Longitud));
+                puntos.Add(new PointLatLng(siguiente.Latitud, siguiente.Longitud));
+
+                GMapRoute ruta = new GMapRoute(puntos, "asdf");
+                ruta.Stroke = new Pen(_colorRuta, 4);
+
+                _rutaOverlay.Routes.Add(ruta);
+            }
+
+            _gmapController.Zoom++;
+            _gmapController.Zoom--;
+
+        }
 
         public static List<Paradero> CrearParaderos(List<GMarkerGoogle> _listaMarcadores)
         {
@@ -107,7 +150,7 @@ namespace MicrosForms.Classes
 
             foreach (GMarkerGoogle p in paraderos) //Crear paraderos en el mapa
             {
-                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Position.Lat, p.Position.Lng), GMarkerGoogleType.purple_pushpin);
+                GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Position.Lat, p.Position.Lng), marcadorParadero);
 
                 _paraderosOverlay.Markers.Add(paraderoMarker);
             }
@@ -177,7 +220,7 @@ namespace MicrosForms.Classes
         public static void CrearPosicionParadero(double _lat, double _lng, List<GMapRoute> fragmentosDeRuta, List<GMarkerGoogle> markParaderos, GMapOverlay _overlayParaderos)
         {
 
-            GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(_lat, _lng), GMarkerGoogleType.purple_pushpin);
+            GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(_lat, _lng), marcadorParadero);
             paraderoMarker.Tag = fragmentosDeRuta.Count + "";
             markParaderos.Add(paraderoMarker);
 

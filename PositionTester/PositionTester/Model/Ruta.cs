@@ -12,7 +12,7 @@ using System.Data.Entity.Infrastructure;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace MicrosForms.Model
+namespace PositionTester.Model
 {
     [Table("Ruta")]
     public class Ruta

@@ -10,9 +10,8 @@ using System.Data.Entity.Validation;
 using System.Data.Entity.Infrastructure;
 
 using System.Diagnostics;
-using MicrosForms.Classes;
 
-namespace MicrosForms.Model
+namespace PositionTester.Model
 {
     [Table("HistorialParadero")]
     public class HistorialParadero
