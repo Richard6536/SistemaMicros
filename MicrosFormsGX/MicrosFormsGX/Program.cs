@@ -23,7 +23,7 @@ namespace MicrosFormsGX
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            var formInicio = new AdminUsuarios();
+            var formInicio = new Login();
             formInicio.StartPosition = FormStartPosition.CenterScreen;
             Application.Run(formInicio);
         }

@@ -400,7 +400,13 @@ namespace RestServiceGX.Controllers
             #endregion
 
             db.SaveChanges();
-            return new DatosRecorrido();
+
+            DatosRecorrido datosDevolver = new DatosRecorrido();
+            datosDevolver.IdSiguienteParadero = IdSigParadero;
+            datosDevolver.MiMicro = miMicro;
+            datosDevolver.UsuarioParaderos = listaUP;
+
+            return datosDevolver;
         }
 
 
