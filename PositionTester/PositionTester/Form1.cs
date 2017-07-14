@@ -51,6 +51,7 @@ namespace PositionTester
             usuariosControlarRecorrido = new List<Usuario>();
             usersMarkers = new List<GMarkerGoogle>();
             lblUserMoviendo.Text = "";
+            button1.Text = "false";
         }
 
         double latOsorno = -40.574984;
@@ -147,6 +148,7 @@ namespace PositionTester
         }
         #endregion
 
+        private bool ActualizarRecorrido = false;
 
         private void btnTomarControl_Click(object sender, EventArgs e)
         {
@@ -168,7 +170,7 @@ namespace PositionTester
 
             usuariosControlados.Add(userActual);
             usersMarkers.Add(userMarker);
-            Usuario.ActualizarPosicion(userActual.Id, userMarker.Position.Lat, userMarker.Position.Lng, false);
+            Usuario.ActualizarPosicion(userActual.Id, userMarker.Position.Lat, userMarker.Position.Lng, ActualizarRecorrido);
 
         }
 
@@ -192,7 +194,7 @@ namespace PositionTester
                 }
             }
 
-            Usuario.ActualizarPosicion(userControlandoActual.Id, userMarker.Position.Lat, userMarker.Position.Lng, updateRecorrido);
+            Usuario.ActualizarPosicion(userControlandoActual.Id, userMarker.Position.Lat, userMarker.Position.Lng, ActualizarRecorrido);
 
             lblMicroId.Text = "---";
             lblMicroPatente.Text = "---";
@@ -345,30 +347,36 @@ namespace PositionTester
 
             usuariosControlarRecorrido.Add(userActual);
             userActual.TransmitiendoPosicion = true;
-            //Micro micro = userActual.MicroChofer.Micro;
-            //Ruta rIda = micro.Linea.RutaIda;
 
-            //Paradero primerParadero = rIda.Paraderos.OrderBy(p => p.Id).ToList()[0];
-            //Coordenada primerCoordenada = rIda.Inicio;
+            
 
-            //if (micro.MicroParaderoId != null)
-            //{
-            //    MicroParadero mp = micro.MicroParadero;
-            //    BD.MicroParaderos.Remove(mp);
-            //}
+            if (ActualizarRecorrido)
+            {
+                Micro micro = userActual.MicroChofer.Micro;
+                Ruta rIda = micro.Linea.RutaIda;
 
-            //var geoMicro = new GeoCoordinate(userActual.Latitud, userActual.Longitud);
-            //var geoParadero = new GeoCoordinate(primerParadero.Latitud, primerParadero.Longitud);
+                Paradero primerParadero = rIda.Paraderos.OrderBy(p => p.Id).ToList()[0];
+                Coordenada primerCoordenada = rIda.Inicio;
 
-            //MicroParadero mpNuevo = new MicroParadero();
-            //mpNuevo.Micro = micro;
-            //mpNuevo.Paradero = primerParadero;
-            //mpNuevo.DistanciaEntre = geoMicro.GetDistanceTo(geoParadero);
+                if (micro.MicroParaderoId != null)
+                {
+                    MicroParadero mp = micro.MicroParadero;
+                    BD.MicroParaderos.Remove(mp);
+                }
 
-            //micro.MicroParadero = mpNuevo;
-            //micro.SiguienteVertice = primerCoordenada;
+                var geoMicro = new GeoCoordinate(userActual.Latitud, userActual.Longitud);
+                var geoParadero = new GeoCoordinate(primerParadero.Latitud, primerParadero.Longitud);
 
-            //BD.MicroParaderos.Add(mpNuevo);
+                MicroParadero mpNuevo = new MicroParadero();
+                mpNuevo.Micro = micro;
+                mpNuevo.Paradero = primerParadero;
+                mpNuevo.DistanciaEntre = geoMicro.GetDistanceTo(geoParadero);
+
+                micro.MicroParadero = mpNuevo;
+                micro.SiguienteVertice = primerCoordenada;
+
+                BD.MicroParaderos.Add(mpNuevo);
+            }
             BD.SaveChanges();
             
 
@@ -464,6 +472,20 @@ namespace PositionTester
             LineaTP.todasLineas = lineasPrograma;
             RutaTP.todasRutas = rutasPrograma;
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if(ActualizarRecorrido == false)
+            {
+                ActualizarRecorrido = true;
+                button1.Text = "true";
+            }
+            else
+            {
+                ActualizarRecorrido = false;
+                button1.Text = "false";
+            }
         }
     }
 }

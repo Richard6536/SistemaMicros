@@ -235,7 +235,6 @@
             this.lblIda.Size = new System.Drawing.Size(227, 24);
             this.lblIda.TabIndex = 0;
             this.lblIda.Text = "Creando ruta de ida...";
-            this.lblIda.Visible = false;
             // 
             // CrearRutaIda
             // 

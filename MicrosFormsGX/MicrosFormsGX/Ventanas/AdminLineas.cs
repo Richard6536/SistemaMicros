@@ -272,8 +272,15 @@ namespace MicrosFormsGX.Ventanas
             cmbLinea.SelectedIndex = -1;
             CargarComboboxLineas();
             cmbLinea.DisplayMember = "Nombre";
-            cmbLinea.SelectedIndex = 0;
-            cmbLinea.DisplayMember = "Nombre";         
+            try
+            {
+                cmbLinea.SelectedIndex = 0;
+                cmbLinea.DisplayMember = "Nombre";
+            }
+            catch(Exception)
+            {
+
+            }
         }
 
         private void btnVerMicros_Click(object sender, EventArgs e)

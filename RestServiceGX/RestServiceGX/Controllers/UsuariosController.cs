@@ -86,7 +86,8 @@ namespace RestServiceGX.Controllers
                 //retorna un microparadero con id -1 si no existen micros desde ese paradero al inicio
 
                 bool continuarMetodo = true;
-                while (microParaderos.Count == 0)
+                int cantidadMicros = microParaderos.Count;
+                while (cantidadMicros == 0)
                 {
                     //buscar paradero anterior
                     List<Paradero> paraderosRuta;
@@ -136,6 +137,7 @@ namespace RestServiceGX.Controllers
                             {
                                 //es el primer paradero dela ruta de ida
                                 continuarMetodo = false;
+                                cantidadMicros = -1;
                                 break;
                             }
                             else
@@ -147,6 +149,7 @@ namespace RestServiceGX.Controllers
 
                                 paradero = paraderosRuta[i - 1];
                                 microParaderos = paradero.MicroParadero.ToList();
+                                cantidadMicros = microParaderos.Count;
                             }
                             break;
                         }

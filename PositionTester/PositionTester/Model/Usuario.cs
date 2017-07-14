@@ -292,10 +292,7 @@ namespace PositionTester.Model
             user.Latitud = _lat;
             user.Longitud = _lng;
 
-
-
-
-            /*
+   
             if (_actualizarRecorrido)
             {
 
@@ -455,7 +452,7 @@ namespace PositionTester.Model
                 }
                 
             }
-            */
+            
             BD.SaveChanges();
 
         }

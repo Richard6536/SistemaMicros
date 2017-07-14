@@ -227,13 +227,16 @@ namespace MicrosFormsGX.Classes
 
         public static void CrearMarcadorInicio(List<Coordenada> _coordendas,GMapControl _gmapController, GMapOverlay _overlay, string _toolTip, GMarkerGoogleType tipoMarcador)
         {
-            Coordenada primerVertice = _coordendas.First();
-            GMarkerGoogle marcador = new GMarkerGoogle(new PointLatLng(primerVertice.Latitud, primerVertice.Longitud), tipoMarcador);
-            marcador.ToolTipText = _toolTip;
-            _overlay.Markers.Add(marcador);
+            if (_coordendas.Count > 0)
+            {
+                Coordenada primerVertice = _coordendas.First();
+                GMarkerGoogle marcador = new GMarkerGoogle(new PointLatLng(primerVertice.Latitud, primerVertice.Longitud), tipoMarcador);
+                marcador.ToolTipText = _toolTip;
+                _overlay.Markers.Add(marcador);
 
-            _gmapController.Zoom++;
-            _gmapController.Zoom--;
+                _gmapController.Zoom++;
+                _gmapController.Zoom--;
+            }
         }
 
         public static double DistanciaEntrePuntos(PointLatLng punto1, PointLatLng punto2)

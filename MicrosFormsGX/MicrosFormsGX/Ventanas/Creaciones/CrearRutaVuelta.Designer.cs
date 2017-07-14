@@ -232,7 +232,6 @@
             this.lblVuelta.Size = new System.Drawing.Size(259, 24);
             this.lblVuelta.TabIndex = 0;
             this.lblVuelta.Text = "Creando ruta de vuelta...";
-            this.lblVuelta.Visible = false;
             // 
             // CrearRutaVuelta
             // 
