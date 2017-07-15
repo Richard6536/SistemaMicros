@@ -264,6 +264,8 @@ namespace RestServiceGX.Controllers
                     mDX.Id = mp.Micro.Id;
                     mDX.Patente = mp.Micro.Patente;
                     mDX.Calificacion = mp.Micro.Calificacion;
+
+                    microAborada = mDX;
                 }
             }
             #endregion
@@ -393,7 +395,8 @@ namespace RestServiceGX.Controllers
 
                     upDeluxe.Add(new UsuarioParaderoDeluxe()
                     { UsuarioId = userUP.Id, Latitud = userUP.Latitud, Longitud = userUP.Longitud, Distancia = distancia });
-                }             
+                }
+                listaUP = upDeluxe;
             }
             catch
             {
