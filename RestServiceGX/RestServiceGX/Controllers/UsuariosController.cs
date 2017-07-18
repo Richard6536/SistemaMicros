@@ -328,6 +328,7 @@ namespace RestServiceGX.Controllers
         {
             Usuario user = db.Usuario.Where(u => u.Id == key).FirstOrDefault();
             int IdSigParadero = -1;
+            int IdSigVertice = -1;
             MicroDX miMicro = null;
             List<UsuarioParaderoDeluxe> listaUP = new List<UsuarioParaderoDeluxe>();
 
@@ -405,12 +406,22 @@ namespace RestServiceGX.Controllers
             }
             #endregion
 
+            try
+            {
+                IdSigVertice = user.MicroChofer1.Micro1.SiguienteVerticeId.Value;
+            }
+            catch(Exception)
+            {
+                IdSigVertice = -1;
+            }
+
             db.SaveChanges();
 
             DatosRecorrido datosDevolver = new DatosRecorrido();
             datosDevolver.IdSiguienteParadero = IdSigParadero;
             datosDevolver.MiMicro = miMicro;
             datosDevolver.UsuarioParaderos = listaUP;
+            datosDevolver.IdSiguienteVertice = IdSigVertice;
 
             return datosDevolver;
         }
@@ -736,15 +747,19 @@ namespace RestServiceGX.Controllers
 
                     if (distEntre < metrosUserDeteccionMicro)
                     {
-                        //Crea asociacion MicroPasajero
-                        MicroPasajero mpNuevo = new MicroPasajero();
-                        mpNuevo.Estado = "PosiblePasajero";
-                        mpNuevo.HoraCreacion = DateTime.Now;
-                        mpNuevo.LatitudCreacion = posUser.Latitude;
-                        mpNuevo.LongitudCreacion = posUser.Longitude;
-                        mpNuevo.Micro = m;
+                        MicroPasajero existe = _user.MicroPasajero.Where(mp => mp.MicroId == m.Id).FirstOrDefault();
+                        if (existe == null)
+                        {
+                            //Crea asociacion MicroPasajero
+                            MicroPasajero mpNuevo = new MicroPasajero();
+                            mpNuevo.Estado = "PosiblePasajero";
+                            mpNuevo.HoraCreacion = DateTime.Now;
+                            mpNuevo.LatitudCreacion = posUser.Latitude;
+                            mpNuevo.LongitudCreacion = posUser.Longitude;
+                            mpNuevo.Micro = m;
 
-                        _user.MicroPasajero.Add(mpNuevo);
+                            _user.MicroPasajero.Add(mpNuevo);
+                        }
                     }
                 }
             }
@@ -938,6 +953,33 @@ namespace RestServiceGX.Controllers
                     ultimoHiv.HoraTermino = DateTime.Now;
                     ultimoHiv.DuracionRecorrido = DateTime.Now - ultimoHiv.HoraInicio;
 
+
+                    //se toman kilometros recorridos desde fin dela linea hasta el principio
+                    List<Coordenada> coorIda = ObtenerVerticesDeInicioAFin(_micro.Linea.Ruta);
+                    List<Coordenada> coorVuelta = ObtenerVerticesDeInicioAFin(_micro.Linea.Ruta1);
+
+                    double metrosTotales = 0;
+
+                    for (int z = 0; z < coorIda.Count - 1; z++)
+                    {
+                        var sCoord = new GeoCoordinate(coorIda[i].Latitud, coorIda[i].Longitud);
+                        var eCoord = new GeoCoordinate(coorIda[i + 1].Latitud, coorIda[i + 1].Longitud);
+
+                        metrosTotales += sCoord.GetDistanceTo(eCoord);
+                    }
+
+                    for (int z = 0; z < coorVuelta.Count - 1; z++)
+                    {
+                        var sCoord = new GeoCoordinate(coorVuelta[i].Latitud, coorVuelta[i].Longitud);
+                        var eCoord = new GeoCoordinate(coorVuelta[i + 1].Latitud, coorVuelta[i + 1].Longitud);
+
+                        metrosTotales += sCoord.GetDistanceTo(eCoord);
+                    }
+
+                    float KilometrosTotales = (float)(metrosTotales / 1000);
+                    hDiario.KilometrosRecorridos += KilometrosTotales;
+
+                    /*
                     if (_micro.SiguienteVerticeId != null)
                     {
                         //se toma los kilometros recorridos en base al siguiente vertice 
@@ -970,7 +1012,7 @@ namespace RestServiceGX.Controllers
 
                         float KilometrosTotales = (float)(metrosTotales / 1000);
                         hDiario.KilometrosRecorridos += KilometrosTotales;
-                    }
+                    }*/
                 }
 
             }
@@ -1039,10 +1081,17 @@ namespace RestServiceGX.Controllers
             HistorialDiario HDhoy = _micro.HistorialDiario.Where(hd => hd.Fecha == DateTime.Today).FirstOrDefault();
             HistorialIdaVuelta ultimoHIV = HDhoy.HistorialIdaVuelta.OrderBy(h => h.Id).ToList().Last();
             //el ultimo historial paradero se edita
-            HistorialParadero ultimoHP = ultimoHIV.HistorialParadero.OrderBy(h => h.Id).ToList().Last();
-            ultimoHP.PasajerosRecibidos++;
-            ultimoHIV.PasajerosTransportados++;
-            HDhoy.PasajerosTransportados++;
+            try
+            {
+                HistorialParadero ultimoHP = ultimoHIV.HistorialParadero.OrderBy(h => h.Id).ToList().Last();
+                ultimoHP.PasajerosRecibidos++;
+                ultimoHIV.PasajerosTransportados++;
+                HDhoy.PasajerosTransportados++;
+            }
+            catch
+            {
+
+            }
 
         }
 

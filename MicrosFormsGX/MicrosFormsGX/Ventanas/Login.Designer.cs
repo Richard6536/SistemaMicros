@@ -28,9 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Login));
             this.txtEmail = new MetroFramework.Controls.MetroTextBox();
             this.txtPassword = new MetroFramework.Controls.MetroTextBox();
             this.metroTile1 = new MetroFramework.Controls.MetroTile();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // txtEmail
@@ -117,11 +120,25 @@
             this.metroTile1.UseSelectable = true;
             this.metroTile1.Click += new System.EventHandler(this.metroTile1_Click);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.BackgroundImage")));
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBox1.Location = new System.Drawing.Point(23, 78);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(441, 122);
+            this.pictureBox1.TabIndex = 3;
+            this.pictureBox1.TabStop = false;
+            // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(487, 358);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.metroTile1);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.txtEmail);
@@ -132,6 +149,7 @@
             this.Text = "Login";
             this.Activated += new System.EventHandler(this.Login_Activated);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Login_FormClosed);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -141,5 +159,6 @@
         private MetroFramework.Controls.MetroTextBox txtEmail;
         private MetroFramework.Controls.MetroTextBox txtPassword;
         private MetroFramework.Controls.MetroTile metroTile1;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

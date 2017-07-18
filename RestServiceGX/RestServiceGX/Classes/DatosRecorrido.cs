@@ -8,6 +8,7 @@ namespace RestServiceGX.Classes
     public class DatosRecorrido
     {
         public int IdSiguienteParadero { get; set; }
+        public int IdSiguienteVertice { get; set; }
         public MicroDX MiMicro { get; set; }
         public List<UsuarioParaderoDeluxe>  UsuarioParaderos { get; set; }
     }
