@@ -27,6 +27,8 @@ namespace MicrosFormsGX.Model
         [Index("NombreIndex", IsUnique = true)]
         public string Nombre { get; set; }
 
+        public int Tarifa { get; set; }
+
         public virtual List<Micro> Micros { get; set; }
 
 
@@ -44,7 +46,7 @@ namespace MicrosFormsGX.Model
         public Linea() { }
 
 
-        public static Linea CrearLinea(string _nombre)
+        public static Linea CrearLinea(string _nombre, int _tarifa)
         {
             try
             {
@@ -53,6 +55,7 @@ namespace MicrosFormsGX.Model
                 Linea nuevaLinea = new Linea();
 
                 nuevaLinea.Nombre = _nombre;
+                nuevaLinea.Tarifa = _tarifa;
                 nuevaLinea.Micros = new List<Micro>();
                 nuevaLinea.Rutas = new List<Ruta>();
 
@@ -99,12 +102,13 @@ namespace MicrosFormsGX.Model
             }
         }
 
-        public static bool EditarNombre(int _idLinea, string _nuevoNombre)
+        public static bool EditarDatos(int _idLinea, string _nuevoNombre, int _nuevaTarifa)
         {
             var BD = new MicroSystemContext();
 
             Linea linea = BD.Lineas.Where(l => l.Id == _idLinea).FirstOrDefault();
             linea.Nombre = _nuevoNombre;
+            linea.Tarifa = _nuevaTarifa;
 
             try
             {
@@ -228,22 +232,6 @@ namespace MicrosFormsGX.Model
             var BD = new MicroSystemContext();
 
             Linea linea = BD.Lineas.Where(l => l.Id == _idLinea).FirstOrDefault();
-            List<Ruta> rutas = new List<Ruta>();
-
-            foreach(Ruta r in linea.Rutas)
-            {
-                rutas.Add(r);
-            }
-
-            for (int i = 0; i < rutas.Count; i++)
-            {
-                Ruta rutaActual = rutas[i];
-                Coordenada coordenda = BD.Coordenadas.Where(c => c.Id == rutaActual.InicioId).FirstOrDefault();
-
-                Coordenada.BorrarCadenaDeCoordenadas(coordenda, BD);
-            }
-
-            BD.SaveChanges();
 
             BD.Lineas.Remove(linea);
 

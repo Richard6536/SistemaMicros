@@ -91,11 +91,16 @@ namespace MicrosFormsGX.Ventanas.Ediciones
         {
             Micro nueva = Micro.BuscarPorPatente(cmbMicros.Text);
 
+            List<Usuario> admins =   Usuario.BuscarTodosLosUsuariosPorRol(Usuario.RolUsuario.Admin);
             string mensajeError = "";
 
             if (cmbMicros.SelectedValue + "" == "" && cmbMicros.Text != "-Sin asignar-")
             {
                 mensajeError += "\n-La patente ingresada no es válida.";
+            }
+            if(admins.Count == 1 && userEditar.Rol == Usuario.RolUsuario.Admin)
+            {
+                mensajeError += "\n-No puede convertir un administrador a chofer si es el único restante en la base de datos.";
             }
 
             if (mensajeError != "")

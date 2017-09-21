@@ -31,7 +31,7 @@ namespace PositionTester.Classes
                 return;
 
             List<Paradero> paraderos = Ruta.ObtenerParaderosRuta(_ruta);
-            List<Coordenada> vertices = Ruta.ObtenerVerticesDeInicioAFin(_ruta);
+            List<Coordenada> vertices = _ruta.Coordenadas.OrderBy(c => c.Orden).ToList();
 
 
             foreach (Paradero p in paraderos) //Crear paraderos en el mapa
@@ -71,13 +71,14 @@ namespace PositionTester.Classes
                 return;
 
             List<Paradero> paraderos = _ruta.Paraderos;
-            List<Coordenada> vertices = _ruta.listaCoordenadas;
+            List<Coordenada> vertices = _ruta.listaCoordenadas.OrderBy(c => c.Orden).ToList();
 
 
             foreach (Paradero p in paraderos) //Crear paraderos en el mapa
             {
                 GMarkerGoogle paraderoMarker = new GMarkerGoogle(new PointLatLng(p.Latitud, p.Longitud), marcadorParadero);
-                paraderoMarker.ToolTipText = p.Id + "";
+                //paraderoMarker.ToolTipText = p.Id + "";
+                paraderoMarker.ToolTipText = p.Orden + "\nId:"+ p.Id;
                 _paraderosOverlay.Markers.Add(paraderoMarker);
             }
 
@@ -105,37 +106,7 @@ namespace PositionTester.Classes
 
         }
 
-        public static List<Paradero> CrearParaderos(List<GMarkerGoogle> _listaMarcadores)
-        {
-            //se revisan los elementos de la lista de markParaderos para crear los paraderos de verdad
-            //usado antes de guardar datos
-
-            List<Paradero> paraderos = new List<Paradero>();
-
-            foreach (var mark in _listaMarcadores)
-            {
-                Paradero p = new Paradero(mark.Position.Lat, mark.Position.Lng);
-                paraderos.Add(p);
-            }
-
-            return paraderos;
-        }
-
-        public static List<Coordenada> CrearVertices(List<PointLatLng> _puntosVertices)
-        {
-            //se revisan los puntos de la ruta para crear las coordenadas 
-
-            List<Coordenada> vertices = new List<Coordenada>();
-
-            for (int i = 0; i < _puntosVertices.Count; i++)
-            {
-                PointLatLng punto = _puntosVertices[i];
-
-                Coordenada c = new Coordenada(punto.Lat, punto.Lng, null);
-                vertices.Add(c);
-            }
-            return vertices;
-        }
+       
 
         public static void CargarPuntosEnMapa(List<PointLatLng> _vertices, List<GMarkerGoogle> _paraderos, GMapControl _gmapController, GMapOverlay _paraderosOverlay, GMapOverlay _rutaOverlay, Color _color)
         {
@@ -227,10 +198,12 @@ namespace PositionTester.Classes
             _overlayParaderos.Markers.Add(paraderoMarker);
         }
 
-        public static void CrearMarcadorInicio(List<Coordenada> _coordendas,GMapControl _gmapController, GMapOverlay _overlay, string _toolTip, GMarkerGoogleType tipoMarcador)
+        public static void CrearMarcadorInicio(List<Coordenada> _coordenadas, GMapControl _gmapController, GMapOverlay _overlay, string _toolTip, GMarkerGoogleType tipoMarcador)
         {
-            Coordenada primerVertice = _coordendas.First();
-            GMarkerGoogle marcador = new GMarkerGoogle(new PointLatLng(primerVertice.Latitud, primerVertice.Longitud), tipoMarcador);
+            Coordenada coorInicio = _coordenadas.Where(c => c.Orden == 0).FirstOrDefault();
+
+            GMarkerGoogle marcador = new GMarkerGoogle(new PointLatLng(coorInicio.Latitud, coorInicio.Longitud), tipoMarcador);
+
             marcador.ToolTipText = _toolTip;
             _overlay.Markers.Add(marcador);
 

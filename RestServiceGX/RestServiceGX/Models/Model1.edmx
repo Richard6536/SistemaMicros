@@ -10,9 +10,10 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Orden" Type="int" Nullable="false" />
           <Property Name="Latitud" Type="float" Nullable="false" />
           <Property Name="Longitud" Type="float" Nullable="false" />
-          <Property Name="SiguienteCoordenadaId" Type="int" />
+          <Property Name="Ruta_Id" Type="int" />
         </EntityType>
         <EntityType Name="HistorialDiario">
           <Key>
@@ -35,6 +36,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Orden" Type="int" Nullable="false" />
           <Property Name="PasajerosTransportados" Type="int" Nullable="false" />
           <Property Name="HoraInicio" Type="datetime" Nullable="false" />
           <Property Name="HoraTermino" Type="datetime" Nullable="false" />
@@ -46,6 +48,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Orden" Type="int" Nullable="false" />
           <Property Name="HoraLlegada" Type="datetime" Nullable="false" />
           <Property Name="TiempoDetenido" Type="time" Precision="7" Nullable="false" />
           <Property Name="PasajerosRecibidos" Type="int" Nullable="false" />
@@ -57,6 +60,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Nombre" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Tarifa" Type="int" Nullable="false" />
           <Property Name="RutaIdaId" Type="int" />
           <Property Name="RutaVueltaId" Type="int" />
         </EntityType>
@@ -99,6 +103,7 @@
           <Property Name="HoraCreacion" Type="datetime" Nullable="false" />
           <Property Name="LatitudCreacion" Type="float" Nullable="false" />
           <Property Name="LongitudCreacion" Type="float" Nullable="false" />
+          <Property Name="ParaderoId" Type="int" Nullable="false" />
           <Property Name="MicroId" Type="int" Nullable="false" />
           <Property Name="PasajeroId" Type="int" Nullable="false" />
         </EntityType>
@@ -107,9 +112,11 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Orden" Type="int" Nullable="false" />
           <Property Name="Latitud" Type="float" Nullable="false" />
           <Property Name="Longitud" Type="float" Nullable="false" />
           <Property Name="RutaId" Type="int" Nullable="false" />
+          <Property Name="CoordenadaId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Ruta">
           <Key>
@@ -118,7 +125,6 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Nombre" Type="nvarchar" MaxLength="30" Nullable="false" />
           <Property Name="TipoDeRuta" Type="int" Nullable="false" />
-          <Property Name="InicioId" Type="int" Nullable="false" />
           <Property Name="LineaId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Usuario">
@@ -145,15 +151,15 @@
           <Property Name="ParaderoId" Type="int" Nullable="false" />
           <Property Name="UsuarioId" Type="int" Nullable="false" />
         </EntityType>
-        <Association Name="FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId">
-          <End Role="Coordenada" Type="Self.Coordenada" Multiplicity="0..1" />
-          <End Role="Coordenada1" Type="Self.Coordenada" Multiplicity="*" />
+        <Association Name="FK_dbo_Coordenada_dbo_Ruta_Ruta_Id">
+          <End Role="Ruta" Type="Self.Ruta" Multiplicity="0..1" />
+          <End Role="Coordenada" Type="Self.Coordenada" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Coordenada">
+            <Principal Role="Ruta">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Coordenada1">
-              <PropertyRef Name="SiguienteCoordenadaId" />
+            <Dependent Role="Coordenada">
+              <PropertyRef Name="Ruta_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -341,6 +347,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_dbo_MicroPasajero_dbo_Paradero_ParaderoId">
+          <End Role="Paradero" Type="Self.Paradero" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="MicroPasajero" Type="Self.MicroPasajero" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Paradero">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MicroPasajero">
+              <PropertyRef Name="ParaderoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId">
           <End Role="Usuario" Type="Self.Usuario" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -355,6 +375,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_dbo_Paradero_dbo_Coordenada_CoordenadaId">
+          <End Role="Coordenada" Type="Self.Coordenada" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Paradero" Type="Self.Paradero" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Coordenada">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Paradero">
+              <PropertyRef Name="CoordenadaId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_Paradero_dbo_Ruta_RutaId">
           <End Role="Ruta" Type="Self.Ruta" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -366,20 +400,6 @@
             </Principal>
             <Dependent Role="Paradero">
               <PropertyRef Name="RutaId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_dbo_Ruta_dbo_Coordenada_InicioId">
-          <End Role="Coordenada" Type="Self.Coordenada" Multiplicity="1">
-            <OnDelete Action="Cascade" />
-          </End>
-          <End Role="Ruta" Type="Self.Ruta" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Coordenada">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Ruta">
-              <PropertyRef Name="InicioId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -461,9 +481,9 @@
           <EntitySet Name="Ruta" EntityType="Self.Ruta" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Usuario" EntityType="Self.Usuario" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UsuarioParadero" EntityType="Self.UsuarioParadero" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId" Association="Self.FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId">
+          <AssociationSet Name="FK_dbo_Coordenada_dbo_Ruta_Ruta_Id" Association="Self.FK_dbo_Coordenada_dbo_Ruta_Ruta_Id">
+            <End Role="Ruta" EntitySet="Ruta" />
             <End Role="Coordenada" EntitySet="Coordenada" />
-            <End Role="Coordenada1" EntitySet="Coordenada" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_HistorialDiario_dbo_Micro_IdMicro" Association="Self.FK_dbo_HistorialDiario_dbo_Micro_IdMicro">
             <End Role="Micro" EntitySet="Micro" />
@@ -521,17 +541,21 @@
             <End Role="Micro" EntitySet="Micro" />
             <End Role="MicroPasajero" EntitySet="MicroPasajero" />
           </AssociationSet>
+          <AssociationSet Name="FK_dbo_MicroPasajero_dbo_Paradero_ParaderoId" Association="Self.FK_dbo_MicroPasajero_dbo_Paradero_ParaderoId">
+            <End Role="Paradero" EntitySet="Paradero" />
+            <End Role="MicroPasajero" EntitySet="MicroPasajero" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId" Association="Self.FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId">
             <End Role="Usuario" EntitySet="Usuario" />
             <End Role="MicroPasajero" EntitySet="MicroPasajero" />
           </AssociationSet>
+          <AssociationSet Name="FK_dbo_Paradero_dbo_Coordenada_CoordenadaId" Association="Self.FK_dbo_Paradero_dbo_Coordenada_CoordenadaId">
+            <End Role="Coordenada" EntitySet="Coordenada" />
+            <End Role="Paradero" EntitySet="Paradero" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_Paradero_dbo_Ruta_RutaId" Association="Self.FK_dbo_Paradero_dbo_Ruta_RutaId">
             <End Role="Ruta" EntitySet="Ruta" />
             <End Role="Paradero" EntitySet="Paradero" />
-          </AssociationSet>
-          <AssociationSet Name="FK_dbo_Ruta_dbo_Coordenada_InicioId" Association="Self.FK_dbo_Ruta_dbo_Coordenada_InicioId">
-            <End Role="Coordenada" EntitySet="Coordenada" />
-            <End Role="Ruta" EntitySet="Ruta" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_Ruta_dbo_Linea_LineaId" Association="Self.FK_dbo_Ruta_dbo_Linea_LineaId">
             <End Role="Linea" EntitySet="Linea" />
@@ -564,13 +588,13 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Orden" Type="Int32" Nullable="false" />
           <Property Name="Latitud" Type="Double" Nullable="false" />
           <Property Name="Longitud" Type="Double" Nullable="false" />
-          <Property Name="SiguienteCoordenadaId" Type="Int32" />
-          <NavigationProperty Name="Coordenada1" Relationship="Self.FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId" FromRole="Coordenada" ToRole="Coordenada1" />
-          <NavigationProperty Name="Coordenada2" Relationship="Self.FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId" FromRole="Coordenada1" ToRole="Coordenada" />
+          <Property Name="Ruta_Id" Type="Int32" />
+          <NavigationProperty Name="Ruta" Relationship="Self.FK_dbo_Coordenada_dbo_Ruta_Ruta_Id" FromRole="Coordenada" ToRole="Ruta" />
           <NavigationProperty Name="Micro" Relationship="Self.FK_dbo_Micro_dbo_Coordenada_SiguienteVerticeId" FromRole="Coordenada" ToRole="Micro" />
-          <NavigationProperty Name="Ruta" Relationship="Self.FK_dbo_Ruta_dbo_Coordenada_InicioId" FromRole="Coordenada" ToRole="Ruta" />
+          <NavigationProperty Name="Paradero" Relationship="Self.FK_dbo_Paradero_dbo_Coordenada_CoordenadaId" FromRole="Coordenada" ToRole="Paradero" />
         </EntityType>
         <EntityType Name="HistorialDiario">
           <Key>
@@ -595,6 +619,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Orden" Type="Int32" Nullable="false" />
           <Property Name="PasajerosTransportados" Type="Int32" Nullable="false" />
           <Property Name="HoraInicio" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="HoraTermino" Type="DateTime" Nullable="false" Precision="3" />
@@ -608,6 +633,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Orden" Type="Int32" Nullable="false" />
           <Property Name="HoraLlegada" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="TiempoDetenido" Type="Time" Nullable="false" Precision="7" />
           <Property Name="PasajerosRecibidos" Type="Int32" Nullable="false" />
@@ -620,6 +646,7 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Nombre" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Tarifa" Type="Int32" Nullable="false" />
           <Property Name="RutaIdaId" Type="Int32" />
           <Property Name="RutaVueltaId" Type="Int32" />
           <NavigationProperty Name="Ruta" Relationship="Self.FK_dbo_Linea_dbo_Ruta_RutaIdaId" FromRole="Linea" ToRole="Ruta" />
@@ -681,9 +708,11 @@
           <Property Name="HoraCreacion" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="LatitudCreacion" Type="Double" Nullable="false" />
           <Property Name="LongitudCreacion" Type="Double" Nullable="false" />
+          <Property Name="ParaderoId" Type="Int32" Nullable="false" />
           <Property Name="MicroId" Type="Int32" Nullable="false" />
           <Property Name="PasajeroId" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Micro" Relationship="Self.FK_dbo_MicroPasajero_dbo_Micro_MicroId" FromRole="MicroPasajero" ToRole="Micro" />
+          <NavigationProperty Name="Paradero" Relationship="Self.FK_dbo_MicroPasajero_dbo_Paradero_ParaderoId" FromRole="MicroPasajero" ToRole="Paradero" />
           <NavigationProperty Name="Usuario" Relationship="Self.FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId" FromRole="MicroPasajero" ToRole="Usuario" />
         </EntityType>
         <EntityType Name="Paradero">
@@ -691,10 +720,14 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Orden" Type="Int32" Nullable="false" />
           <Property Name="Latitud" Type="Double" Nullable="false" />
           <Property Name="Longitud" Type="Double" Nullable="false" />
           <Property Name="RutaId" Type="Int32" Nullable="false" />
+          <Property Name="CoordenadaId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Coordenada" Relationship="Self.FK_dbo_Paradero_dbo_Coordenada_CoordenadaId" FromRole="Paradero" ToRole="Coordenada" />
           <NavigationProperty Name="MicroParadero" Relationship="Self.FK_dbo_MicroParadero_dbo_Paradero_ParaderoId" FromRole="Paradero" ToRole="MicroParadero" />
+          <NavigationProperty Name="MicroPasajero" Relationship="Self.FK_dbo_MicroPasajero_dbo_Paradero_ParaderoId" FromRole="Paradero" ToRole="MicroPasajero" />
           <NavigationProperty Name="Ruta" Relationship="Self.FK_dbo_Paradero_dbo_Ruta_RutaId" FromRole="Paradero" ToRole="Ruta" />
           <NavigationProperty Name="UsuarioParadero" Relationship="Self.FK_dbo_UsuarioParadero_dbo_Paradero_ParaderoId" FromRole="Paradero" ToRole="UsuarioParadero" />
         </EntityType>
@@ -705,9 +738,8 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Nombre" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="TipoDeRuta" Type="Int32" Nullable="false" />
-          <Property Name="InicioId" Type="Int32" Nullable="false" />
           <Property Name="LineaId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Coordenada" Relationship="Self.FK_dbo_Ruta_dbo_Coordenada_InicioId" FromRole="Ruta" ToRole="Coordenada" />
+          <NavigationProperty Name="Coordenada" Relationship="Self.FK_dbo_Coordenada_dbo_Ruta_Ruta_Id" FromRole="Ruta" ToRole="Coordenada" />
           <NavigationProperty Name="Linea" Relationship="Self.FK_dbo_Linea_dbo_Ruta_RutaIdaId" FromRole="Ruta" ToRole="Linea" />
           <NavigationProperty Name="Linea1" Relationship="Self.FK_dbo_Linea_dbo_Ruta_RutaVueltaId" FromRole="Ruta" ToRole="Linea" />
           <NavigationProperty Name="Linea2" Relationship="Self.FK_dbo_Ruta_dbo_Linea_LineaId" FromRole="Ruta" ToRole="Linea" />
@@ -745,15 +777,15 @@
           <NavigationProperty Name="Usuario" Relationship="Self.FK_dbo_Usuario_dbo_UsuarioParadero_UsuarioParaderoId" FromRole="UsuarioParadero" ToRole="Usuario" />
           <NavigationProperty Name="Usuario1" Relationship="Self.FK_dbo_UsuarioParadero_dbo_Usuario_UsuarioId" FromRole="UsuarioParadero" ToRole="Usuario" />
         </EntityType>
-        <Association Name="FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId">
-          <End Role="Coordenada" Type="Self.Coordenada" Multiplicity="0..1" />
-          <End Role="Coordenada1" Type="Self.Coordenada" Multiplicity="*" />
+        <Association Name="FK_dbo_Coordenada_dbo_Ruta_Ruta_Id">
+          <End Role="Ruta" Type="Self.Ruta" Multiplicity="0..1" />
+          <End Role="Coordenada" Type="Self.Coordenada" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Coordenada">
+            <Principal Role="Ruta">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Coordenada1">
-              <PropertyRef Name="SiguienteCoordenadaId" />
+            <Dependent Role="Coordenada">
+              <PropertyRef Name="Ruta_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -769,17 +801,17 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_dbo_Ruta_dbo_Coordenada_InicioId">
+        <Association Name="FK_dbo_Paradero_dbo_Coordenada_CoordenadaId">
           <End Role="Coordenada" Type="Self.Coordenada" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Role="Ruta" Type="Self.Ruta" Multiplicity="*" />
+          <End Role="Paradero" Type="Self.Paradero" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Coordenada">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Ruta">
-              <PropertyRef Name="InicioId" />
+            <Dependent Role="Paradero">
+              <PropertyRef Name="CoordenadaId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -975,6 +1007,20 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="MicroParadero">
+              <PropertyRef Name="ParaderoId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_dbo_MicroPasajero_dbo_Paradero_ParaderoId">
+          <End Role="Paradero" Type="Self.Paradero" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="MicroPasajero" Type="Self.MicroPasajero" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Paradero">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="MicroPasajero">
               <PropertyRef Name="ParaderoId" />
             </Dependent>
           </ReferentialConstraint>
@@ -1061,17 +1107,17 @@
           <EntitySet Name="Ruta" EntityType="Self.Ruta" />
           <EntitySet Name="Usuario" EntityType="Self.Usuario" />
           <EntitySet Name="UsuarioParadero" EntityType="Self.UsuarioParadero" />
-          <AssociationSet Name="FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId" Association="Self.FK_dbo_Coordenada_dbo_Coordenada_SiguienteCoordenadaId">
+          <AssociationSet Name="FK_dbo_Coordenada_dbo_Ruta_Ruta_Id" Association="Self.FK_dbo_Coordenada_dbo_Ruta_Ruta_Id">
+            <End Role="Ruta" EntitySet="Ruta" />
             <End Role="Coordenada" EntitySet="Coordenada" />
-            <End Role="Coordenada1" EntitySet="Coordenada" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_Micro_dbo_Coordenada_SiguienteVerticeId" Association="Self.FK_dbo_Micro_dbo_Coordenada_SiguienteVerticeId">
             <End Role="Coordenada" EntitySet="Coordenada" />
             <End Role="Micro" EntitySet="Micro" />
           </AssociationSet>
-          <AssociationSet Name="FK_dbo_Ruta_dbo_Coordenada_InicioId" Association="Self.FK_dbo_Ruta_dbo_Coordenada_InicioId">
+          <AssociationSet Name="FK_dbo_Paradero_dbo_Coordenada_CoordenadaId" Association="Self.FK_dbo_Paradero_dbo_Coordenada_CoordenadaId">
             <End Role="Coordenada" EntitySet="Coordenada" />
-            <End Role="Ruta" EntitySet="Ruta" />
+            <End Role="Paradero" EntitySet="Paradero" />
           </AssociationSet>
           <AssociationSet Name="FK_dbo_HistorialDiario_dbo_Micro_IdMicro" Association="Self.FK_dbo_HistorialDiario_dbo_Micro_IdMicro">
             <End Role="Micro" EntitySet="Micro" />
@@ -1133,6 +1179,10 @@
             <End Role="Paradero" EntitySet="Paradero" />
             <End Role="MicroParadero" EntitySet="MicroParadero" />
           </AssociationSet>
+          <AssociationSet Name="FK_dbo_MicroPasajero_dbo_Paradero_ParaderoId" Association="Self.FK_dbo_MicroPasajero_dbo_Paradero_ParaderoId">
+            <End Role="Paradero" EntitySet="Paradero" />
+            <End Role="MicroPasajero" EntitySet="MicroPasajero" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId" Association="Self.FK_dbo_MicroPasajero_dbo_Usuario_PasajeroId">
             <End Role="Usuario" EntitySet="Usuario" />
             <End Role="MicroPasajero" EntitySet="MicroPasajero" />
@@ -1164,9 +1214,10 @@
             <EntityTypeMapping TypeName="MicroSystemDBModel.Coordenada">
               <MappingFragment StoreEntitySet="Coordenada">
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Orden" ColumnName="Orden" />
                 <ScalarProperty Name="Latitud" ColumnName="Latitud" />
                 <ScalarProperty Name="Longitud" ColumnName="Longitud" />
-                <ScalarProperty Name="SiguienteCoordenadaId" ColumnName="SiguienteCoordenadaId" />
+                <ScalarProperty Name="Ruta_Id" ColumnName="Ruta_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1191,6 +1242,7 @@
             <EntityTypeMapping TypeName="MicroSystemDBModel.HistorialIdaVuelta">
               <MappingFragment StoreEntitySet="HistorialIdaVuelta">
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Orden" ColumnName="Orden" />
                 <ScalarProperty Name="PasajerosTransportados" ColumnName="PasajerosTransportados" />
                 <ScalarProperty Name="HoraInicio" ColumnName="HoraInicio" />
                 <ScalarProperty Name="HoraTermino" ColumnName="HoraTermino" />
@@ -1203,6 +1255,7 @@
             <EntityTypeMapping TypeName="MicroSystemDBModel.HistorialParadero">
               <MappingFragment StoreEntitySet="HistorialParadero">
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Orden" ColumnName="Orden" />
                 <ScalarProperty Name="HoraLlegada" ColumnName="HoraLlegada" />
                 <ScalarProperty Name="TiempoDetenido" ColumnName="TiempoDetenido" />
                 <ScalarProperty Name="PasajerosRecibidos" ColumnName="PasajerosRecibidos" />
@@ -1215,6 +1268,7 @@
               <MappingFragment StoreEntitySet="Linea">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Nombre" ColumnName="Nombre" />
+                <ScalarProperty Name="Tarifa" ColumnName="Tarifa" />
                 <ScalarProperty Name="RutaIdaId" ColumnName="RutaIdaId" />
                 <ScalarProperty Name="RutaVueltaId" ColumnName="RutaVueltaId" />
               </MappingFragment>
@@ -1261,6 +1315,7 @@
                 <ScalarProperty Name="HoraCreacion" ColumnName="HoraCreacion" />
                 <ScalarProperty Name="LatitudCreacion" ColumnName="LatitudCreacion" />
                 <ScalarProperty Name="LongitudCreacion" ColumnName="LongitudCreacion" />
+                <ScalarProperty Name="ParaderoId" ColumnName="ParaderoId" />
                 <ScalarProperty Name="MicroId" ColumnName="MicroId" />
                 <ScalarProperty Name="PasajeroId" ColumnName="PasajeroId" />
               </MappingFragment>
@@ -1270,9 +1325,11 @@
             <EntityTypeMapping TypeName="MicroSystemDBModel.Paradero">
               <MappingFragment StoreEntitySet="Paradero">
                 <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Orden" ColumnName="Orden" />
                 <ScalarProperty Name="Latitud" ColumnName="Latitud" />
                 <ScalarProperty Name="Longitud" ColumnName="Longitud" />
                 <ScalarProperty Name="RutaId" ColumnName="RutaId" />
+                <ScalarProperty Name="CoordenadaId" ColumnName="CoordenadaId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1282,7 +1339,6 @@
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Nombre" ColumnName="Nombre" />
                 <ScalarProperty Name="TipoDeRuta" ColumnName="TipoDeRuta" />
-                <ScalarProperty Name="InicioId" ColumnName="InicioId" />
                 <ScalarProperty Name="LineaId" ColumnName="LineaId" />
               </MappingFragment>
             </EntityTypeMapping>

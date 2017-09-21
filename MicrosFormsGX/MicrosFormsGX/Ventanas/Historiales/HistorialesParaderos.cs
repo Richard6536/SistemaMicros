@@ -62,9 +62,11 @@ namespace MicrosFormsGX.Ventanas.Historiales
 
         private void CargarLinea(HistorialParadero h, int _numeroParadero)
         {
+            string horaLlegada = (h.HoraLlegada + "").Split(' ')[1];
+            string tiempoDet = (h.TiempoDetenido + "").Split('.')[0];
 
             DataGridViewRow row = new DataGridViewRow();
-            row.SetValues(_numeroParadero, h.HoraLlegada, h.TiempoDetenido, h.PasajerosRecibidos);
+            row.CreateCells(datagridHistorial, _numeroParadero, horaLlegada, tiempoDet, h.PasajerosRecibidos);
 
             datagridHistorial.Rows.Add(row);
 

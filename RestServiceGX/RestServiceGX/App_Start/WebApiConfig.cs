@@ -78,6 +78,7 @@ namespace RestServiceGX
             esValido.Parameter<string>("Email");
             esValido.Parameter<string>("Password");
 
+
             ActionConfiguration editarDatos = builder.Entity<Usuario>().Action("EditarDatos");
             editarDatos.Returns<IHttpActionResult>();
             editarDatos.Parameter<string>("Nombre");

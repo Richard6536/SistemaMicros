@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="Classes\ConnectionTester.cs" />
     <Compile Include="Classes\FormManager.cs" />
+    <Compile Include="Classes\GMapPoint.cs" />
     <Compile Include="Classes\MapController.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

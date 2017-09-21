@@ -42,8 +42,11 @@ namespace MicrosFormsGX.Ventanas.Historiales
             int c = 1;
             foreach (HistorialIdaVuelta historial in historialesIdaVuelta)
             {
-                CargarLinea(historial, c);
-                c++;
+                if (historial.HoraInicio != historial.HoraTermino)
+                {
+                    CargarLinea(historial, c);
+                    c++;
+                }
             }
 
         }
@@ -51,7 +54,12 @@ namespace MicrosFormsGX.Ventanas.Historiales
         private void CargarLinea(HistorialIdaVuelta h, int numeroRecorrido)
         {
             DataGridViewRow row = new DataGridViewRow();
-            row.SetValues(numeroRecorrido, h.HoraInicio, h.HoraTermino, h.DuracionRecorrido, h.PasajerosTransportados,
+
+            string horaInicio = (h.HoraInicio + "").Split(' ')[1];
+            string horaFinal = (h.HoraTermino + "").Split(' ')[1];
+            string duracion = (h.DuracionRecorrido + "").Split('.')[0];
+
+            row.CreateCells(datagridHistorial, numeroRecorrido, horaInicio, horaFinal, duracion, h.PasajerosTransportados,
                 "Ver historial paraderos");
 
             row.Tag = h.Id;

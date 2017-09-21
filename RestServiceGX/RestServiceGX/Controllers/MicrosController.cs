@@ -51,8 +51,8 @@ namespace RestServiceGX.Controllers
 
                 Ruta rIda = micro.Linea.Ruta;
 
-                Paradero primerParadero = rIda.Paradero.OrderBy(p => p.Id).ToList()[0];
-                Coordenada primerCoordenada = rIda.Coordenada;
+                Paradero primerParadero = rIda.Paradero.OrderBy(p => p.Orden).ToList()[0];
+                Coordenada primerCoordenada = rIda.Coordenada.Where(c => c.Orden == 0).FirstOrDefault();
                 Usuario chofer = micro.MicroChofer.Usuario;
                 chofer.TransmitiendoPosicion = true;
 
@@ -101,6 +101,7 @@ namespace RestServiceGX.Controllers
                 HIVnuevo.HoraInicio = DateTime.Now;
                 HIVnuevo.HoraTermino = DateTime.Now;
                 HIVnuevo.DuracionRecorrido = new TimeSpan(0, 0, 0);
+                HIVnuevo.Orden = HDnuevo.HistorialIdaVuelta.Count + 1;
 
                 HDnuevo.HistorialIdaVuelta.Add(HIVnuevo);
                 db.SaveChanges();
@@ -121,6 +122,7 @@ namespace RestServiceGX.Controllers
                     HistorialIdaVuelta HIVnuevo = new HistorialIdaVuelta();
                     HIVnuevo.HoraInicio = DateTime.Now;
                     HIVnuevo.HoraTermino = DateTime.Now;
+                    HIVnuevo.Orden = hDiaroActual.HistorialIdaVuelta.Count + 1;
                     hDiaro.HistorialIdaVuelta.Add(HIVnuevo);
                 }
 
@@ -139,6 +141,7 @@ namespace RestServiceGX.Controllers
                 _micro.HistorialDiario.Add(HDnuevo);
 
                 HistorialIdaVuelta HIVnuevo = new HistorialIdaVuelta();
+                HIVnuevo.Orden = 1;
                 HIVnuevo.HoraInicio = DateTime.Now;
                 HIVnuevo.HoraTermino = DateTime.Now;
 
@@ -148,29 +151,29 @@ namespace RestServiceGX.Controllers
             db.SaveChanges();
         }
 
-        // POST: odata/Micros(5)/DetenerRecorrido
-        [HttpPost]
-        public IHttpActionResult DetenerRecorrido([FromODataUri] int key)
-        {
-            Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
+        //// POST: odata/Micros(5)/DetenerRecorrido
+        //[HttpPost]
+        //public IHttpActionResult DetenerRecorrido([FromODataUri] int key)
+        //{
+        //    Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
 
-            TerminarRecorridoHistorial(micro);
+        //    TerminarRecorridoHistorial(micro);
 
-            micro.Coordenada = null;
-            micro.SiguienteVerticeId = null;
+        //    micro.Coordenada = null;
+        //    micro.SiguienteVerticeId = null;
 
-            Usuario chofer = micro.MicroChofer.Usuario;
-            chofer.TransmitiendoPosicion = false;
+        //    Usuario chofer = micro.MicroChofer.Usuario;
+        //    chofer.TransmitiendoPosicion = false;
 
-            if (micro.MicroParaderoId != null)
-            {
-                MicroParadero mp = micro.MicroParadero;
-                db.MicroParadero.Remove(mp);
-            }
-            db.SaveChanges();
+        //    if (micro.MicroParaderoId != null)
+        //    {
+        //        MicroParadero mp = micro.MicroParadero;
+        //        db.MicroParadero.Remove(mp);
+        //    }
+        //    db.SaveChanges();
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
         //POST: odata/Micros(5)/SeleccionarParadero
         //Parametros: IdParadero
@@ -452,101 +455,61 @@ namespace RestServiceGX.Controllers
         }
         #endregion
 
-        public List<Coordenada> ObtenerCoordenadasRuta(int _idRuta)
-        {
-            List<Coordenada> coordenadas = new List<Coordenada>();
-            Ruta ruta = db.Ruta.Where(r => r.Id == _idRuta).FirstOrDefault();
 
+        //private void TerminarRecorridoHistorial(Micro _micro)
+        //{
+        //    List<HistorialDiario> hDiarios = _micro.HistorialDiario.ToList();
 
-            Coordenada siguiente = ruta.Coordenada;
+        //    HistorialDiario hDiario = null;
+        //    //se busca el historial diario con la fecha de hoy (siempre deberia haber uno)
+        //    //se editan los tiempos finales del historial diario y del ultimo historial idavuelta
+        //    for (int i = 0; i < hDiarios.Count; i++)
+        //    {
+        //        hDiario = hDiarios[i];
 
-            while (siguiente != null)
-            {
-                coordenadas.Add(siguiente);
-                siguiente = siguiente.Coordenada2;
-            }
+        //        if (hDiario.Fecha == DateTime.Today)
+        //        {
+        //            hDiario.HoraFinal = DateTime.Now;
+        //            hDiario.NumeroIdaVueltas = hDiario.NumeroIdaVueltas + 1;
 
-            return coordenadas;
-        }
+        //            HistorialIdaVuelta ultimoHiv = hDiario.HistorialIdaVuelta.OrderBy(h => h.Orden).ToList().Last();
 
-        private void TerminarRecorridoHistorial(Micro _micro)
-        {
-            List<HistorialDiario> hDiarios = _micro.HistorialDiario.ToList();
+        //            ultimoHiv.HoraTermino = DateTime.Now;
+        //            ultimoHiv.DuracionRecorrido = DateTime.Now - ultimoHiv.HoraInicio;
 
-            HistorialDiario hDiario = null;
-            //se busca el historial diario con la fecha de hoy (siempre deberia haber uno)
-            //se editan los tiempos finales del historial diario y del ultimo historial idavuelta
-            for (int i = 0; i < hDiarios.Count; i++)
-            {
-                hDiario = hDiarios[i];
+        //            //------------Calcular kilometros-------
+        //            //se toman kilometros recorridos desde fin dela linea hasta el principio
+        //            List<Coordenada> coorIda = _micro.Linea.Ruta.Coordenada.OrderBy(c => c.Orden).ToList();
+        //            List<Coordenada> coorVuelta = _micro.Linea.Ruta1.Coordenada.OrderBy(c => c.Orden).ToList();
 
-                if (hDiario.Fecha == DateTime.Today)
-                {
-                    hDiario.HoraFinal = DateTime.Now;
-                    hDiario.NumeroIdaVueltas = hDiario.NumeroIdaVueltas + 1;
+        //            double metrosTotales = 0;
 
-                    HistorialIdaVuelta ultimoHiv = hDiario.HistorialIdaVuelta.OrderBy(h => h.Id).ToList().Last();
+        //            for (int z = 0; z < coorIda.Count - 1; z++)
+        //            {
+        //                var sCoord = new GeoCoordinate(coorIda[i].Latitud, coorIda[i].Longitud);
+        //                var eCoord = new GeoCoordinate(coorIda[i + 1].Latitud, coorIda[i + 1].Longitud);
 
-                    ultimoHiv.HoraTermino = DateTime.Now;
-                    ultimoHiv.DuracionRecorrido = DateTime.Now - ultimoHiv.HoraInicio;
+        //                metrosTotales += sCoord.GetDistanceTo(eCoord);
+        //            }
 
-                    if(_micro.SiguienteVerticeId != null)
-                    {
-                        //se toma los kilometros recorridos en base al siguiente vertice 
-                        //hasta el principio de la linea (o desde inicio del recorrdido si se implementa
+        //            for (int z = 0; z < coorVuelta.Count - 1; z++)
+        //            {
+        //                var sCoord = new GeoCoordinate(coorVuelta[i].Latitud, coorVuelta[i].Longitud);
+        //                var eCoord = new GeoCoordinate(coorVuelta[i + 1].Latitud, coorVuelta[i + 1].Longitud);
 
-                    }
-                    else
-                    {
-                        //se toman kilometros recorridos desde fin dela linea hasta el principio
-                        List<Coordenada> coorIda = ObtenerVerticesDeInicioAFin(_micro.Linea.Ruta);
-                        List<Coordenada> coorVuelta = ObtenerVerticesDeInicioAFin(_micro.Linea.Ruta1);
+        //                metrosTotales += sCoord.GetDistanceTo(eCoord);
+        //            }
 
-                        double metrosTotales = 0;
+        //            float KilometrosTotales = (float)(metrosTotales / 1000);
+        //            hDiario.KilometrosRecorridos += KilometrosTotales;
+                    
+        //        }
 
-                        for (int z = 0; z < coorIda.Count - 1; z++)
-                        {
-                            var sCoord = new GeoCoordinate(coorIda[i].Latitud, coorIda[i].Longitud);
-                            var eCoord = new GeoCoordinate(coorIda[i + 1].Latitud, coorIda[i + 1].Longitud);
+        //    }
+        //    db.SaveChanges();
 
-                            metrosTotales += sCoord.GetDistanceTo(eCoord);
-                        }
+        //}
 
-                        for (int z = 0; z < coorVuelta.Count - 1; z++)
-                        {
-                            var sCoord = new GeoCoordinate(coorVuelta[i].Latitud, coorVuelta[i].Longitud);
-                            var eCoord = new GeoCoordinate(coorVuelta[i + 1].Latitud, coorVuelta[i + 1].Longitud);
-
-                            metrosTotales += sCoord.GetDistanceTo(eCoord);
-                        }
-
-                        float KilometrosTotales = (float)(metrosTotales / 1000);
-                        hDiario.KilometrosRecorridos += KilometrosTotales;
-                    }
-                }
-
-            }
-            db.SaveChanges();
-
-        }
-
-        private List<Coordenada> ObtenerVerticesDeInicioAFin(Ruta _ruta)
-        {
-
-            Ruta ruta = db.Ruta.Where(r => r.Id == _ruta.Id).FirstOrDefault();
-            List<Coordenada> vertices = new List<Coordenada>();
-
-            Coordenada actual = ruta.Coordenada;
-
-            vertices.Add(actual);
-
-            while (actual != null)
-            {
-                vertices.Add(actual);
-                actual = actual.Coordenada2;
-            }
-
-            return vertices;
-        }
+       
     }
 }

@@ -37,7 +37,7 @@ namespace MicrosFormsGX.Classes
                 return;
 
             List<Paradero> paraderos = Ruta.ObtenerParaderosRuta(_ruta);
-            List<Coordenada> vertices = Ruta.ObtenerVerticesDeInicioAFin(_ruta);
+            List<Coordenada> vertices = _ruta.Coordenadas.OrderBy(c => c.Orden).ToList();
 
 
             foreach (Paradero p in paraderos) //Crear paraderos en el mapa
@@ -74,7 +74,7 @@ namespace MicrosFormsGX.Classes
         public static void CargarRutaEnMapaOffline(RutaTP _ruta, GMapControl _gmapController, GMapOverlay _paraderosOverlay, GMapOverlay _rutaOverlay, Color _colorRuta)
         {
             List<Paradero> paraderos = _ruta.Paraderos;
-            List<Coordenada> vertices = _ruta.listaCoordenadas;
+            List<Coordenada> vertices = _ruta.listaCoordenadas.OrderBy(c => c.Orden).ToList();
 
             foreach (Paradero p in paraderos) //Crear paraderos en el mapa
             {
@@ -113,9 +113,11 @@ namespace MicrosFormsGX.Classes
 
             List<Paradero> paraderos = new List<Paradero>();
 
-            foreach (var mark in _listaMarcadores)
+
+            for (int i = 0; i < _listaMarcadores.Count; i++)
             {
-                Paradero p = new Paradero(mark.Position.Lat, mark.Position.Lng);
+                Paradero p = new Paradero(_listaMarcadores[i].Position.Lat, _listaMarcadores[i].Position.Lng, i);
+
                 paraderos.Add(p);
             }
 
@@ -132,7 +134,7 @@ namespace MicrosFormsGX.Classes
             {
                 PointLatLng punto = _puntosVertices[i];
 
-                Coordenada c = new Coordenada(punto.Lat, punto.Lng, null);
+                Coordenada c = new Coordenada(punto.Lat, punto.Lng, i);
                 vertices.Add(c);
             }
             return vertices;
@@ -225,18 +227,17 @@ namespace MicrosFormsGX.Classes
             _overlayParaderos.Markers.Add(paraderoMarker);
         }
 
-        public static void CrearMarcadorInicio(List<Coordenada> _coordendas,GMapControl _gmapController, GMapOverlay _overlay, string _toolTip, GMarkerGoogleType tipoMarcador)
+        public static void CrearMarcadorInicio(List<Coordenada> _coordenadas,GMapControl _gmapController, GMapOverlay _overlay, string _toolTip, GMarkerGoogleType tipoMarcador)
         {
-            if (_coordendas.Count > 0)
-            {
-                Coordenada primerVertice = _coordendas.First();
-                GMarkerGoogle marcador = new GMarkerGoogle(new PointLatLng(primerVertice.Latitud, primerVertice.Longitud), tipoMarcador);
-                marcador.ToolTipText = _toolTip;
-                _overlay.Markers.Add(marcador);
+            Coordenada coorInicio = _coordenadas.Where(c => c.Orden == 0).FirstOrDefault();
 
-                _gmapController.Zoom++;
-                _gmapController.Zoom--;
-            }
+            GMarkerGoogle marcador = new GMarkerGoogle(new PointLatLng(coorInicio.Latitud, coorInicio.Longitud), tipoMarcador);
+            marcador.ToolTipText = _toolTip;
+            _overlay.Markers.Add(marcador);
+
+            _gmapController.Zoom++;
+            _gmapController.Zoom--;
+
         }
 
         public static double DistanciaEntrePuntos(PointLatLng punto1, PointLatLng punto2)

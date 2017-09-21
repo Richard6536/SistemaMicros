@@ -37,17 +37,10 @@ namespace RestServiceGX.Controllers
         [HttpPost]
         public List<Coordenada> ListaCoordenadas([FromODataUri] int key)
         {
-            Coordenada inicio = db.Ruta.Where(r => r.Id == key).FirstOrDefault().Coordenada;
 
-            List<Coordenada> vertices = new List<Coordenada>();
-            vertices.Add(inicio);
+            Ruta ruta = db.Ruta.Where(r => r.Id == key).FirstOrDefault();
 
-            Coordenada siguiente = inicio.Coordenada2;
-            while (siguiente != null)
-            {
-                vertices.Add(siguiente);
-                siguiente = siguiente.Coordenada2;
-            }
+            List<Coordenada> vertices = ruta.Coordenada.OrderBy(c => c.Orden).ToList();
 
             return vertices;
         }
@@ -172,13 +165,6 @@ namespace RestServiceGX.Controllers
             return StatusCode(HttpStatusCode.NoContent);
         }
 
-        // GET: odata/Rutas(5)/Coordenada
-        [EnableQuery]
-        public SingleResult<Coordenada> GetCoordenada([FromODataUri] int key)
-        {
-            //Coordenada de inicio
-            return SingleResult.Create(db.Ruta.Where(m => m.Id == key).Select(m => m.Coordenada));
-        }
 
         // GET: odata/Rutas(5)/Linea
         [EnableQuery]

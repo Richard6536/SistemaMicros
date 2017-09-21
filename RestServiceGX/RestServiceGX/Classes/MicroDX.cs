@@ -10,5 +10,6 @@ namespace RestServiceGX.Classes
         public int Id { get; set; }
         public string Patente { get; set; }
         public float Calificacion { get; set; }
+        public double KilometrosDia { get; set; }
     }
 }

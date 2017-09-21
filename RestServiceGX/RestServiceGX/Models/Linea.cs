@@ -23,6 +23,7 @@ namespace RestServiceGX.Models
     
         public int Id { get; set; }
         public string Nombre { get; set; }
+        public int Tarifa { get; set; }
         public Nullable<int> RutaIdaId { get; set; }
         public Nullable<int> RutaVueltaId { get; set; }
     

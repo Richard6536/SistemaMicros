@@ -60,6 +60,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.btnCrearLinea = new MetroFramework.Controls.MetroTile();
             this.btnVerMenuLinea = new MetroFramework.Controls.MetroButton();
+            this.asdf = new MetroFramework.Controls.MetroLabel();
+            this.lblTarifa = new MetroFramework.Controls.MetroLabel();
             this.menuStrip1.SuspendLayout();
             this.metroTabControl1.SuspendLayout();
             this.metroTabPage1.SuspendLayout();
@@ -268,7 +270,7 @@
             this.btnCambiarNombreLinea.Size = new System.Drawing.Size(139, 88);
             this.btnCambiarNombreLinea.Style = MetroFramework.MetroColorStyle.Green;
             this.btnCambiarNombreLinea.TabIndex = 14;
-            this.btnCambiarNombreLinea.Text = "Cambiar nombre";
+            this.btnCambiarNombreLinea.Text = "Editar datos";
             this.btnCambiarNombreLinea.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.btnCambiarNombreLinea.TileImage = ((System.Drawing.Image)(resources.GetObject("btnCambiarNombreLinea.TileImage")));
             this.btnCambiarNombreLinea.TileImageAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -543,11 +545,53 @@
             this.btnVerMenuLinea.UseSelectable = true;
             this.btnVerMenuLinea.Click += new System.EventHandler(this.btnVerMenuLinea_Click);
             // 
+            // asdf
+            // 
+            this.asdf.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.asdf.AutoSize = true;
+            this.asdf.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(177)))), ((int)(((byte)(89)))));
+            this.asdf.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.asdf.FontWeight = MetroFramework.MetroLabelWeight.Bold;
+            this.asdf.ForeColor = System.Drawing.Color.White;
+            this.asdf.Location = new System.Drawing.Point(671, 80);
+            this.asdf.Margin = new System.Windows.Forms.Padding(0);
+            this.asdf.Name = "asdf";
+            this.asdf.Size = new System.Drawing.Size(65, 25);
+            this.asdf.Style = MetroFramework.MetroColorStyle.Green;
+            this.asdf.TabIndex = 15;
+            this.asdf.Text = "Tarifa:";
+            this.asdf.UseCustomBackColor = true;
+            this.asdf.UseCustomForeColor = true;
+            this.asdf.WrapToLine = true;
+            // 
+            // lblTarifa
+            // 
+            this.lblTarifa.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblTarifa.AutoSize = true;
+            this.lblTarifa.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(177)))), ((int)(((byte)(89)))));
+            this.lblTarifa.FontSize = MetroFramework.MetroLabelSize.Tall;
+            this.lblTarifa.FontWeight = MetroFramework.MetroLabelWeight.Bold;
+            this.lblTarifa.ForeColor = System.Drawing.Color.White;
+            this.lblTarifa.Location = new System.Drawing.Point(736, 80);
+            this.lblTarifa.Margin = new System.Windows.Forms.Padding(0);
+            this.lblTarifa.Name = "lblTarifa";
+            this.lblTarifa.Size = new System.Drawing.Size(32, 25);
+            this.lblTarifa.Style = MetroFramework.MetroColorStyle.Green;
+            this.lblTarifa.TabIndex = 16;
+            this.lblTarifa.Text = "$0";
+            this.lblTarifa.UseCustomBackColor = true;
+            this.lblTarifa.UseCustomForeColor = true;
+            this.lblTarifa.WrapToLine = true;
+            // 
             // AdminLineas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1230, 728);
+            this.Controls.Add(this.lblTarifa);
+            this.Controls.Add(this.asdf);
             this.Controls.Add(this.btnVerMenuLinea);
             this.Controls.Add(this.btnCrearLinea);
             this.Controls.Add(this.metroTabControl1);
@@ -609,5 +653,7 @@
         private MetroFramework.Controls.MetroComboBox cmbRutaVuelta;
         private System.Windows.Forms.Label lblRutaVuelta;
         private System.Windows.Forms.Label label6;
+        private MetroFramework.Controls.MetroLabel asdf;
+        private MetroFramework.Controls.MetroLabel lblTarifa;
     }
 }

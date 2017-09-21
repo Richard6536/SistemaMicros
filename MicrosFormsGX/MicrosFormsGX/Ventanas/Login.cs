@@ -69,7 +69,7 @@ namespace MicrosFormsGX.Ventanas
                 List<Paradero> paraderos = Ruta.ObtenerParaderosRuta(r);
                 rutaTP.Paraderos = paraderos;
 
-                List<Coordenada> coors = Ruta.ObtenerVerticesDeInicioAFin(r);
+                List<Coordenada> coors = r.Coordenadas;
                 rutaTP.listaCoordenadas = coors;
 
                 rutasPrograma.Add(rutaTP);
@@ -82,6 +82,7 @@ namespace MicrosFormsGX.Ventanas
                 LineaTP lineaTP = new LineaTP();
                 lineaTP.Id = l.Id;
                 lineaTP.Nombre = l.Nombre;
+                lineaTP.Tarifa = l.Tarifa;
                 lineaTP.Micros = Linea.ObtenerMicrosDeLinea(l.Id);
 
                 lineaTP.rutaIda = rutasPrograma.Where(r => r.Id == l.RutaIdaId).FirstOrDefault();

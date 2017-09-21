@@ -197,6 +197,7 @@ namespace MicrosFormsGX.Ventanas
 
             lblRutaIda.Text =  rIda.Nombre;
             lblRutaVuelta.Text = rVuelta.Nombre;
+            lblTarifa.Text = "$" + lineaActual.Tarifa;
 
             //List<Ruta> rutasIda = Linea.ObtenerRutasPorTipo(lineaActual.Id, Ruta.TipoRuta.ida);
             //List<Ruta> rutasVuelta = Linea.ObtenerRutasPorTipo(lineaActual.Id, Ruta.TipoRuta.vuelta);

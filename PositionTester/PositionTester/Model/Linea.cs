@@ -200,32 +200,6 @@ namespace PositionTester.Model
             return micros;
         }
 
-        public static void EliminarLinea(int _idLinea)
-        {
-            //asumiendo que no hay rutas asociadas
-            var BD = new MicroSystemContext();
-
-            Linea linea = BD.Lineas.Where(l => l.Id == _idLinea).FirstOrDefault();
-            List<Ruta> rutas = new List<Ruta>();
-
-            foreach(Ruta r in linea.Rutas)
-            {
-                rutas.Add(r);
-            }
-
-            for (int i = 0; i < rutas.Count; i++)
-            {
-                Ruta rutaActual = rutas[i];
-                Coordenada coordenda = BD.Coordenadas.Where(c => c.Id == rutaActual.InicioId).FirstOrDefault();
-
-                Coordenada.BorrarCadenaDeCoordenadas(coordenda, BD);
-            }
-
-            BD.SaveChanges();
-
-            BD.Lineas.Remove(linea);
-
-            BD.SaveChanges();
-        }
+      
     }
 }

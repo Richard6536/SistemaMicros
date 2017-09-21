@@ -20,6 +20,8 @@ namespace MicrosFormsGX.Model
         [Key]
         public int Id { get; set; }
 
+        public int Orden { get; set; }
+
         public int PasajerosTransportados { get; set; }
 
         public DateTime HoraInicio { get; set; }

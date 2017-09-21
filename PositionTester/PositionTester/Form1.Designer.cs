@@ -80,17 +80,18 @@
             this.gmapController.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
             this.gmapController.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.gmapController.ShowTileGridLines = false;
-            this.gmapController.Size = new System.Drawing.Size(692, 503);
+            this.gmapController.Size = new System.Drawing.Size(711, 508);
             this.gmapController.TabIndex = 9;
             this.gmapController.Zoom = 0D;
             this.gmapController.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.gmapController_OnMarkerClick);
+            this.gmapController.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gmapController_MouseClick);
             this.gmapController.MouseLeave += new System.EventHandler(this.gmapController_MouseLeave);
             this.gmapController.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gmapController_MouseMove);
             // 
             // txtEmail
             // 
             this.txtEmail.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtEmail.Location = new System.Drawing.Point(730, 158);
+            this.txtEmail.Location = new System.Drawing.Point(749, 158);
             this.txtEmail.Name = "txtEmail";
             this.txtEmail.Size = new System.Drawing.Size(154, 20);
             this.txtEmail.TabIndex = 10;
@@ -99,7 +100,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(727, 142);
+            this.label1.Location = new System.Drawing.Point(746, 142);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 11;
@@ -108,7 +109,7 @@
             // btnTomarControl
             // 
             this.btnTomarControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnTomarControl.Location = new System.Drawing.Point(730, 184);
+            this.btnTomarControl.Location = new System.Drawing.Point(749, 184);
             this.btnTomarControl.Name = "btnTomarControl";
             this.btnTomarControl.Size = new System.Drawing.Size(154, 23);
             this.btnTomarControl.TabIndex = 12;
@@ -125,7 +126,7 @@
             // 
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(727, 26);
+            this.label2.Location = new System.Drawing.Point(746, 26);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(79, 13);
             this.label2.TabIndex = 14;
@@ -136,7 +137,7 @@
             this.cmbLineas.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbLineas.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbLineas.FormattingEnabled = true;
-            this.cmbLineas.Location = new System.Drawing.Point(730, 54);
+            this.cmbLineas.Location = new System.Drawing.Point(749, 54);
             this.cmbLineas.Name = "cmbLineas";
             this.cmbLineas.Size = new System.Drawing.Size(154, 21);
             this.cmbLineas.TabIndex = 15;
@@ -145,7 +146,7 @@
             // btnBorrarLinea
             // 
             this.btnBorrarLinea.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBorrarLinea.Location = new System.Drawing.Point(730, 82);
+            this.btnBorrarLinea.Location = new System.Drawing.Point(749, 82);
             this.btnBorrarLinea.Name = "btnBorrarLinea";
             this.btnBorrarLinea.Size = new System.Drawing.Size(154, 23);
             this.btnBorrarLinea.TabIndex = 16;
@@ -174,7 +175,7 @@
             // btnDetenerTodo
             // 
             this.btnDetenerTodo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDetenerTodo.Location = new System.Drawing.Point(730, 451);
+            this.btnDetenerTodo.Location = new System.Drawing.Point(749, 451);
             this.btnDetenerTodo.Name = "btnDetenerTodo";
             this.btnDetenerTodo.Size = new System.Drawing.Size(154, 37);
             this.btnDetenerTodo.TabIndex = 19;
@@ -185,7 +186,7 @@
             // btnIniciarRecorrido
             // 
             this.btnIniciarRecorrido.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnIniciarRecorrido.Location = new System.Drawing.Point(730, 213);
+            this.btnIniciarRecorrido.Location = new System.Drawing.Point(749, 213);
             this.btnIniciarRecorrido.Name = "btnIniciarRecorrido";
             this.btnIniciarRecorrido.Size = new System.Drawing.Size(154, 23);
             this.btnIniciarRecorrido.TabIndex = 20;
@@ -196,7 +197,7 @@
             // btnDetenerRecorrido
             // 
             this.btnDetenerRecorrido.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDetenerRecorrido.Location = new System.Drawing.Point(730, 242);
+            this.btnDetenerRecorrido.Location = new System.Drawing.Point(749, 242);
             this.btnDetenerRecorrido.Name = "btnDetenerRecorrido";
             this.btnDetenerRecorrido.Size = new System.Drawing.Size(154, 23);
             this.btnDetenerRecorrido.TabIndex = 21;
@@ -217,7 +218,7 @@
             this.panel1.Controls.Add(this.label4);
             this.panel1.Controls.Add(this.lblUserMoviendo);
             this.panel1.Controls.Add(this.label3);
-            this.panel1.Location = new System.Drawing.Point(731, 286);
+            this.panel1.Location = new System.Drawing.Point(750, 286);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(153, 138);
             this.panel1.TabIndex = 22;
@@ -296,9 +297,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(731, 512);
+            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.button1.Location = new System.Drawing.Point(750, 512);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(75, 25);
             this.button1.TabIndex = 23;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
@@ -308,7 +310,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(912, 547);
+            this.ClientSize = new System.Drawing.Size(931, 552);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnDetenerRecorrido);

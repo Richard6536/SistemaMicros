@@ -328,8 +328,8 @@ namespace PositionTester.Model
                                 List<Paradero> paraderosLinea = new List<Paradero>();
 
                                 #region LLenar los paraderos de la linea
-                                List<Paradero> paraderosIda = lineaAsociada.RutaIda.Paraderos.ToList();
-                                List<Paradero> paraderosVuelta = lineaAsociada.RutaVuelta.Paraderos.ToList();
+                                List<Paradero> paraderosIda = lineaAsociada.RutaIda.Paraderos.OrderBy(p => p.Orden).ToList();
+                                List<Paradero> paraderosVuelta = lineaAsociada.RutaVuelta.Paraderos.OrderBy(p => p.Orden).ToList();
 
                                 for (int i = 0; i < paraderosIda.Count; i++) //ida
                                 {
@@ -519,20 +519,17 @@ namespace PositionTester.Model
             Ruta rutaIda = linea.RutaIda;
             Ruta rutaVuelta = linea.RutaVuelta;
 
-            Coordenada siguiente = rutaIda.Inicio;
+            List<Coordenada> coordenadasIda = rutaIda.Coordenadas.OrderBy(c => c.Orden).ToList();
+            List<Coordenada> coordenadasVuelta = rutaVuelta.Coordenadas.OrderBy(c => c.Orden).ToList();
 
-            while (siguiente != null)
+            for (int i = 0; i < coordenadasIda.Count; i++)
             {
-                coordenadas.Add(siguiente);
-                siguiente = siguiente.Siguiente;
+                coordenadas.Add(coordenadasIda[i]);
             }
 
-            siguiente = rutaVuelta.Inicio;
-
-            while (siguiente != null)
+            for (int i = 0; i < coordenadasVuelta.Count; i++)
             {
-                coordenadas.Add(siguiente);
-                siguiente = siguiente.Siguiente;
+                coordenadas.Add(coordenadasVuelta[i]);
             }
 
             return coordenadas;

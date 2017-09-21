@@ -111,10 +111,24 @@ namespace RestServiceGX.Controllers
 
             Ruta rutaIda = paradero.Ruta.Linea2.Ruta;
             Ruta rutaVuelta = paradero.Ruta.Linea2.Ruta1;
+            List<Coordenada> coordenadasLinea = new List<Coordenada>();
+
+            #region Rellenar coordenadasLinea
+            List<Coordenada> coorIda = rutaIda.Coordenada.OrderBy(c => c.Orden).ToList();
+            List<Coordenada> coorVuelta = rutaVuelta.Coordenada.OrderBy(c => c.Orden).ToList();
+
+            for (int i = 0; i < coorIda.Count; i++)
+            {
+                coordenadasLinea.Add(coorIda[i]);
+            }
+            for (int i = 0; i < coorVuelta.Count; i++)
+            {
+                coordenadasLinea.Add(coorVuelta[i]);
+            }
+            #endregion
 
             List<MicroParadero> microParaderos = paradero.MicroParadero.ToList();
             Micro micro;
-            Coordenada sigCoor;
 
             //suma distancia entre paradero y el anterior
             //queda asignado como paradero el anterior
@@ -135,54 +149,44 @@ namespace RestServiceGX.Controllers
                 {
                     rutaAUsar = rutaVuelta;
 
-                    if (rutaVuelta.Paradero.ToList()[0].Id == paradero.Id)
+                    if (paradero.Orden == 0)
                     {
                         //si entra aqui es que el paradero era el primero de la ruta de vuelta
                         //se suma la distancia desde ese paradero al ultimo paradero dela ruta de ida
                         //se asigna ese paradero como punto de inicio
 
                         distEntreParaderos +=
-                            DistanciaVerticesSiguiendoRuta(rutaVuelta.Coordenada.Latitud, rutaVuelta.Coordenada.Longitud, paradero.Latitud, paradero.Longitud);
+                            DistanciaVerticesSiguiendoRuta(coordenadasLinea, rutaVuelta.Coordenada.Where(c => c.Orden == 0).FirstOrDefault(), paradero.Coordenada);
 
-                        paradero = rutaIda.Paradero.ToList().Last();
+                        paradero = rutaIda.Paradero.OrderBy(p => p.Orden).ToList().Last();
                         microParaderos = paradero.MicroParadero.ToList();
 
                         distEntreParaderos +=
-                            DistanciaVerticesSiguiendoRuta(paradero.Latitud, paradero.Longitud, rutaVuelta.Coordenada.Latitud, rutaVuelta.Coordenada.Longitud);
+                            DistanciaVerticesSiguiendoRuta(coordenadasLinea, paradero.Coordenada , rutaVuelta.Coordenada.Where(c => c.Orden == 0).FirstOrDefault());
 
                         continue;
                     }
                 }
 
-                paraderosRuta = rutaAUsar.Paradero.ToList().OrderBy(p => p.Id).ToList();
+                paraderosRuta = rutaAUsar.Paradero.ToList().OrderBy(p => p.Orden).ToList();
 
                 //busca paradero
                 //suma distancia con paradero anterior
                 //reasigna paradero y microparaderos con los datos del anterior
 
-                for (int i = 0; i < paraderosRuta.Count; i++)
+                Paradero paraderoAnterior = paraderosRuta.Where(p => p.Orden == paradero.Orden - 1).FirstOrDefault();
+
+                if(paraderoAnterior != null)
                 {
-                    if (paraderosRuta[i].Id == paradero.Id)
-                    {
-                        Paradero par = paraderosRuta[i];
+                    distEntreParaderos +=
+                        DistanciaVerticesSiguiendoRuta(coordenadasLinea, paraderoAnterior.Coordenada, paradero.Coordenada);
 
-                        if (par == paraderosRuta.First())
-                        {
-                            //es el primer paradero dela ruta de ida
-                            return new MicroParadero() { Id = -1 };
-                        }
-                        else
-                        {
-                            Paradero anterior = paraderosRuta[i - 1];
-                            //saca distancia entre estos paraderos
-                            distEntreParaderos +=
-                                DistanciaVerticesSiguiendoRuta(anterior.Latitud, anterior.Longitud, paradero.Latitud, paradero.Longitud);
-
-                            paradero = paraderosRuta[i - 1];
-                            microParaderos = paradero.MicroParadero.ToList();
-                        }
-                        break;
-                    }
+                    paradero = paraderoAnterior;
+                    microParaderos = paradero.MicroParadero.ToList();
+                }
+                else
+                {
+                    return new MicroParadero() { Id = -1 };
                 }
             }
 
@@ -195,43 +199,30 @@ namespace RestServiceGX.Controllers
                 coorHastaParadero = new List<Coordenada>();
 
                 micro = microParadero.Micro1;
-                sigCoor = micro.Coordenada;
 
-                coorHastaParadero.Add(sigCoor);
+                Coordenada coorInicio = micro.Coordenada;
+                Coordenada coorFinal = paradero.Coordenada;
 
-                #region Rellenar coordenadas hasta paradero
-                bool encontrado = false;
+                #region Rellenar coordenadas hasta el paradero
+                bool comenzarRellenado = false;
+                bool finalEncontrado = false;
 
-                while (sigCoor != null)
+                for (int i = 0; i < coordenadasLinea.Count; i++)
                 {
-                    sigCoor = sigCoor.Coordenada2;
-                    coorHastaParadero.Add(sigCoor);
+                    Coordenada coorActual = coordenadasLinea[i];
 
-                    if (sigCoor.Latitud == paradero.Latitud && sigCoor.Longitud == paradero.Longitud)
+                    if (coorActual.Id == coorInicio.Id)
+                        comenzarRellenado = true;
+
+                    if (comenzarRellenado == true && finalEncontrado == false)
                     {
-                        encontrado = true;
-                        break;
+                        coorHastaParadero.Add(coorActual);
                     }
+
+                    if (comenzarRellenado == true && coorActual.Id == coorFinal.Id)
+                        finalEncontrado = true;
                 }
 
-                //si encontrado sigue en falso significa que
-                //la ruta que se reviso antes era la de ida y falta revisar la de vuelta
-                if (encontrado == false)
-                {
-                    sigCoor = rutaVuelta.Coordenada;
-                    coorHastaParadero.Add(sigCoor);
-
-                    while (sigCoor != null)
-                    {
-                        sigCoor = sigCoor.Coordenada2;
-                        coorHastaParadero.Add(sigCoor);
-
-                        if (sigCoor.Latitud == paradero.Latitud && sigCoor.Longitud == paradero.Longitud)
-                        {
-                            break;
-                        }
-                    }
-                }
                 #endregion
 
                 #region Sacar distancia entre Micro y paradero siguiendo la ruta
@@ -291,33 +282,31 @@ namespace RestServiceGX.Controllers
             return sCoord.GetDistanceTo(eCoord);
         }
 
-        private double DistanciaVerticesSiguiendoRuta(double latInicio, double lngInicio, double latFinal, double lngFinal)
+        private double DistanciaVerticesSiguiendoRuta(List<Coordenada> _coorLinea , Coordenada coorInicio, Coordenada coorFinal)
         {
-            Coordenada coorInicio = db.Coordenada.Where(c => c.Latitud == latInicio && c.Longitud == lngInicio).FirstOrDefault();
-            Coordenada coorFinal = db.Coordenada.Where(c => c.Latitud == latFinal && c.Longitud == lngFinal).FirstOrDefault();
-
+            List<Coordenada> coordenadasLinea = _coorLinea;
             List<Coordenada> coorHastaFinal = new List<Coordenada>();
 
-            #region Rellenar lista de coordenadas
-            coorHastaFinal.Add(coorInicio);
+            bool comenzarRellenado = false;
+            bool finalEncontrado = false;
 
-            Coordenada sigCoor = coorInicio.Coordenada2;
-            bool encontrado = false;
-            while (sigCoor != null)
+            for (int i = 0; i < coordenadasLinea.Count; i++)
             {
-                coorHastaFinal.Add(sigCoor);
+                Coordenada coorActual = coordenadasLinea[i];
 
-                if (sigCoor.Latitud == latFinal && sigCoor.Longitud == lngFinal)
+                if (coorActual.Id == coorInicio.Id)
+                    comenzarRellenado = true;
+
+                if (comenzarRellenado == true && finalEncontrado == false)
                 {
-                    encontrado = true;
-                    break;
+                    coorHastaFinal.Add(coorActual);
                 }
 
-                sigCoor = sigCoor.Coordenada2;
+                if (comenzarRellenado == true && coorActual.Id == coorFinal.Id)
+                    finalEncontrado = true;
             }
-            #endregion
 
-            if (encontrado == false)
+            if (finalEncontrado == false)
             {
                 //No se puede llegar al punto final siguiendo la ruta
                 return -1;

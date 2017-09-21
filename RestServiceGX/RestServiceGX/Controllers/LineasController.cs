@@ -135,11 +135,11 @@ namespace RestServiceGX.Controllers
                 #region Busca el paradero más cercano en ambas rutas (junto con la ruta hasta ahí) a partir del punto de Inicio
                 foreach (Paradero p in paraderosLinea)
                 {
-                    GMapRoute ruta = RutaCaminando(inicio, new PointLatLng(p.Latitud, p.Longitud));
+                    GMapRoute ruta = RutaCaminandoV2(inicio, new PointLatLng(p.Latitud, p.Longitud));
 
                     while (ruta == null)
                     {
-                        ruta = RutaCaminando(inicio, new PointLatLng(p.Latitud, p.Longitud));
+                        ruta = RutaCaminandoV2(inicio, new PointLatLng(p.Latitud, p.Longitud));
 
                         if(DateTime.Now - horaInicio > TiempoEsperaMaxima)
                         {
@@ -188,10 +188,10 @@ namespace RestServiceGX.Controllers
                 #region Buscar el paradero más cercano en ambas rutas (junto a la ruta hasta ahi) a partir del punto final
                 foreach (Paradero p in paraderosLinea)
                 {
-                    GMapRoute ruta = RutaCaminando(final, new PointLatLng(p.Latitud, p.Longitud));
+                    GMapRoute ruta = RutaCaminandoV2(final, new PointLatLng(p.Latitud, p.Longitud));
                     while (ruta == null)
                     {
-                        ruta = RutaCaminando(final, new PointLatLng(p.Latitud, p.Longitud));
+                        ruta = RutaCaminandoV2(final, new PointLatLng(p.Latitud, p.Longitud));
 
                         if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
                         {
@@ -243,17 +243,17 @@ namespace RestServiceGX.Controllers
                     Paradero finalSeleccionado = null;
                     GMapRoute rutaFinalSeleccionado = null;
 
-                    Coordenada coorInicioIda = CoordenadaAsociadaAParadero(pInicioIda);
-                    Coordenada coorInicioVuelta = CoordenadaAsociadaAParadero(pInicioVuelta);
-                    Coordenada coorFinalIda = CoordenadaAsociadaAParadero(pFinalIda);
-                    Coordenada coorFinalVuelta = CoordenadaAsociadaAParadero(pFinalVuelta);
+                    Coordenada coorInicioIda = pInicioIda.Coordenada;
+                    Coordenada coorInicioVuelta = pInicioVuelta.Coordenada;
+                    Coordenada coorFinalIda = pFinalIda.Coordenada;
+                    Coordenada coorFinalVuelta = pFinalVuelta.Coordenada;
 
                     bool ambosIda = false;
                     bool ambosVuelta = false;
 
-                    if (coorInicioIda.Id > coorFinalIda.Id)
+                    if (coorInicioIda.Orden < coorFinalIda.Orden)
                         ambosIda = true;
-                    if (coorInicioVuelta.Id > coorFinalVuelta.Id)
+                    if (coorInicioVuelta.Orden < coorFinalVuelta.Orden)
                         ambosVuelta = true;
 
 
@@ -337,7 +337,26 @@ namespace RestServiceGX.Controllers
             {
                 List<Coordenada> coordenadasRecomendacion = new List<Coordenada>();
 
-                List<Coordenada> verticesEntreParaderos = CoordenadasSiguiendoLaRuta(pInicioMenor, pFinalMenor);
+                List<Coordenada> verticesEntreParaderos = CoordenadasSiguiendoLaRuta(lineaMenor, pInicioMenor, pFinalMenor);
+
+                #region Si se usó el metodo de ruta directa caminando, hay que recrear la ruta correcta tomando en cuenta las calles
+
+                if(rutaInicioMenor.Points.Count == 2)
+                {
+                    rutaInicioMenor = RutaCaminando(rutaInicioMenor.Points[0], rutaInicioMenor.Points[1]);
+
+                    while(rutaInicioMenor == null)
+                        rutaInicioMenor = RutaCaminando(rutaInicioMenor.Points[0], rutaInicioMenor.Points[1]);
+                }
+
+                if(rutaFinalMenor.Points.Count == 2)
+                {
+                    rutaInicioMenor = RutaCaminando(rutaFinalMenor.Points[0], rutaFinalMenor.Points[1]);
+                    while(rutaInicioMenor == null)
+                        rutaInicioMenor = RutaCaminando(rutaFinalMenor.Points[0], rutaFinalMenor.Points[1]);
+                }
+                #endregion
+
                 #region Rellenar las coor recomendadas con las 3 rutas hechas
                 List<PointLatLng> puntosInicio = rutaInicioMenor.Points;
                 List<PointLatLng> puntosFinal = rutaFinalMenor.Points;
@@ -565,8 +584,8 @@ namespace RestServiceGX.Controllers
 
         private List<Paradero> obtenerParaderoLinea(Linea _linea)
         {
-            List<Paradero> paraderosIda = _linea.Ruta.Paradero.OrderBy(p => p.Id).ToList();
-            List<Paradero> paraderosVuelta = _linea.Ruta1.Paradero.OrderBy(p => p.Id).ToList();
+            List<Paradero> paraderosIda = _linea.Ruta.Paradero.OrderBy(p => p.Orden).ToList();
+            List<Paradero> paraderosVuelta = _linea.Ruta1.Paradero.OrderBy(p => p.Orden).ToList();
 
             List<Paradero> paraderosLinea = paraderosIda;
 
@@ -604,79 +623,50 @@ namespace RestServiceGX.Controllers
             return ruta;
         }
 
-        private List<Coordenada> CoordenadasSiguiendoLaRuta(Paradero _pInicial, Paradero _pFinal)
+        private List<Coordenada> CoordenadasSiguiendoLaRuta(Linea _linea, Paradero _pInicial, Paradero _pFinal)
         {
-            List<Coordenada> allCoord = db.Coordenada.ToList();
-            Coordenada coorInicio = null;
-            Coordenada coorFinal = null;
 
-            #region encontrar coordenada inicial y final
-            foreach (Coordenada coor in allCoord)
+            List<Coordenada> coorIda = _linea.Ruta.Coordenada.OrderBy(c => c.Orden).ToList();
+            List<Coordenada> coorVuelta = _linea.Ruta1.Coordenada.OrderBy(c => c.Orden).ToList();
+
+            List<Coordenada> coordenadasLinea = new List<Coordenada>();
+
+            for (int i = 0; i < coorIda.Count; i++)
             {
-                GeoCoordinate coorPos = new GeoCoordinate(coor.Latitud, coor.Longitud);
-
-                GeoCoordinate geoInicio = new GeoCoordinate(_pInicial.Latitud, _pInicial.Longitud);
-                GeoCoordinate geoFinal = new GeoCoordinate(_pFinal.Latitud, _pFinal.Longitud);
-
-                if(coorInicio == null && coorPos.GetDistanceTo(geoInicio) < 4)
-                {
-                    coorInicio = coor;
-                }
-                if(coorFinal == null && coorPos.GetDistanceTo(geoFinal) < 4)
-                {
-                    coorFinal = coor;
-                }
-
-                if(coorInicio != null && coorFinal != null)
-                {
-                    break;
-                }
-
+                coordenadasLinea.Add(coorIda[i]);
             }
-            #endregion
+            for (int i = 0; i < coorVuelta.Count; i++)
+            {
+                coordenadasLinea.Add(coorVuelta[i]);
+            }
+
+            Coordenada coorInicio = _pInicial.Coordenada;
+            Coordenada coorFinal = _pFinal.Coordenada;
 
             List<Coordenada> coorHastaFinal = new List<Coordenada>();
 
-            #region Rellenar lista de coordenadas
-            coorHastaFinal.Add(coorInicio);
+            bool comenzarRellenado = false;
+            bool finalEncontrado = false;
 
-            Coordenada sigCoor = coorInicio.Coordenada2;
-            bool encontrado = false;
-            while (sigCoor != null)
+            for (int i = 0; i < coordenadasLinea.Count; i++)
             {
-                coorHastaFinal.Add(sigCoor);
+                Coordenada coorActual = coordenadasLinea[i];
 
-                if (sigCoor.Latitud == coorFinal.Latitud && sigCoor.Longitud == coorFinal.Longitud)
+                if (coorActual.Id == coorInicio.Id)
+                    comenzarRellenado = true;
+
+                if(comenzarRellenado == true && finalEncontrado == false)
                 {
-                    encontrado = true;
-                    break;
+                    coorHastaFinal.Add(coorActual);
                 }
-                sigCoor = sigCoor.Coordenada2;
+
+                if (comenzarRellenado == true && coorActual.Id == coorFinal.Id)
+                    finalEncontrado = true;
             }
 
-            //si elparadero final esta en la ruta de vuelta repite el proceso desde el principio de la otra ruta
-            //tambien paradero inicial debe estar en ruta de ida para entrar
-            if ( _pInicial.Ruta.TipoDeRuta == 0 && _pFinal.Ruta.TipoDeRuta == 1 && encontrado == false)
-            {
-                Ruta rutaVuelta = _pFinal.Ruta;
-                sigCoor = rutaVuelta.Coordenada;
 
-                while (sigCoor != null)
-                {
-                    coorHastaFinal.Add(sigCoor);
 
-                    if (sigCoor.Latitud == coorFinal.Latitud && sigCoor.Longitud == coorFinal.Longitud)
-                    {
-                        encontrado = true;
-                        break;
-                    }
-                    sigCoor = sigCoor.Coordenada2;
-                }
-            }
-
-            #endregion
-
-            if (encontrado == false)
+            if (finalEncontrado == false)
             {
                 //No se puede llegar al punto final siguiendo la ruta
                 return null;
@@ -686,24 +676,6 @@ namespace RestServiceGX.Controllers
 
         }
 
-        private Coordenada CoordenadaAsociadaAParadero(Paradero _paradero)
-        {
-            List<Coordenada> allCoord = db.Coordenada.ToList();
-            GeoCoordinate posParadero = new GeoCoordinate(_paradero.Latitud, _paradero.Longitud);
-            Coordenada coorEncontrado = null;
-
-            foreach (Coordenada coor in allCoord)
-            {
-                GeoCoordinate coorPos = new GeoCoordinate(coor.Latitud, coor.Longitud);
-
-                if (coorEncontrado == null && coorPos.GetDistanceTo(posParadero) < 3)
-                {
-                    coorEncontrado = coor;
-                }
-            }
-
-            return coorEncontrado;
-        }
 
         private double DistanciaCoordenadas(List<Coordenada> _coor)
         {

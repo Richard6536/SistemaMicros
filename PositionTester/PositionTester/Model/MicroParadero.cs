@@ -40,12 +40,19 @@ namespace PositionTester.Model
 
         public static Paradero GetParadero(int _microParaderoId)
         {
-            var BD = new MicroSystemContext();
-            MicroParadero microParadero = BD.MicroParaderos.Where(mp => mp.Id == _microParaderoId).FirstOrDefault();
+            try
+            {
+                var BD = new MicroSystemContext();
+                MicroParadero microParadero = BD.MicroParaderos.Where(mp => mp.Id == _microParaderoId).FirstOrDefault();
 
-            Paradero paradero = BD.Paraderos.Where(u => u.Id == microParadero.ParaderoId).FirstOrDefault();
+                Paradero paradero = BD.Paraderos.Where(u => u.Id == microParadero.ParaderoId).FirstOrDefault();
 
-            return paradero;
+                return paradero;
+            }
+            catch
+            {
+                return new Paradero { Id = -1 };
+            }
         }
     }
 }

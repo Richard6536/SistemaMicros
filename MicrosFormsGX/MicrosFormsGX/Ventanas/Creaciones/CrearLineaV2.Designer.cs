@@ -36,11 +36,9 @@
             this.btnCrearRuta = new MetroFramework.Controls.MetroTile();
             this.btnAceptarRuta = new MetroFramework.Controls.MetroTile();
             this.btnDeshacer = new MetroFramework.Controls.MetroTile();
-            this.txtNombreLinea = new MetroFramework.Controls.MetroTextBox();
-            this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
             this.panelIda = new System.Windows.Forms.Panel();
-            this.lblIda = new System.Windows.Forms.Label();
             this.lblVuelta = new System.Windows.Forms.Label();
+            this.lblIda = new System.Windows.Forms.Label();
             this.panelIda.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -177,48 +175,6 @@
             this.btnDeshacer.UseTileImage = true;
             this.btnDeshacer.Click += new System.EventHandler(this.btnDeshacer_Click);
             // 
-            // txtNombreLinea
-            // 
-            this.txtNombreLinea.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            // 
-            // 
-            // 
-            this.txtNombreLinea.CustomButton.Image = null;
-            this.txtNombreLinea.CustomButton.Location = new System.Drawing.Point(463, 1);
-            this.txtNombreLinea.CustomButton.Name = "";
-            this.txtNombreLinea.CustomButton.Size = new System.Drawing.Size(21, 21);
-            this.txtNombreLinea.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
-            this.txtNombreLinea.CustomButton.TabIndex = 1;
-            this.txtNombreLinea.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
-            this.txtNombreLinea.CustomButton.UseSelectable = true;
-            this.txtNombreLinea.CustomButton.Visible = false;
-            this.txtNombreLinea.Lines = new string[0];
-            this.txtNombreLinea.Location = new System.Drawing.Point(333, 99);
-            this.txtNombreLinea.MaxLength = 32767;
-            this.txtNombreLinea.Name = "txtNombreLinea";
-            this.txtNombreLinea.PasswordChar = '\0';
-            this.txtNombreLinea.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.txtNombreLinea.SelectedText = "";
-            this.txtNombreLinea.SelectionLength = 0;
-            this.txtNombreLinea.SelectionStart = 0;
-            this.txtNombreLinea.ShortcutsEnabled = true;
-            this.txtNombreLinea.Size = new System.Drawing.Size(485, 23);
-            this.txtNombreLinea.TabIndex = 20;
-            this.txtNombreLinea.UseSelectable = true;
-            this.txtNombreLinea.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
-            this.txtNombreLinea.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
-            // 
-            // metroLabel1
-            // 
-            this.metroLabel1.AutoSize = true;
-            this.metroLabel1.FontWeight = MetroFramework.MetroLabelWeight.Bold;
-            this.metroLabel1.Location = new System.Drawing.Point(333, 77);
-            this.metroLabel1.Name = "metroLabel1";
-            this.metroLabel1.Size = new System.Drawing.Size(122, 19);
-            this.metroLabel1.TabIndex = 21;
-            this.metroLabel1.Text = "Nombre de línea";
-            // 
             // panelIda
             // 
             this.panelIda.Controls.Add(this.lblVuelta);
@@ -228,18 +184,6 @@
             this.panelIda.Size = new System.Drawing.Size(304, 44);
             this.panelIda.TabIndex = 22;
             this.panelIda.Visible = false;
-            // 
-            // lblIda
-            // 
-            this.lblIda.AutoSize = true;
-            this.lblIda.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblIda.ForeColor = System.Drawing.Color.Red;
-            this.lblIda.Location = new System.Drawing.Point(33, 10);
-            this.lblIda.Name = "lblIda";
-            this.lblIda.Size = new System.Drawing.Size(227, 24);
-            this.lblIda.TabIndex = 0;
-            this.lblIda.Text = "Creando ruta de ida...";
-            this.lblIda.Visible = false;
             // 
             // lblVuelta
             // 
@@ -253,14 +197,24 @@
             this.lblVuelta.Text = "Creando ruta de vuelta...";
             this.lblVuelta.Visible = false;
             // 
+            // lblIda
+            // 
+            this.lblIda.AutoSize = true;
+            this.lblIda.Font = new System.Drawing.Font("Arial", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblIda.ForeColor = System.Drawing.Color.Red;
+            this.lblIda.Location = new System.Drawing.Point(33, 10);
+            this.lblIda.Name = "lblIda";
+            this.lblIda.Size = new System.Drawing.Size(227, 24);
+            this.lblIda.TabIndex = 0;
+            this.lblIda.Text = "Creando ruta de ida...";
+            this.lblIda.Visible = false;
+            // 
             // CrearLineaV2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1151, 654);
             this.Controls.Add(this.panelIda);
-            this.Controls.Add(this.metroLabel1);
-            this.Controls.Add(this.txtNombreLinea);
             this.Controls.Add(this.btnDeshacer);
             this.Controls.Add(this.btnAceptarRuta);
             this.Controls.Add(this.btnCrearRuta);
@@ -276,7 +230,6 @@
             this.panelIda.ResumeLayout(false);
             this.panelIda.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -289,8 +242,6 @@
         private MetroFramework.Controls.MetroTile btnCrearRuta;
         private MetroFramework.Controls.MetroTile btnAceptarRuta;
         private MetroFramework.Controls.MetroTile btnDeshacer;
-        private MetroFramework.Controls.MetroTextBox txtNombreLinea;
-        private MetroFramework.Controls.MetroLabel metroLabel1;
         private System.Windows.Forms.Panel panelIda;
         private System.Windows.Forms.Label lblVuelta;
         private System.Windows.Forms.Label lblIda;

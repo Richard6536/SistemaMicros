@@ -17,6 +17,7 @@ namespace RestServiceGX.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Ruta()
         {
+            this.Coordenada = new HashSet<Coordenada>();
             this.Linea = new HashSet<Linea>();
             this.Linea1 = new HashSet<Linea>();
             this.Paradero = new HashSet<Paradero>();
@@ -25,10 +26,10 @@ namespace RestServiceGX.Models
         public int Id { get; set; }
         public string Nombre { get; set; }
         public int TipoDeRuta { get; set; }
-        public int InicioId { get; set; }
         public int LineaId { get; set; }
     
-        public virtual Coordenada Coordenada { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Coordenada> Coordenada { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Linea> Linea { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

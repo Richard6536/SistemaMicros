@@ -12,6 +12,7 @@ namespace MicrosFormsGX.Model.DatosTemporales
 
         public int Id { get; set; }
         public string Nombre { get; set; }
+        public int Tarifa { get; set; }
         public List<Micro> Micros { get; set; }
 
         public RutaTP rutaIda { get; set; }

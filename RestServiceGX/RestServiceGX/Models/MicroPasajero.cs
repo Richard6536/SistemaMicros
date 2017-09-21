@@ -19,10 +19,12 @@ namespace RestServiceGX.Models
         public System.DateTime HoraCreacion { get; set; }
         public double LatitudCreacion { get; set; }
         public double LongitudCreacion { get; set; }
+        public int ParaderoId { get; set; }
         public int MicroId { get; set; }
         public int PasajeroId { get; set; }
     
         public virtual Micro Micro { get; set; }
+        public virtual Paradero Paradero { get; set; }
         public virtual Usuario Usuario { get; set; }
     }
 }

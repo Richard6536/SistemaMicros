@@ -20,6 +20,8 @@ namespace MicrosFormsGX.Model
         [Key]
         public int Id { get; set; }
 
+        public int Orden { get; set; }
+
         public DateTime HoraLlegada { get; set; }
 
         public TimeSpan TiempoDetenido { get; set; }
@@ -31,9 +33,10 @@ namespace MicrosFormsGX.Model
         [ForeignKey("IdIdaVuelta")]
         public virtual HistorialIdaVuelta HistorialIdaVuelta { get; set; }
 
-
         public HistorialParadero()
-        { }
+        {
+
+        }
 
     }
 }

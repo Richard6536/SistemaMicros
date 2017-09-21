@@ -36,7 +36,7 @@ namespace RestServiceGX.Controllers
         {
             HistorialDiario hDiario = db.HistorialDiario.Where(h => h.Id == key).FirstOrDefault();
 
-            List<HistorialIdaVuelta> hiv = hDiario.HistorialIdaVuelta.OrderBy(h => h.Id).ToList();
+            List<HistorialIdaVuelta> hiv = hDiario.HistorialIdaVuelta.OrderBy(h => h.Orden).ToList();
 
             return hiv;
         }

@@ -20,6 +20,10 @@ namespace MicrosFormsGX.Model
         public double LatitudCreacion { get; set; }
         public double LongitudCreacion { get; set; }
 
+        public int ParaderoId { get; set; }
+        [ForeignKey("ParaderoId")]
+        public virtual Paradero Paradero { get; set; }
+
         public int MicroId { get; set; }
         [ForeignKey("MicroId")]
         public virtual Micro Micro { get; set; }

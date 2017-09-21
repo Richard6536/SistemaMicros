@@ -21,6 +21,7 @@ namespace RestServiceGX.Models
         }
     
         public int Id { get; set; }
+        public int Orden { get; set; }
         public int PasajerosTransportados { get; set; }
         public System.DateTime HoraInicio { get; set; }
         public System.DateTime HoraTermino { get; set; }

@@ -15,6 +15,7 @@ namespace RestServiceGX.Models
     public partial class HistorialParadero
     {
         public int Id { get; set; }
+        public int Orden { get; set; }
         public System.DateTime HoraLlegada { get; set; }
         public System.TimeSpan TiempoDetenido { get; set; }
         public int PasajerosRecibidos { get; set; }

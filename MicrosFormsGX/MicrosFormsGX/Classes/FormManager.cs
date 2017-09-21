@@ -56,6 +56,8 @@ namespace MicrosFormsGX.Classes
             next.ShowDialog();         
             current.Enabled = true;
             return next.DialogResult;
+
+           
         }
 
     }

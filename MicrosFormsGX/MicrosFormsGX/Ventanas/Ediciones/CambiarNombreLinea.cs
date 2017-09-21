@@ -27,6 +27,7 @@ namespace MicrosFormsGX.Ventanas.Ediciones
             InitializeComponent();
             lineaActual = Linea.BuscarLinea(_idLinea);
             txtNombre.Text = lineaActual.Nombre;
+            txtTarifa.Text = lineaActual.Tarifa + "";
             btnGuardar.Enabled = false;
         }
 
@@ -37,16 +38,36 @@ namespace MicrosFormsGX.Ventanas.Ediciones
 
         private void btnGuardar_Click(object sender, EventArgs e)
         {
+            int nuevaTarifa = 0;
             string nuevoNombre = txtNombre.Text;
 
+            bool errorTarifa = false;
+
+            try
+            {
+                nuevaTarifa = Convert.ToInt32(txtTarifa.Text);
+            }
+            catch
+            {
+                errorTarifa = true;
+            }
+
             Linea repetido = Linea.BuscarLineaPorNombre(nuevoNombre);
+
+            if (repetido.Id == lineaActual.Id)
+                repetido = null; 
 
             string mensajeError = "";
 
             if (repetido != null)
                 mensajeError += "\n-El nombre de esa línea ya existe.";
-            if (nuevoNombre == "")
-                mensajeError += "\n-No deje el campo nombre vacío";
+            if (nuevoNombre == "" || txtTarifa.Text == "")
+                mensajeError += "\n-No deje campos de texto vacíos.";
+
+            if (errorTarifa == true)
+                mensajeError += "\n-No se ingresaron valores numéricos para la tarifa.";
+            else if (nuevaTarifa <= 0)
+                mensajeError += "\n-La tarifa debe tener un valor mayor a 0.";
 
             if (mensajeError != "")
             {
@@ -54,21 +75,22 @@ namespace MicrosFormsGX.Ventanas.Ediciones
                 return;
             }
 
-            bool res = Linea.EditarNombre(lineaActual.Id, nuevoNombre);
+            bool res = Linea.EditarDatos(lineaActual.Id, nuevoNombre, nuevaTarifa);
 
             if (res)
             {
                 LineaTP ltp = LineaTP.todasLineas.Where(l => l.Id == lineaActual.Id).FirstOrDefault();
                 ltp.Nombre = nuevoNombre;
+                ltp.Tarifa = nuevaTarifa;
 
-                MetroMessageBox.Show(this,"Nombre editado correctamente");
+                MetroMessageBox.Show(this,"Datos editados correctamente");
                 this.DialogResult = DialogResult.OK;
             }
         }
 
         private void txtNombre_TextChanged(object sender, EventArgs e)
         {
-            if (txtNombre.Text == lineaActual.Nombre)
+            if (txtNombre.Text == lineaActual.Nombre && txtTarifa.Text == lineaActual.Tarifa +"")
             {
                 btnGuardar.Enabled = false;
             }
@@ -81,6 +103,18 @@ namespace MicrosFormsGX.Ventanas.Ediciones
         private void CambiarNombreLinea_Activated(object sender, EventArgs e)
         {
             FormManager.formAbiertaActual = this;
+        }
+
+        private void txtTarifa_TextChanged(object sender, EventArgs e)
+        {
+            if (txtNombre.Text == lineaActual.Nombre && txtTarifa.Text == lineaActual.Tarifa + "")
+            {
+                btnGuardar.Enabled = false;
+            }
+            else
+            {
+                btnGuardar.Enabled = true;
+            }
         }
     }
 }

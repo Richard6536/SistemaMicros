@@ -31,8 +31,9 @@ namespace MicrosFormsGX.Ventanas.Historiales
 
             lblPatente.Text = micro.Patente;
 
-            desde = DateTime.MinValue;
-            hasta = DateTime.Today.Date;
+
+            datePickerDesde.Value = datePickerDesde.MinDate;
+            datePickerHasta.Value = DateTime.Today.Date;
             CargarTabla();
         }
 
@@ -57,15 +58,26 @@ namespace MicrosFormsGX.Ventanas.Historiales
             if (h.Fecha < desde || h.Fecha > hasta)
                 return;
 
-            DataGridViewRow row = new DataGridViewRow();
-            row.SetValues(h.Fecha, h.NombreChofer, h.HoraInicio, h.HoraFinal, h.KilometrosRecorridos,
-                h.CalificacionesRecibidas, h.CalificacionDiaria, h.PasajerosTransportados, h.NumeroIdaVueltas,
-                "Ver historial recorridos");
+            if (h.HoraInicio != h.HoraFinal)
+            {
 
-            row.Tag = h.Id;
+                DataGridViewRow row = new DataGridViewRow();
 
-            datagridHistorial.Rows.Add(row);
- 
+                string fecha = (h.Fecha + "").Split(' ')[0];
+                string horaInicio = (h.HoraInicio.TimeOfDay + "").Split('.')[0];
+                string horaFinal = (h.HoraFinal.TimeOfDay + "").Split('.')[0];
+
+                row.CreateCells(datagridHistorial, fecha, h.NombreChofer, horaInicio, horaFinal, h.KilometrosRecorridos,
+                    h.CalificacionesRecibidas, h.CalificacionDiaria, h.PasajerosTransportados, h.NumeroIdaVueltas,
+                    "Ver historial recorridos");
+
+
+                row.Tag = h.Id;
+
+
+                datagridHistorial.Rows.Add(row);
+
+            }
         }
 
 

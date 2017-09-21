@@ -16,24 +16,24 @@ namespace PositionTester.Model
         [Key]
         public int Id { get; set; }
 
+        public int Orden { get; set; }
+
         public double Latitud { get; set; }
         public double Longitud { get; set; }
 
         public int RutaId { get; set; }
+        public int CoordenadaId { get; set; }
 
         [ForeignKey("RutaId")]
         public virtual Ruta Ruta { get; set; }
+
+        [ForeignKey("CoordenadaId")]
+        public virtual Coordenada Coordenada { get; set; }
 
         public virtual List<UsuarioParadero> UsuariosParaderos { get; set; }
         public virtual List<MicroParadero> MicrosParaderos { get; set; }
 
         public Paradero() { }
-
-        public Paradero(double _lat, double _lng)
-        {
-            Latitud = _lat;
-            Longitud = _lng;
-        }
 
 
         public static Paradero BuscarPorId(int _id)

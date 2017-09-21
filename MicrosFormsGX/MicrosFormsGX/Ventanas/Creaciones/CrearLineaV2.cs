@@ -371,6 +371,9 @@ namespace MicrosFormsGX.Ventanas.Creaciones
             this.DialogResult = DialogResult.Cancel;
         }
 
+        public string NombreLinea;
+        public int Tarifa;
+
         private void btnGuardarDatos_Click(object sender, EventArgs e)
         {
             if (!ConnectionTester.IsConnectionActive())
@@ -381,14 +384,14 @@ namespace MicrosFormsGX.Ventanas.Creaciones
             List<Coordenada> verticesIda = MapController.CrearVertices(posVerticesIda);
             List<Coordenada> verticesVuelta = MapController.CrearVertices(posVerticesVuelta);
 
-            if (txtNombreLinea.Text == "")
-            {
-                mensajeError += "\n-No puede dejar el campo nombre vacío";
-            }
-            else if (Linea.BuscarLineaPorNombre(txtNombreLinea.Text) != null)
-            {
-                mensajeError += "\n-El nombre de esa línea ya existe";
-            }
+            //if (txtNombreLinea.Text == "")
+            //{
+            //    mensajeError += "\n-No puede dejar el campo nombre vacío";
+            //}
+            //else if (Linea.BuscarLineaPorNombre(txtNombreLinea.Text) != null)
+            //{
+            //    mensajeError += "\n-El nombre de esa línea ya existe";
+            //}
 
             if (verticesIda.Count < 2)
             {
@@ -408,25 +411,30 @@ namespace MicrosFormsGX.Ventanas.Creaciones
             List<Paradero> paraderosIda = MapController.CrearParaderos(markParaderosIda);
             List<Paradero> paraderosVuelta = MapController.CrearParaderos(markParaderosVuelta);
 
+            var form = new CrearLineaDatos(this);
+            DialogResult result = FormManager.MostrarShowDialog(this, form);
 
-            Linea nuevaLinea = Linea.CrearLinea(txtNombreLinea.Text);
-
-            Ruta rutaIda = Ruta.CrearRuta(nuevaLinea.Id, txtNombreLinea.Text + "_ida1", Ruta.TipoRuta.ida, verticesIda, paraderosIda);
-            Ruta rutaVuelta = Ruta.CrearRuta(nuevaLinea.Id, txtNombreLinea.Text + "_vuelta1", Ruta.TipoRuta.vuelta, verticesVuelta, paraderosVuelta);
-
-            if (nuevaLinea != null && rutaIda != null && rutaVuelta != null)
+            if (result == DialogResult.OK)
             {
-                rutaIda.AsignarRutaComoUsable();
-                rutaVuelta.AsignarRutaComoUsable();
+                Linea nuevaLinea = Linea.CrearLinea(NombreLinea, Tarifa);
 
-                CrearTemporales(nuevaLinea, rutaIda, paraderosIda, verticesIda, rutaVuelta, paraderosVuelta, verticesVuelta);
+                Ruta rutaIda = Ruta.CrearRuta(nuevaLinea.Id, NombreLinea + "_ida1", Ruta.TipoRuta.ida, verticesIda, paraderosIda);
+                Ruta rutaVuelta = Ruta.CrearRuta(nuevaLinea.Id, NombreLinea + "_vuelta1", Ruta.TipoRuta.vuelta, verticesVuelta, paraderosVuelta);
 
-                MetroMessageBox.Show(this,"Linea creada correctamente");
-                this.DialogResult = DialogResult.OK;
+                if (nuevaLinea != null && rutaIda != null && rutaVuelta != null)
+                {
+                    rutaIda.AsignarRutaComoUsable();
+                    rutaVuelta.AsignarRutaComoUsable();
+
+                    CrearTemporales(nuevaLinea, Tarifa, rutaIda, paraderosIda, verticesIda, rutaVuelta, paraderosVuelta, verticesVuelta);
+
+                    MetroMessageBox.Show(this, "Linea creada correctamente");
+                    this.DialogResult = DialogResult.OK;
+                }
             }
         }
 
-        private void CrearTemporales(Linea _linea, Ruta _rIda, List<Paradero> _paraIda, List<Coordenada> _coorIda, Ruta _rVuelta, List<Paradero> _paraVuelta, List<Coordenada> _coorVuelta)
+        private void CrearTemporales(Linea _linea, int _tarifa, Ruta _rIda, List<Paradero> _paraIda, List<Coordenada> _coorIda, Ruta _rVuelta, List<Paradero> _paraVuelta, List<Coordenada> _coorVuelta)
         {
             RutaTP rIdaTP = new RutaTP();
             rIdaTP.Id = _rIda.Id;
@@ -446,6 +454,7 @@ namespace MicrosFormsGX.Ventanas.Creaciones
 
             LineaTP lineaTP = new LineaTP();
             lineaTP.Id = _linea.Id;
+            lineaTP.Tarifa = _tarifa;
             lineaTP.Nombre = _linea.Nombre;
             lineaTP.Micros = new List<Micro>();
             lineaTP.rutaIda = rIdaTP;

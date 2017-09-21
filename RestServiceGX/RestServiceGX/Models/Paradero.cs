@@ -18,16 +18,22 @@ namespace RestServiceGX.Models
         public Paradero()
         {
             this.MicroParadero = new HashSet<MicroParadero>();
+            this.MicroPasajero = new HashSet<MicroPasajero>();
             this.UsuarioParadero = new HashSet<UsuarioParadero>();
         }
     
         public int Id { get; set; }
+        public int Orden { get; set; }
         public double Latitud { get; set; }
         public double Longitud { get; set; }
         public int RutaId { get; set; }
+        public int CoordenadaId { get; set; }
     
+        public virtual Coordenada Coordenada { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<MicroParadero> MicroParadero { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<MicroPasajero> MicroPasajero { get; set; }
         public virtual Ruta Ruta { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UsuarioParadero> UsuarioParadero { get; set; }

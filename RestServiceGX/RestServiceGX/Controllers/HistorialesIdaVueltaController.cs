@@ -36,7 +36,7 @@ namespace RestServiceGX.Controllers
         {
             HistorialIdaVuelta hiv = db.HistorialIdaVuelta.Where(h => h.Id == key).FirstOrDefault();
 
-            List<HistorialParadero> hParaderos = hiv.HistorialParadero.OrderBy(h => h.Id).ToList();
+            List<HistorialParadero> hParaderos = hiv.HistorialParadero.OrderBy(h => h.Orden).ToList();
 
             return hParaderos;
         }

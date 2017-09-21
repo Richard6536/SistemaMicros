@@ -37,6 +37,9 @@ namespace PositionTester
         GMapOverlay otrosMarkersOverlay;
         GMapOverlay userControladoOverlay;
 
+        GMapOverlay points_; //para dibujar circulos
+
+
         public Form1()
         {
             if (!ConnectionTester.IsConnectionActive())
@@ -75,11 +78,13 @@ namespace PositionTester
             paraderosOverlay = new GMapOverlay();
             otrosMarkersOverlay = new GMapOverlay();
             userControladoOverlay = new GMapOverlay();
+            points_  = new GMapOverlay("pointCollection");
 
             gmapController.Overlays.Add(previewOverlay);
             gmapController.Overlays.Add(paraderosOverlay);
             gmapController.Overlays.Add(otrosMarkersOverlay);
             gmapController.Overlays.Add(userControladoOverlay);
+            gmapController.Overlays.Add(points_);
 
 
         }
@@ -184,15 +189,6 @@ namespace PositionTester
             if (userMarker == null)
                 return;
 
-            bool updateRecorrido = false;
-
-            foreach(Usuario u in usuariosControlarRecorrido)
-            {
-                if(u.Id == userControlandoActual.Id)
-                {
-                    updateRecorrido = true;
-                }
-            }
 
             Usuario.ActualizarPosicion(userControlandoActual.Id, userMarker.Position.Lat, userMarker.Position.Lng, ActualizarRecorrido);
 
@@ -356,7 +352,7 @@ namespace PositionTester
                 Ruta rIda = micro.Linea.RutaIda;
 
                 Paradero primerParadero = rIda.Paraderos.OrderBy(p => p.Id).ToList()[0];
-                Coordenada primerCoordenada = rIda.Inicio;
+                Coordenada primerCoordenada = rIda.Coordenadas.Where(c => c.Orden == 0).FirstOrDefault();
 
                 if (micro.MicroParaderoId != null)
                 {
@@ -449,7 +445,7 @@ namespace PositionTester
                 List<Paradero> paraderos = Ruta.ObtenerParaderosRuta(r);
                 rutaTP.Paraderos = paraderos;
 
-                List<Coordenada> coors = Ruta.ObtenerVerticesDeInicioAFin(r);
+                List<Coordenada> coors = r.Coordenadas;
                 rutaTP.listaCoordenadas = coors;
 
                 rutasPrograma.Add(rutaTP);
@@ -486,6 +482,82 @@ namespace PositionTester
                 ActualizarRecorrido = false;
                 button1.Text = "false";
             }
+        }
+
+
+
+
+
+        private void gmapController_MouseClick(object sender, MouseEventArgs e)
+        {
+            double lat = 0;
+            double lng = 0;
+
+
+            if (e.Button == MouseButtons.Right)
+            {
+                lat = gmapController.FromLocalToLatLng(e.X, e.Y).Lat;
+                lng = gmapController.FromLocalToLatLng(e.X, e.Y).Lng;
+            }
+            else
+            {
+                return;
+            }
+
+            CreateCircle(lat, lng, 150);
+
+        }
+
+
+        private void CreateCircle(Double lat, Double lon, double radius)
+        {
+            PointLatLng point = new PointLatLng(lat, lon);
+            int segments = 1000;
+
+            List<PointLatLng> gpollist = new List<PointLatLng>();
+
+            for (int i = 0; i < segments; i++)
+                gpollist.Add(FindPointAtDistanceFrom(point, i, radius / 1000));
+
+            GMapPolygon gpol = new GMapPolygon(gpollist, "pol");
+            gpol.Stroke.Width = 0.001f;
+
+            points_.Clear();
+            points_.Polygons.Add(gpol);
+        }
+
+        public static PointLatLng FindPointAtDistanceFrom(GMap.NET.PointLatLng startPoint, double initialBearingRadians, double distanceKilometres)
+        {
+            const double radiusEarthKilometres = 6371.01;
+            var distRatio = distanceKilometres / radiusEarthKilometres;
+            var distRatioSine = Math.Sin(distRatio);
+            var distRatioCosine = Math.Cos(distRatio);
+
+            var startLatRad = DegreesToRadians(startPoint.Lat);
+            var startLonRad = DegreesToRadians(startPoint.Lng);
+
+            var startLatCos = Math.Cos(startLatRad);
+            var startLatSin = Math.Sin(startLatRad);
+
+            var endLatRads = Math.Asin((startLatSin * distRatioCosine) + (startLatCos * distRatioSine * Math.Cos(initialBearingRadians)));
+
+            var endLonRads = startLonRad + Math.Atan2(
+                          Math.Sin(initialBearingRadians) * distRatioSine * startLatCos,
+                          distRatioCosine - startLatSin * Math.Sin(endLatRads));
+
+            return new GMap.NET.PointLatLng(RadiansToDegrees(endLatRads), RadiansToDegrees(endLonRads));
+        }
+
+        public static double DegreesToRadians(double degrees)
+        {
+            const double degToRadFactor = Math.PI / 180;
+            return degrees * degToRadFactor;
+        }
+
+        public static double RadiansToDegrees(double radians)
+        {
+            const double radToDegFactor = 180 / Math.PI;
+            return radians * radToDegFactor;
         }
     }
 }
