@@ -126,6 +126,12 @@ namespace MicrosFormsGX.Ventanas
                 DialogResult result = DialogResult.Cancel;
                 if (e.ColumnIndex == 4) //Asignar micro
                 {
+                    if(user.TransmitiendoPosicion == true)
+                    {
+                        MetroMessageBox.Show(this, "No puede asignar otra micro mientras este usuario se encuentre en un recorrido.");
+                        return;
+                    }
+
                     var forms = new AsignarMicro(user.Id);
                     result = FormManager.MostrarShowDialog(this, forms);
                 }

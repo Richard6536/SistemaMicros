@@ -60,6 +60,24 @@ namespace RestServiceGX
             ActionConfiguration fusionDatosRecorrido = builder.Entity<Usuario>().Action("ObtenerDatosRecorridoFusion");
             fusionDatosRecorrido.Returns<DatosRecorrido>();
 
+            ActionConfiguration actualizarPosChofer = builder.Entity<Usuario>().Action("ActualizarPosicionChofer");
+            actualizarPosChofer.Returns<DatosRecorrido>();
+            actualizarPosChofer.Parameter<double>("Latitud");
+            actualizarPosChofer.Parameter<double>("Longitud");
+
+            ActionConfiguration actualizarPosPasajero = builder.Entity<Usuario>().Action("ActualizarPosicionPasajero");
+            actualizarPosPasajero.Returns<DatosLinea>();
+            actualizarPosPasajero.Parameter<double>("Latitud");
+            actualizarPosPasajero.Parameter<double>("Longitud");
+            actualizarPosPasajero.Parameter<int>("IdLinea");
+
+            ActionConfiguration obtenerPosChofer = builder.Entity<Usuario>().Action("ObtenerPosicionChofer");
+            obtenerPosChofer.Returns<DatosRecorrido>();
+
+            ActionConfiguration obtenerPosPasajero = builder.Entity<Usuario>().Action("ObtenerPosicionPasajero");
+            obtenerPosPasajero.Returns<DatosLinea>();
+            obtenerPosPasajero.Parameter<int>("IdLinea");
+
             ActionConfiguration moverTest = builder.Entity<Usuario>().Action("Mover");
             moverTest.Parameter<double>("Latitud");
             moverTest.Parameter<double>("Longitud");
@@ -136,6 +154,10 @@ namespace RestServiceGX
             ActionConfiguration iniciarRecorrido = builder.Entity<Micro>().Action("IniciarRecorrido");
             iniciarRecorrido.Returns<IHttpActionResult>();
 
+            ActionConfiguration iniciarRecV2 = builder.Entity<Micro>().Action("IniciarRecorridoV2");
+            iniciarRecV2.Parameter<int>("IdUser");
+            iniciarRecV2.Returns<bool>();
+
             ActionConfiguration detenerRecorrido = builder.Entity<Micro>().Action("DetenerRecorrido");
             detenerRecorrido.Returns<IHttpActionResult>();
 
@@ -170,7 +192,19 @@ namespace RestServiceGX
             recRuta.Parameter<double>("lngInicio");
             recRuta.Parameter<double>("latFinal");
             recRuta.Parameter<double>("lngFinal");
+            recRuta.Parameter<bool>("BusquedaDetallada");
             recRuta.ReturnsCollectionFromEntitySet<Coordenada>("Coordenadas");
+
+            ActionConfiguration recRutaDetalle = builder.Entity<Linea>().Collection.Action("RecomendarRutaDetalle");
+            recRutaDetalle.Parameter<double>("latInicio");
+            recRutaDetalle.Parameter<double>("lngInicio");
+            recRutaDetalle.Parameter<double>("latFinal");
+            recRutaDetalle.Parameter<double>("lngFinal");
+            recRutaDetalle.Parameter<bool>("BusquedaDetallada");
+            recRutaDetalle.Returns<LineaRecomendada>();
+
+
+
             #endregion
 
             #region Historiales

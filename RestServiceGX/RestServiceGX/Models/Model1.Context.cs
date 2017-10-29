@@ -36,6 +36,7 @@ namespace RestServiceGX.Models
         public virtual DbSet<MicroPasajero> MicroPasajero { get; set; }
         public virtual DbSet<Paradero> Paradero { get; set; }
         public virtual DbSet<Ruta> Ruta { get; set; }
+        public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
         public virtual DbSet<UsuarioParadero> UsuarioParadero { get; set; }
     }

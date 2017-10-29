@@ -16,7 +16,7 @@ using System.Device.Location;
 using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
-
+using RestServiceGX.Classes;
 
 namespace RestServiceGX.Controllers
 {
@@ -91,9 +91,9 @@ namespace RestServiceGX.Controllers
             return choferesActivos;
         }
 
-        private TimeSpan TiempoEsperaMaxima = new TimeSpan(0, 3, 0);
+        private TimeSpan TiempoEsperaMaxima = new TimeSpan(0, 0, 15);
         //POST: odata/Lineas/RecomendarRutaDX
-        //Parametros: latInicio,lngInicio, latFinal,lngFinal
+        //Parametros: latInicio,lngInicio, latFinal,lngFinal, BusquedaDetallada
         [HttpPost]
         public List<Coordenada> RecomendarRutaDX(ODataActionParameters parameters)
         {
@@ -107,6 +107,7 @@ namespace RestServiceGX.Controllers
             double lngInicio = (double)parameters["lngInicio"];
             double latFinal = (double)parameters["latFinal"];
             double lngFinal = (double)parameters["lngFinal"];
+            bool busquedaDetallada = (bool)parameters["BusquedaDetallada"];
 
             PointLatLng inicio = new PointLatLng(latInicio, lngInicio);
             PointLatLng final = new PointLatLng(latFinal, lngFinal);
@@ -116,18 +117,18 @@ namespace RestServiceGX.Controllers
 
             double distanciaMenor = double.MaxValue;
 
-            Linea lineaMenor = null;      
+            Linea lineaMenor = null;
             GMapRoute rutaInicioMenor = null;
             Paradero pInicioMenor = null;
             GMapRoute rutaFinalMenor = null;
             Paradero pFinalMenor = null;
 
-            //GMapRoute recomendacionCaminandoMenor = null;
-
+            //por cada linea buscar paraderos mas cercanos a punto inicial y final
+            //se decide linea en la que se camina menos y las rutas de puntoInicio y final a sus respectivos paraderos
             foreach (Linea linea in todasLineas)
             {
                 paraderosLinea = obtenerParaderoLinea(linea);
-                
+
                 GMapRoute rutaInicioParaderoMenorIda = null;
                 GMapRoute rutaInicioParaderoMenorVuelta = null;
                 Paradero pInicioIda = null;
@@ -135,17 +136,18 @@ namespace RestServiceGX.Controllers
                 #region Busca el paradero más cercano en ambas rutas (junto con la ruta hasta ahí) a partir del punto de Inicio
                 foreach (Paradero p in paraderosLinea)
                 {
-                    GMapRoute ruta = RutaCaminandoV2(inicio, new PointLatLng(p.Latitud, p.Longitud));
+                    GMapRoute ruta = RutaCaminandoV2(inicio, new PointLatLng(p.Latitud, p.Longitud), false);
 
                     while (ruta == null)
                     {
-                        ruta = RutaCaminandoV2(inicio, new PointLatLng(p.Latitud, p.Longitud));
+                        ruta = RutaCaminandoV2(inicio, new PointLatLng(p.Latitud, p.Longitud), false);
 
-                        if(DateTime.Now - horaInicio > TiempoEsperaMaxima)
+                        if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
                         {
                             return new List<Coordenada>();
                         }
                     }
+
                     if (p.Ruta.TipoDeRuta == 0)
                     {
                         //Se va buscando la ruta caminando mas cercana al paradero de ida
@@ -188,10 +190,10 @@ namespace RestServiceGX.Controllers
                 #region Buscar el paradero más cercano en ambas rutas (junto a la ruta hasta ahi) a partir del punto final
                 foreach (Paradero p in paraderosLinea)
                 {
-                    GMapRoute ruta = RutaCaminandoV2(final, new PointLatLng(p.Latitud, p.Longitud));
+                    GMapRoute ruta = RutaCaminandoV2(final, new PointLatLng(p.Latitud, p.Longitud), false);
                     while (ruta == null)
                     {
-                        ruta = RutaCaminandoV2(final, new PointLatLng(p.Latitud, p.Longitud));
+                        ruta = RutaCaminandoV2(final, new PointLatLng(p.Latitud, p.Longitud), false);
 
                         if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
                         {
@@ -231,7 +233,7 @@ namespace RestServiceGX.Controllers
                 }
                 #endregion
 
-                if((pInicioIda.Id == pFinalIda.Id) && (pInicioVuelta.Id == pFinalVuelta.Id))
+                if ((pInicioIda.Id == pFinalIda.Id) && (pInicioVuelta.Id == pFinalVuelta.Id))
                 {
                     continue;
                 }
@@ -266,7 +268,7 @@ namespace RestServiceGX.Controllers
                     if (ambosIda)
                     {
                         double dist = rutaInicioParaderoMenorIda.Distance + rutaFinalParaderoMenorIda.Distance;
-                        if(dist < posibleDistMenor)
+                        if (dist < posibleDistMenor)
                         {
                             posibleDistMenor = dist;
                             inicioSeleccionado = pInicioIda;
@@ -275,10 +277,10 @@ namespace RestServiceGX.Controllers
                             rutaFinalSeleccionado = rutaFinalParaderoMenorIda;
                         }
                     }
-                    if(ambosVuelta)
+                    if (ambosVuelta)
                     {
                         double dist = rutaInicioParaderoMenorVuelta.Distance + rutaFinalParaderoMenorVuelta.Distance;
-                        if(dist <posibleDistMenor)
+                        if (dist < posibleDistMenor)
                         {
                             posibleDistMenor = dist;
                             inicioSeleccionado = pInicioVuelta;
@@ -290,7 +292,7 @@ namespace RestServiceGX.Controllers
 
                     //si distancia posible menor que distancia menor 
 
-                    if(posibleDistMenor < distanciaMenor)
+                    if (posibleDistMenor < distanciaMenor)
                     {
                         distanciaMenor = posibleDistMenor;
                         lineaMenor = linea;
@@ -303,13 +305,11 @@ namespace RestServiceGX.Controllers
                 }
             }
 
-            //SACAR AQUI LA RUTA CAMINANDO ENTRE PUNTOS Y COMPARARLO CON LA RECOMENDACION MENOR
-
-            GMapRoute rutaCaminandoDirecto = RutaCaminando(inicio, final);
+            GMapRoute rutaCaminandoDirecto = RutaCaminandoV2(inicio, final, true);
             #region Sacar la ruta caminando para comparar si conviene o no usarla
             while (rutaCaminandoDirecto == null)
             {
-                rutaCaminandoDirecto = RutaCaminando(inicio, final);
+                rutaCaminandoDirecto = RutaCaminandoV2(inicio, final, true);
 
                 if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
                 {
@@ -318,42 +318,72 @@ namespace RestServiceGX.Controllers
             }
             #endregion
 
-            if (lineaMenor != null)
-            {
-                if (rutaCaminandoDirecto.Distance < (rutaInicioMenor.Distance + rutaFinalMenor.Distance))
-                {
-                    //caminar del punto inicial al final es menor distancia que
-                    //caminar hasta el paradero inicial y caminar del paradero al punto final
+            //Se revisan los paraderos adyacentes para confirmar el mas cercano en detalle
+            //luego decidir si usar ruta caminando o micro
 
-                    lineaMenor = null;
-                }
-                else
+            List<Coordenada> coordenadasSiguiendoRuta = null;
+            if (busquedaDetallada && lineaMenor != null)
+            {
+                ObtenerParaderoAdyacenteMasCercano(inicio, pInicioMenor, horaInicio, out pInicioMenor, out rutaInicioMenor);
+                if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
+                    return new List<Coordenada>();
+                ObtenerParaderoAdyacenteMasCercano(final, pFinalMenor, horaInicio, out pFinalMenor, out rutaFinalMenor);
+                if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
+                    return new List<Coordenada>();
+
+                coordenadasSiguiendoRuta = CoordenadasSiguiendoLaRuta(lineaMenor, pInicioMenor, pFinalMenor);
+                if (coordenadasSiguiendoRuta == null)
                 {
-                    rutaCaminandoDirecto = null;
+                    lineaMenor = null;
                 }
             }
 
             if (lineaMenor != null)
             {
+                if (rutaCaminandoDirecto.Distance < (rutaInicioMenor.Distance + rutaFinalMenor.Distance))
+                    lineaMenor = null;
+                else
+                    rutaCaminandoDirecto = null;
+            }
+
+            //Se usa ruta por micro
+            if (lineaMenor != null)
+            {
                 List<Coordenada> coordenadasRecomendacion = new List<Coordenada>();
 
-                List<Coordenada> verticesEntreParaderos = CoordenadasSiguiendoLaRuta(lineaMenor, pInicioMenor, pFinalMenor);
+                if(coordenadasSiguiendoRuta == null)
+                    coordenadasSiguiendoRuta = CoordenadasSiguiendoLaRuta(lineaMenor, pInicioMenor, pFinalMenor);
 
                 #region Si se usó el metodo de ruta directa caminando, hay que recrear la ruta correcta tomando en cuenta las calles
-
-                if(rutaInicioMenor.Points.Count == 2)
+                if (rutaInicioMenor.Points.Count == 2)
                 {
-                    rutaInicioMenor = RutaCaminando(rutaInicioMenor.Points[0], rutaInicioMenor.Points[1]);
+                    //entre punto inicio y paraderoInicio
+                    rutaInicioMenor = RutaCaminandoV2(inicio, new PointLatLng(pInicioMenor.Latitud, pInicioMenor.Longitud), true);
 
-                    while(rutaInicioMenor == null)
-                        rutaInicioMenor = RutaCaminando(rutaInicioMenor.Points[0], rutaInicioMenor.Points[1]);
+                    while (rutaInicioMenor == null)
+                    {
+                        rutaInicioMenor = RutaCaminandoV2(inicio, new PointLatLng(pInicioMenor.Latitud, pInicioMenor.Longitud), true);
+
+                        if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
+                        {
+                            return new List<Coordenada>();
+                        }
+                    }
                 }
 
-                if(rutaFinalMenor.Points.Count == 2)
+                if (rutaFinalMenor.Points.Count == 2)
                 {
-                    rutaInicioMenor = RutaCaminando(rutaFinalMenor.Points[0], rutaFinalMenor.Points[1]);
-                    while(rutaInicioMenor == null)
-                        rutaInicioMenor = RutaCaminando(rutaFinalMenor.Points[0], rutaFinalMenor.Points[1]);
+                    //entre punto final y paraderoFinal
+                    rutaFinalMenor = RutaCaminandoV2(final, new PointLatLng(pFinalMenor.Latitud, pFinalMenor.Longitud), true);
+                    while (rutaFinalMenor == null)
+                    {
+                        rutaFinalMenor = RutaCaminandoV2(final, new PointLatLng(pFinalMenor.Latitud, pFinalMenor.Longitud), true);
+                        if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
+                        {
+                            return new List<Coordenada>();
+                        }
+                    }
+                        
                 }
                 #endregion
 
@@ -369,10 +399,10 @@ namespace RestServiceGX.Controllers
                     coordenadasRecomendacion.Add(c);
                 }
 
-                for (int i = 0; i < verticesEntreParaderos.Count; i++)
+                for (int i = 0; i < coordenadasSiguiendoRuta.Count; i++)
                 {
-                    verticesEntreParaderos[i].Id = lineaMenor.Id;
-                    coordenadasRecomendacion.Add(verticesEntreParaderos[i]);
+                    coordenadasSiguiendoRuta[i].Id = lineaMenor.Id;
+                    coordenadasRecomendacion.Add(coordenadasSiguiendoRuta[i]);
                 }
 
                 for (int i = puntosFinal.Count - 1; i >= 0; i--)
@@ -386,7 +416,8 @@ namespace RestServiceGX.Controllers
 
                 return coordenadasRecomendacion;
             }
-            else if(rutaCaminandoDirecto != null)
+            //Se recomienda caminar
+            else if (rutaCaminandoDirecto != null)
             {
                 List<Coordenada> coordenadasRecomendacion = new List<Coordenada>();
                 for (int i = 0; i < rutaCaminandoDirecto.Points.Count; i++)
@@ -404,6 +435,387 @@ namespace RestServiceGX.Controllers
             }
 
         }
+
+
+        //POST: odata/Lineas/RecomendarRutaDetalle
+        //Parametros: latInicio,lngInicio, latFinal,lngFinal, BusquedaDetallada
+        [HttpPost]
+        public LineaRecomendada RecomendarRutaDetalle(ODataActionParameters parameters)
+        {
+            DateTime horaInicio = DateTime.Now;
+            List<Coordenada> vertices = new List<Coordenada>();
+
+            if (parameters == null)
+                return new LineaRecomendada();
+
+            double latInicio = (double)parameters["latInicio"];
+            double lngInicio = (double)parameters["lngInicio"];
+            double latFinal = (double)parameters["latFinal"];
+            double lngFinal = (double)parameters["lngFinal"];
+            bool busquedaDetallada = (bool)parameters["BusquedaDetallada"];
+
+            PointLatLng inicio = new PointLatLng(latInicio, lngInicio);
+            PointLatLng final = new PointLatLng(latFinal, lngFinal);
+
+            List<Linea> todasLineas = db.Linea.ToList();
+            List<Paradero> paraderosLinea;
+
+            double distanciaMenor = double.MaxValue;
+
+            Linea lineaMenor = null;
+            GMapRoute rutaInicioMenor = null;
+            Paradero pInicioMenor = null;
+            GMapRoute rutaFinalMenor = null;
+            Paradero pFinalMenor = null;
+
+            //por cada linea buscar paraderos mas cercanos a punto inicial y final
+            //se decide linea en la que se camina menos y las rutas de puntoInicio y final a sus respectivos paraderos
+            foreach (Linea linea in todasLineas)
+            {
+                paraderosLinea = obtenerParaderoLinea(linea);
+
+                GMapRoute rutaInicioParaderoMenorIda = null;
+                GMapRoute rutaInicioParaderoMenorVuelta = null;
+                Paradero pInicioIda = null;
+                Paradero pInicioVuelta = null;
+                #region Busca el paradero más cercano en ambas rutas (junto con la ruta hasta ahí) a partir del punto de Inicio
+                foreach (Paradero p in paraderosLinea)
+                {
+                    GMapRoute ruta = RutaCaminandoV2(inicio, new PointLatLng(p.Latitud, p.Longitud), false);
+
+                    while (ruta == null)
+                    {
+                        ruta = RutaCaminandoV2(inicio, new PointLatLng(p.Latitud, p.Longitud), false);
+
+                        if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
+                        {
+                            return new LineaRecomendada();
+                        }
+                    }
+
+                    if (p.Ruta.TipoDeRuta == 0)
+                    {
+                        //Se va buscando la ruta caminando mas cercana al paradero de ida
+                        if (rutaInicioParaderoMenorIda == null)
+                        {
+                            rutaInicioParaderoMenorIda = ruta;
+                            pInicioIda = p;
+                        }
+                        else if (ruta.Distance < rutaInicioParaderoMenorIda.Distance)
+                        {
+                            rutaInicioParaderoMenorIda = ruta;
+                            pInicioIda = p;
+                        }
+                    }
+                    else
+                    {
+                        //Se va buscando la ruta caminando mas cercana al paradero de vuelta
+                        if (rutaInicioParaderoMenorVuelta == null)
+                        {
+                            rutaInicioParaderoMenorVuelta = ruta;
+                            pInicioVuelta = p;
+                        }
+                        else if (ruta.Distance < rutaInicioParaderoMenorVuelta.Distance)
+                        {
+                            rutaInicioParaderoMenorVuelta = ruta;
+                            pInicioVuelta = p;
+                        }
+                    }
+
+                }
+
+
+                #endregion
+                //tambien buscar el paradero mas cercano en la ruta de ida y vuelta               
+
+                GMapRoute rutaFinalParaderoMenorIda = null;
+                GMapRoute rutaFinalParaderoMenorVuelta = null;
+                Paradero pFinalIda = null;
+                Paradero pFinalVuelta = null;
+                #region Buscar el paradero más cercano en ambas rutas (junto a la ruta hasta ahi) a partir del punto final
+                foreach (Paradero p in paraderosLinea)
+                {
+                    GMapRoute ruta = RutaCaminandoV2(final, new PointLatLng(p.Latitud, p.Longitud), false);
+                    while (ruta == null)
+                    {
+                        ruta = RutaCaminandoV2(final, new PointLatLng(p.Latitud, p.Longitud), false);
+
+                        if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
+                        {
+                            return new LineaRecomendada();
+                        }
+                    }
+
+                    if (p.Ruta.TipoDeRuta == 0)
+                    {//Se va buscando la ruta caminando mas cercana al paradero de ida
+
+                        if (rutaFinalParaderoMenorIda == null)
+                        {
+                            rutaFinalParaderoMenorIda = ruta;
+                            pFinalIda = p;
+                        }
+                        else if (ruta.Distance < rutaFinalParaderoMenorIda.Distance)
+                        {
+                            rutaFinalParaderoMenorIda = ruta;
+                            pFinalIda = p;
+                        }
+                    }
+                    else
+                    {//Se va buscando la ruta caminando mas cercana al paradero de vuelta
+
+                        if (rutaFinalParaderoMenorVuelta == null)
+                        {
+                            rutaFinalParaderoMenorVuelta = ruta;
+                            pFinalVuelta = p;
+                        }
+                        else if (ruta.Distance < rutaFinalParaderoMenorVuelta.Distance)
+                        {
+                            rutaFinalParaderoMenorVuelta = ruta;
+                            pFinalVuelta = p;
+                        }
+                    }
+
+                }
+                #endregion
+
+                if ((pInicioIda.Id == pFinalIda.Id) && (pInicioVuelta.Id == pFinalVuelta.Id))
+                {
+                    continue;
+                }
+                else
+                {
+                    double posibleDistMenor = double.MaxValue;
+                    Paradero inicioSeleccionado = null;
+                    GMapRoute rutaInicioSeleccionado = null;
+                    Paradero finalSeleccionado = null;
+                    GMapRoute rutaFinalSeleccionado = null;
+
+                    Coordenada coorInicioIda = pInicioIda.Coordenada;
+                    Coordenada coorInicioVuelta = pInicioVuelta.Coordenada;
+                    Coordenada coorFinalIda = pFinalIda.Coordenada;
+                    Coordenada coorFinalVuelta = pFinalVuelta.Coordenada;
+
+                    bool ambosIda = false;
+                    bool ambosVuelta = false;
+
+                    if (coorInicioIda.Orden < coorFinalIda.Orden)
+                        ambosIda = true;
+                    if (coorInicioVuelta.Orden < coorFinalVuelta.Orden)
+                        ambosVuelta = true;
+
+
+                    posibleDistMenor = rutaInicioParaderoMenorIda.Distance + rutaFinalParaderoMenorVuelta.Distance;
+                    inicioSeleccionado = pInicioIda;
+                    rutaInicioSeleccionado = rutaInicioParaderoMenorIda;
+                    finalSeleccionado = pFinalVuelta;
+                    rutaFinalSeleccionado = rutaFinalParaderoMenorVuelta;
+
+                    if (ambosIda)
+                    {
+                        double dist = rutaInicioParaderoMenorIda.Distance + rutaFinalParaderoMenorIda.Distance;
+                        if (dist < posibleDistMenor)
+                        {
+                            posibleDistMenor = dist;
+                            inicioSeleccionado = pInicioIda;
+                            rutaInicioSeleccionado = rutaInicioParaderoMenorIda;
+                            finalSeleccionado = pFinalIda;
+                            rutaFinalSeleccionado = rutaFinalParaderoMenorIda;
+                        }
+                    }
+                    if (ambosVuelta)
+                    {
+                        double dist = rutaInicioParaderoMenorVuelta.Distance + rutaFinalParaderoMenorVuelta.Distance;
+                        if (dist < posibleDistMenor)
+                        {
+                            posibleDistMenor = dist;
+                            inicioSeleccionado = pInicioVuelta;
+                            rutaInicioSeleccionado = rutaInicioParaderoMenorVuelta;
+                            finalSeleccionado = pFinalVuelta;
+                            rutaFinalSeleccionado = rutaFinalParaderoMenorVuelta;
+                        }
+                    }
+
+                    //si distancia posible menor que distancia menor 
+
+                    if (posibleDistMenor < distanciaMenor)
+                    {
+                        distanciaMenor = posibleDistMenor;
+                        lineaMenor = linea;
+
+                        rutaInicioMenor = rutaInicioSeleccionado;
+                        pInicioMenor = inicioSeleccionado;
+                        rutaFinalMenor = rutaFinalSeleccionado;
+                        pFinalMenor = finalSeleccionado;
+                    }
+                }
+            }
+
+            GMapRoute rutaCaminandoDirecto = RutaCaminandoV2(inicio, final, true);
+            #region Sacar la ruta caminando para comparar si conviene o no usarla
+            while (rutaCaminandoDirecto == null)
+            {
+                rutaCaminandoDirecto = RutaCaminandoV2(inicio, final, true);
+
+                if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
+                {
+                    return new LineaRecomendada();
+                }
+            }
+            #endregion
+
+            //Se revisan los paraderos adyacentes para confirmar el mas cercano en detalle
+            //luego decidir si usar ruta caminando o micro
+
+            List<Coordenada> coordenadasSiguiendoRuta = null;
+            if (busquedaDetallada && lineaMenor != null)
+            {
+                ObtenerParaderoAdyacenteMasCercano(inicio, pInicioMenor, horaInicio, out pInicioMenor, out rutaInicioMenor);
+                if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
+                    return new LineaRecomendada();
+                ObtenerParaderoAdyacenteMasCercano(final, pFinalMenor, horaInicio, out pFinalMenor, out rutaFinalMenor);
+                if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
+                    return new LineaRecomendada();
+
+                coordenadasSiguiendoRuta = CoordenadasSiguiendoLaRuta(lineaMenor, pInicioMenor, pFinalMenor);
+                if (coordenadasSiguiendoRuta == null)
+                {
+                    lineaMenor = null;
+                }
+            }
+
+            if (lineaMenor != null)
+            {
+                if (rutaCaminandoDirecto.Distance < (rutaInicioMenor.Distance + rutaFinalMenor.Distance))
+                    lineaMenor = null;
+                else
+                    rutaCaminandoDirecto = null;
+            }
+
+            //Se usa ruta por micro
+            if (lineaMenor != null)
+            {
+                if (coordenadasSiguiendoRuta == null)
+                    coordenadasSiguiendoRuta = CoordenadasSiguiendoLaRuta(lineaMenor, pInicioMenor, pFinalMenor);
+
+                #region Si se usó el metodo de ruta directa caminando, hay que recrear la ruta correcta tomando en cuenta las calles
+                if (rutaInicioMenor.Points.Count == 2)
+                {
+                    //entre punto inicio y paraderoInicio
+                    rutaInicioMenor = RutaCaminandoV2(inicio, new PointLatLng(pInicioMenor.Latitud, pInicioMenor.Longitud), true);
+
+                    while (rutaInicioMenor == null)
+                    {
+                        rutaInicioMenor = RutaCaminandoV2(inicio, new PointLatLng(pInicioMenor.Latitud, pInicioMenor.Longitud), true);
+
+                        if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
+                        {
+                            return new LineaRecomendada();
+                        }
+                    }
+                }
+
+                if (rutaFinalMenor.Points.Count == 2)
+                {
+                    //entre punto final y paraderoFinal
+                    rutaFinalMenor = RutaCaminandoV2(final, new PointLatLng(pFinalMenor.Latitud, pFinalMenor.Longitud), true);
+                    while (rutaFinalMenor == null)
+                    {
+                        rutaFinalMenor = RutaCaminandoV2(final, new PointLatLng(pFinalMenor.Latitud, pFinalMenor.Longitud), true);
+                        if (DateTime.Now - horaInicio > TiempoEsperaMaxima)
+                        {
+                            return new LineaRecomendada();
+                        }
+                    }
+
+                }
+                #endregion
+
+                List<PointLatLng> puntosInicio = rutaInicioMenor.Points;
+                List<PointLatLng> puntosFinal = rutaFinalMenor.Points;
+
+                return new LineaRecomendada(lineaMenor.Id, pInicioMenor.Id,pFinalMenor.Id, puntosInicio, puntosFinal, coordenadasSiguiendoRuta);
+            }
+            //Se recomienda caminar
+            else if (rutaCaminandoDirecto != null)
+            {
+                return new LineaRecomendada(rutaCaminandoDirecto.Points);
+            }
+            else
+            {
+                return new LineaRecomendada();
+            }
+
+        }
+
+
+
+
+        void ObtenerParaderoAdyacenteMasCercano(PointLatLng _origen, Paradero _paradero, DateTime _tiempoInicio, out Paradero _parMasCercano, out GMapRoute _rutaCercana)
+        {
+            _parMasCercano = null;
+            _rutaCercana = null;
+
+            int rangoRevisar = 3;
+
+            Linea _linea = _paradero.Ruta.Linea2;
+            List<Paradero> paraderosLinea = new List<Paradero>();
+
+            #region Rellenar paraderos linea
+            List<Paradero> parIda = _linea.Ruta.Paradero.OrderBy(p => p.Orden).ToList();
+            List<Paradero> parVuelta = _linea.Ruta1.Paradero.OrderBy(p => p.Orden).ToList();
+            for (int i = 0; i < parIda.Count; i++)
+            {
+                paraderosLinea.Add(parIda[i]);
+            }
+            for (int i = 0; i < parVuelta.Count; i++)
+            {
+                paraderosLinea.Add(parVuelta[i]);
+            }
+            #endregion
+
+            int indexParOriginal = -1;
+
+            for (int i = 0; i < paraderosLinea.Count; i++)
+            {
+                if (paraderosLinea[i].Id == _paradero.Id)
+                {
+                    indexParOriginal = i;
+                    break;
+                }
+            }
+
+            int indexMenor = indexParOriginal - rangoRevisar;
+            int indexMayor = indexParOriginal + rangoRevisar;
+
+            double distMenor = double.MaxValue;
+
+            for (int i = 0; i < paraderosLinea.Count; i++)
+            {
+                if( i >= indexMenor && i <= indexMayor)
+                {
+                    GMapRoute ruta = RutaCaminandoV2(_origen, new PointLatLng(paraderosLinea[i].Latitud, paraderosLinea[i].Longitud), true);
+
+                    while(ruta == null)
+                    {
+                        if (DateTime.Now - _tiempoInicio > TiempoEsperaMaxima)
+                        {
+                            ruta = RutaCaminandoV2(_origen, new PointLatLng(paraderosLinea[i].Latitud, paraderosLinea[i].Longitud), true);
+                            return;
+                        }
+                    }
+
+                    if(ruta.Distance < distMenor)
+                    {
+                        distMenor = ruta.Distance;
+                        _parMasCercano = paraderosLinea[i];
+                        _rutaCercana = ruta;
+                    }
+                }
+            }
+
+        }
+
+
 
         #region Originales
         // GET: odata/Lineas
@@ -597,30 +1009,33 @@ namespace RestServiceGX.Controllers
             return paraderosLinea;
         }
 
-        private GMapRoute RutaCaminando(PointLatLng inicio, PointLatLng final)
+        private GMapRoute RutaCaminandoV2(PointLatLng inicio, PointLatLng final, bool _SiguiendoDirecciones)
         {
-            GDirections direccion;
-            var rutasDireccion = GMapProviders.GoogleMap.GetDirections(out direccion, inicio, final, false, false, true, false, false);
-
-            if (direccion == null)
+            if (_SiguiendoDirecciones == false)
             {
-                //problemas de internet o ruta imposible
-                return null;
+                List<PointLatLng> puntos = new List<PointLatLng>();
+                puntos.Add(inicio);
+                puntos.Add(final);
+
+                GMapRoute ruta = new GMapRoute(puntos, "rutadirecta");
+
+                return ruta;
+            }
+            else
+            {
+                GDirections direccion;
+                var rutasDireccion = GMapProviders.GoogleMap.GetDirections(out direccion, inicio, final, false, false, true, false, false);
+
+                if (direccion == null)
+                {
+                    //problemas de internet o ruta imposible
+                    return null;
+                }
+
+                GMapRoute ruta = new GMapRoute(direccion.Route, "rutaUserParadero");
+                return ruta;
             }
 
-            GMapRoute ruta = new GMapRoute(direccion.Route, "rutaUserParadero");
-            return ruta;
-        }
-
-        private GMapRoute RutaCaminandoV2(PointLatLng inicio, PointLatLng final)
-        {
-            List<PointLatLng> puntos = new List<PointLatLng>();
-            puntos.Add(inicio);
-            puntos.Add(final);
-
-            GMapRoute ruta = new GMapRoute(puntos,"rutadirecta");
-
-            return ruta;
         }
 
         private List<Coordenada> CoordenadasSiguiendoLaRuta(Linea _linea, Paradero _pInicial, Paradero _pFinal)
@@ -675,7 +1090,6 @@ namespace RestServiceGX.Controllers
             return coorHastaFinal;
 
         }
-
 
         private double DistanciaCoordenadas(List<Coordenada> _coor)
         {

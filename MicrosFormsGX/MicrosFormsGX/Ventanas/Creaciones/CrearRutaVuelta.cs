@@ -24,6 +24,7 @@ namespace MicrosFormsGX.Ventanas.Creaciones
 {
     public partial class CrearRutaVuelta : MetroFramework.Forms.MetroForm
     {
+        int numeroIntentoDireccion = 5;
         LineaTP lineaDeRuta;
         RutaTP rutaDeIda;
 
@@ -73,7 +74,7 @@ namespace MicrosFormsGX.Ventanas.Creaciones
             //Coordenada puntoInicial = Coordenada.BuscarPorId(rutaVueltaAnterior.InicioId);
 
             RutaTP rutaVueltaAnterior = lineaDeRuta.rutaVuelta;
-            Coordenada puntoInicial = rutaVueltaAnterior.listaCoordenadas.First();
+            Coordenada puntoInicial = rutaVueltaAnterior.listaCoordenadas.OrderBy(c => c.Orden).First();
 
             GMarkerGoogleType iconoMarcador = GMarkerGoogleType.blue_small; //icono ida
             string toolTipText = "Inicio ruta de vuelta";
@@ -87,7 +88,7 @@ namespace MicrosFormsGX.Ventanas.Creaciones
 
         void IniciarMapa()
         {
-            gmapController.MapProvider = GMapProviders.GoogleMap;
+            gmapController.MapProvider = MapController.provider;
 
             gmapController.DragButton = MouseButtons.Left;
             gmapController.CanDragMap = true;
@@ -312,6 +313,13 @@ namespace MicrosFormsGX.Ventanas.Creaciones
                     int puntoAnterior = puntoActual - 1;
 
                     var rutasDireccion = GMapProviders.GoogleMap.GetDirections(out direccion, puntosClickeadosVuelta[puntoAnterior], puntosClickeadosVuelta[puntoActual], false, false, false, false, false);
+                    int c = 0;
+                    while (direccion == null && c < numeroIntentoDireccion)
+                    {
+                        rutasDireccion = GMapProviders.GoogleMap.GetDirections(out direccion, puntosClickeadosVuelta[puntoAnterior], puntosClickeadosVuelta[puntoActual], false, false, false, false, false);
+                        c++;
+                    }
+
                     if (direccion == null)
                     {
                         MessageBox.Show("No fue posible crear una ruta al lugar indicado.\nSe recomienda revisar su conexión a internet, por ser necesaria en la búsqueda de rutas.");

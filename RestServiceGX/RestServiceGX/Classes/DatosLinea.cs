@@ -13,5 +13,8 @@ namespace RestServiceGX.Classes
         public List<UsuarioDX> Choferes { get; set; }
         public int IdLineaChoferes { get; set; }
 
+        public double Latitud { get; set; }
+        public double Longitud { get; set; }
+
     }
 }

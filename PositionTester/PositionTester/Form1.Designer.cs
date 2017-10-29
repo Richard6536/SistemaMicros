@@ -34,7 +34,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnTomarControl = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.label2 = new System.Windows.Forms.Label();
+            this.lblLineaMostrar = new System.Windows.Forms.Label();
             this.cmbLineas = new System.Windows.Forms.ComboBox();
             this.btnBorrarLinea = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -84,6 +84,10 @@
             this.gmapController.TabIndex = 9;
             this.gmapController.Zoom = 0D;
             this.gmapController.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.gmapController_OnMarkerClick);
+            this.gmapController.OnMarkerEnter += new GMap.NET.WindowsForms.MarkerEnter(this.gmapController_OnMarkerEnter);
+            this.gmapController.KeyDown += new System.Windows.Forms.KeyEventHandler(this.gmapController_KeyDown);
+            this.gmapController.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.gmapController_KeyPress);
+            this.gmapController.KeyUp += new System.Windows.Forms.KeyEventHandler(this.gmapController_KeyUp);
             this.gmapController.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gmapController_MouseClick);
             this.gmapController.MouseLeave += new System.EventHandler(this.gmapController_MouseLeave);
             this.gmapController.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gmapController_MouseMove);
@@ -122,15 +126,15 @@
             this.timer1.Enabled = true;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // label2
+            // lblLineaMostrar
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(746, 26);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(79, 13);
-            this.label2.TabIndex = 14;
-            this.label2.Text = "Linea a mostrar";
+            this.lblLineaMostrar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLineaMostrar.AutoSize = true;
+            this.lblLineaMostrar.Location = new System.Drawing.Point(746, 26);
+            this.lblLineaMostrar.Name = "lblLineaMostrar";
+            this.lblLineaMostrar.Size = new System.Drawing.Size(79, 13);
+            this.lblLineaMostrar.TabIndex = 14;
+            this.lblLineaMostrar.Text = "Linea a mostrar";
             // 
             // cmbLineas
             // 
@@ -318,13 +322,14 @@
             this.Controls.Add(this.btnDetenerTodo);
             this.Controls.Add(this.btnBorrarLinea);
             this.Controls.Add(this.cmbLineas);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lblLineaMostrar);
             this.Controls.Add(this.btnTomarControl);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtEmail);
             this.Controls.Add(this.gmapController);
             this.Name = "Form1";
             this.Text = "Position tester";
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -339,7 +344,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnTomarControl;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblLineaMostrar;
         private System.Windows.Forms.ComboBox cmbLineas;
         private System.Windows.Forms.Button btnBorrarLinea;
         private System.Windows.Forms.Label label3;

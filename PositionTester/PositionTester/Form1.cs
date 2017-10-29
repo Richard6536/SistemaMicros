@@ -30,8 +30,9 @@ namespace PositionTester
         List<GMarkerGoogle> usersMarkers;
 
         Usuario userControlandoActual;
+        List<Usuario> usersControlados;
 
-
+        
         GMapOverlay previewOverlay;
         GMapOverlay paraderosOverlay;
         GMapOverlay otrosMarkersOverlay;
@@ -55,6 +56,8 @@ namespace PositionTester
             usersMarkers = new List<GMarkerGoogle>();
             lblUserMoviendo.Text = "";
             button1.Text = "false";
+
+            usersControlados = new List<Usuario>();
         }
 
         double latOsorno = -40.574984;
@@ -179,54 +182,154 @@ namespace PositionTester
 
         }
 
+        List<int> listaIDControlados = new List<int>();
+        List<PointLatLng> listaPosicionesControladas = new List<PointLatLng>();
+
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (userControlandoActual == null)
+
+
+            //if (userControlandoActual == null)
+            //    return;
+
+            //GMarkerGoogle userMarker = usersMarkers.Where(m => m.Tag + "" == userControlandoActual.Id.ToString()).FirstOrDefault();
+
+            //if (userMarker == null)
+            //    return;
+
+
+            //Usuario.ActualizarPosicion(userControlandoActual.Id, userMarker.Position.Lat, userMarker.Position.Lng, ActualizarRecorrido);
+
+            //lblMicroId.Text = "---";
+            //lblMicroPatente.Text = "---";
+            //lblSigParadero.Text = "---";
+            //lblSigVertice.Text = "---";
+
+
+            //lblUserMoviendo.Text = userControlandoActual.Email;
+
+            //if (userControlandoActual.MicroChoferId != null)
+            //{
+            //    Micro micro = MicroChofer.GetMicro(userControlandoActual.MicroChoferId.Value);
+            //    lblMicroId.Text = micro.Id + "";
+            //    lblMicroPatente.Text = micro.Patente;
+
+            //    if (micro.MicroParaderoId != null)
+            //    {
+            //        Paradero p = MicroParadero.GetParadero(micro.MicroParaderoId.Value);
+            //        lblSigParadero.Text = p.Id + "";
+            //    }
+            //    if (micro.SiguienteVerticeId != null)
+            //    {
+            //        lblSigVertice.Text = micro.SiguienteVerticeId.Value + "";
+            //    }
+            //}
+
+            if (usersControlados.Count == 0)
                 return;
 
-            GMarkerGoogle userMarker = usersMarkers.Where(m => m.Tag + "" == userControlandoActual.Id.ToString()).FirstOrDefault();
+            listaIDControlados.Clear();
+            listaPosicionesControladas.Clear();
 
-            if (userMarker == null)
-                return;
-
-
-            Usuario.ActualizarPosicion(userControlandoActual.Id, userMarker.Position.Lat, userMarker.Position.Lng, ActualizarRecorrido);
-
-            lblMicroId.Text = "---";
-            lblMicroPatente.Text = "---";
-            lblSigParadero.Text = "---";
-            lblSigVertice.Text = "---";
-
-
-            lblUserMoviendo.Text = userControlandoActual.Email;
-
-            if (userControlandoActual.MicroChoferId != null)
+            foreach (Usuario u in usersControlados)
             {
-                Micro micro = MicroChofer.GetMicro(userControlandoActual.MicroChoferId.Value);
-                lblMicroId.Text = micro.Id + "";
-                lblMicroPatente.Text = micro.Patente;
+                GMarkerGoogle userMarker = usersMarkers.Where(m => m.Tag + "" == u.Id.ToString()).FirstOrDefault();
 
-                if (micro.MicroParaderoId != null)
+                if (userMarker == null)
+                    continue;
+
+                listaIDControlados.Add(u.Id);
+                listaPosicionesControladas.Add(new PointLatLng(userMarker.Position.Lat, userMarker.Position.Lng));
+
+                //Usuario.ActualizarPosicion(u.Id, userMarker.Position.Lat, userMarker.Position.Lng, ActualizarRecorrido);
+
+                lblMicroId.Text = "---";
+                lblMicroPatente.Text = "---";
+                lblSigParadero.Text = "---";
+                lblSigVertice.Text = "---";
+
+
+                lblUserMoviendo.Text = u.Email;
+
+                if (u.MicroChoferId != null)
                 {
-                    Paradero p = MicroParadero.GetParadero(micro.MicroParaderoId.Value);
-                    lblSigParadero.Text = p.Id + "";
-                }
-                if (micro.SiguienteVerticeId != null)
-                {
-                    lblSigVertice.Text = micro.SiguienteVerticeId.Value + "";
+                    Micro micro = MicroChofer.GetMicro(u.MicroChoferId.Value);
+                    lblMicroId.Text = micro.Id + "";
+                    lblMicroPatente.Text = micro.Patente;
+
+                    if (micro.MicroParaderoId != null)
+                    {
+                        Paradero p = MicroParadero.GetParadero(micro.MicroParaderoId.Value);
+                        lblSigParadero.Text = p.Id + "";
+                    }
+                    if (micro.SiguienteVerticeId != null)
+                    {
+                        lblSigVertice.Text = micro.SiguienteVerticeId.Value + "";
+                    }
                 }
             }
-            
+
+            Usuario.ActualizarMultiplesPosiciones(listaIDControlados, listaPosicionesControladas);
         }
 
         private void gmapController_OnMarkerClick(GMapMarker item, MouseEventArgs e)
         {
             GMarkerGoogle marker = (GMarkerGoogle)item;
 
-            if(usersMarkers.Contains(marker) == false)
+            if (usersMarkers.Contains(marker) == false)
                 return;
 
             Usuario userClickeado = usuariosControlados.Where(u => u.Id == Convert.ToInt32(marker.Tag)).FirstOrDefault();
+            //if (e.Button == MouseButtons.Right)
+            //{
+            //    //Boton derecho detiene la actualizacion de posicion del marcador y lo borra      
+            //    Usuario.PararActualizaciónPosicion(userClickeado.Id);
+            //    userControladoOverlay.Markers.Remove(marker);
+
+            //    usuariosControlados.Remove(userClickeado);
+            //    usersMarkers.Remove(marker);
+            //    lblUserMoviendo.Text = "";
+            //    lblMicroId.Text = "---";
+            //    lblMicroPatente.Text = "---";
+            //    lblSigParadero.Text = "---";
+            //    lblSigVertice.Text = "---";
+            //}
+            //else
+            //{
+            //    lblMicroId.Text = "---";
+            //    lblMicroPatente.Text = "---";
+            //    lblSigParadero.Text = "---";
+            //    lblSigVertice.Text = "---";
+
+            //    if (userControlandoActual != null)
+            //    {
+            //        userControlandoActual = null;
+            //        lblUserMoviendo.Text = "";
+            //    }
+            //    else
+            //    {
+            //        userControlandoActual = userClickeado;
+            //        lblUserMoviendo.Text = userControlandoActual.Email;
+
+            //        if (userClickeado.MicroChoferId != null)
+            //        {
+            //            Micro micro = MicroChofer.GetMicro(userClickeado.MicroChoferId.Value);
+            //            lblMicroId.Text = micro.Id + "";
+            //            lblMicroPatente.Text = micro.Patente;
+
+            //            if (micro.MicroParaderoId != null)
+            //            {
+            //                Paradero p = MicroParadero.GetParadero(micro.MicroParaderoId.Value);
+            //                lblSigParadero.Text = p.Id + "";
+            //            }
+            //            if (micro.SiguienteVerticeId != null)
+            //            {
+            //                lblSigVertice.Text = micro.SiguienteVerticeId.Value + "";
+            //            }
+            //        }
+            //    }
+            //}
+
             if (e.Button == MouseButtons.Right)
             {
                 //Boton derecho detiene la actualizacion de posicion del marcador y lo borra      
@@ -248,54 +351,83 @@ namespace PositionTester
                 lblSigParadero.Text = "---";
                 lblSigVertice.Text = "---";
 
-                if (userControlandoActual != null)
+
+                if (usersControlados.Count > 0)
                 {
-                    userControlandoActual = null;
+                    usersControlados.Clear();
                     lblUserMoviendo.Text = "";
                 }
                 else
                 {
-                    userControlandoActual = userClickeado;
-                    lblUserMoviendo.Text = userControlandoActual.Email;
+                    usersControlados.Clear();
+                    usersControlados.Add(userClickeado);
+                    lblUserMoviendo.Text = userClickeado.Email;
 
                     if (userClickeado.MicroChoferId != null)
                     {
                         Micro micro = MicroChofer.GetMicro(userClickeado.MicroChoferId.Value);
                         lblMicroId.Text = micro.Id + "";
                         lblMicroPatente.Text = micro.Patente;
-                        
-                        if(micro.MicroParaderoId != null)
+
+                        if (micro.MicroParaderoId != null)
                         {
                             Paradero p = MicroParadero.GetParadero(micro.MicroParaderoId.Value);
                             lblSigParadero.Text = p.Id + "";
                         }
-                        if(micro.SiguienteVerticeId != null)
+                        if (micro.SiguienteVerticeId != null)
                         {
                             lblSigVertice.Text = micro.SiguienteVerticeId.Value + "";
                         }
                     }
                 }
             }
-
         }
 
         private void gmapController_MouseMove(object sender, MouseEventArgs e)
         {
-            if (userControlandoActual == null)
-                return;
+            //if (userControlandoActual == null)
+            //    return;
 
-            GMarkerGoogle userMarker = usersMarkers.Where(m => Convert.ToInt32(m.Tag) == userControlandoActual.Id).FirstOrDefault();
-            //marcador sigue al mouse
-            double lat = gmapController.FromLocalToLatLng(e.X, e.Y).Lat;
-            double lng = gmapController.FromLocalToLatLng(e.X, e.Y).Lng;
+            //GMarkerGoogle userMarker = usersMarkers.Where(m => Convert.ToInt32(m.Tag) == userControlandoActual.Id).FirstOrDefault();
+            ////marcador sigue al mouse
+            //double lat = gmapController.FromLocalToLatLng(e.X, e.Y).Lat;
+            //double lng = gmapController.FromLocalToLatLng(e.X, e.Y).Lng;
 
-            if(userMarker != null)
-                userMarker.Position = new PointLatLng(lat, lng);
+            //if(userMarker != null)
+            //    userMarker.Position = new PointLatLng(lat, lng);
+
+            //if (usersControlados.Count == 0)
+            //    return;
+
+            foreach(Usuario u in usersControlados)
+            {
+                GMarkerGoogle userMarker = usersMarkers.Where(m => Convert.ToInt32(m.Tag) == u.Id).FirstOrDefault();
+                //marcador sigue al mouse
+                double lat = gmapController.FromLocalToLatLng(e.X, e.Y).Lat;
+                double lng = gmapController.FromLocalToLatLng(e.X, e.Y).Lng;
+
+                if (userMarker != null)
+                    userMarker.Position = new PointLatLng(lat, lng);
+
+                if (usersControlados.Count == 0)
+                    return;
+            }
+
+            if (usersControlados.Count == 1)
+            {
+                lblUserMoviendo.Text = usersControlados[0].Email;
+            }
+            else if(usersControlados.Count > 1)
+            {
+                lblUserMoviendo.Text = "Moviendo mas de 1";
+            }
         }
 
         private void gmapController_MouseLeave(object sender, EventArgs e)
         {
-            userControlandoActual = null;
+            //userControlandoActual = null;
+
+            usersControlados.Clear();
         }
 
         private void btnDetenerTodo_Click(object sender, EventArgs e)
@@ -559,5 +691,87 @@ namespace PositionTester
             const double radToDegFactor = 180 / Math.PI;
             return radians * radToDegFactor;
         }
+
+        private void Form1_KeyPress(object sender, KeyPressEventArgs e)
+        {
+           
+        }
+
+        private void gmapController_KeyDown(object sender, KeyEventArgs e)
+        {
+            
+        }
+
+        bool spacePressing = false;
+        private void gmapController_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            spacePressing = true;
+            
+        }
+
+        private void gmapController_KeyUp(object sender, KeyEventArgs e)
+        {
+            spacePressing = false;
+            usersControlados.Clear();
+        }
+
+        private void gmapController_OnMarkerEnter(GMapMarker item)
+        {
+            if(spacePressing == true)
+            {
+                GMarkerGoogle marker = (GMarkerGoogle)item;
+
+                if (usersMarkers.Contains(marker) == false)
+                    return;
+
+                Usuario userClickeado = usuariosControlados.Where(u => u.Id == Convert.ToInt32(marker.Tag)).FirstOrDefault();
+
+     
+                lblMicroId.Text = "---";
+                lblMicroPatente.Text = "---";
+                lblSigParadero.Text = "---";
+                lblSigVertice.Text = "---";
+
+                //if (userControlandoActual != null)
+                //{
+                //    userControlandoActual = null;
+                //    lblUserMoviendo.Text = "";
+                //}
+                //else
+                //{
+
+                //userControlandoActual = userClickeado;
+                //lblUserMoviendo.Text = userControlandoActual.Email;
+
+                usersControlados.Add(userClickeado);
+                if(usersControlados.Count == 1)
+                {
+                    lblUserMoviendo.Text = usersControlados[0].Email;
+                }
+
+                if (userClickeado.MicroChoferId != null)
+                {
+                    Micro micro = MicroChofer.GetMicro(userClickeado.MicroChoferId.Value);
+                    lblMicroId.Text = micro.Id + "";
+                    lblMicroPatente.Text = micro.Patente;
+
+                    if (micro.MicroParaderoId != null)
+                    {
+                        Paradero p = MicroParadero.GetParadero(micro.MicroParaderoId.Value);
+                        lblSigParadero.Text = p.Id + "";
+                    }
+                    if (micro.SiguienteVerticeId != null)
+                    {
+                        lblSigVertice.Text = micro.SiguienteVerticeId.Value + "";
+                    }
+                }
+                
+                
+
+
+            }
+        }
+
+ 
     }
 }

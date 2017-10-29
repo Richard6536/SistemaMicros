@@ -232,6 +232,24 @@ namespace MicrosFormsGX.Model
             var BD = new MicroSystemContext();
 
             Linea linea = BD.Lineas.Where(l => l.Id == _idLinea).FirstOrDefault();
+            linea.RutaIda = null;
+            linea.RutaVuelta = null;
+
+            List<Ruta> rutas = linea.Rutas.ToList();
+
+            foreach(Ruta r in rutas)
+            {
+                //List<Paradero> paraderos = r.Paraderos.ToList();
+
+                BD.Paraderos.RemoveRange(r.Paraderos.ToList());
+
+                BD.Coordenadas.RemoveRange(r.Coordenadas);
+
+
+                BD.Rutas.Remove(r);
+            }
+
+            BD.SaveChanges();
 
             BD.Lineas.Remove(linea);
 

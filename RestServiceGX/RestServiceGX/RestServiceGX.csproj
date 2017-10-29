@@ -237,6 +237,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Classes\DatosLinea.cs" />
     <Compile Include="Classes\DatosRecorrido.cs" />
+    <Compile Include="Classes\LineaRecomendada.cs" />
     <Compile Include="Classes\MicroDX.cs" />
     <Compile Include="Classes\MicroParaderoDX.cs" />
     <Compile Include="Classes\PasswordHash.cs" />
@@ -301,6 +302,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Ruta.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\sysdiagrams.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Usuario.cs">

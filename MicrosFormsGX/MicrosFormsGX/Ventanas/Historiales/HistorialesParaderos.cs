@@ -47,26 +47,23 @@ namespace MicrosFormsGX.Ventanas.Historiales
 
         private void CargarTabla()
         {
-            historialesParadero.OrderBy(h => h.Id);
+            historialesParadero.OrderBy(h => h.Orden);
             datagridHistorial.Rows.Clear();
-
-            int c = 1;
 
             foreach (HistorialParadero historial in historialesParadero)
             {
-                CargarLinea(historial, c);
-                c++;
+                CargarLinea(historial);
             }
 
         }
 
-        private void CargarLinea(HistorialParadero h, int _numeroParadero)
+        private void CargarLinea(HistorialParadero h)
         {
             string horaLlegada = (h.HoraLlegada + "").Split(' ')[1];
             string tiempoDet = (h.TiempoDetenido + "").Split('.')[0];
 
             DataGridViewRow row = new DataGridViewRow();
-            row.CreateCells(datagridHistorial, _numeroParadero, horaLlegada, tiempoDet, h.PasajerosRecibidos);
+            row.CreateCells(datagridHistorial, h.Orden, horaLlegada, tiempoDet, h.PasajerosRecibidos);
 
             datagridHistorial.Rows.Add(row);
 

@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using System.Device.Location;
 using System.IO;
 using System.Net;
+using GMap.NET;
 
 namespace PositionTester.Model
 {
@@ -455,6 +456,20 @@ namespace PositionTester.Model
             
             BD.SaveChanges();
 
+        }
+
+        public static void ActualizarMultiplesPosiciones(List<int> _Ids,  List<PointLatLng> _posiciones)
+        {
+            var BD = new MicroSystemContext();
+            for (int i = 0; i < _Ids.Count; i++)
+            {
+                int id = _Ids[i];
+                var user = BD.Usuarios.Where(u => u.Id == id).FirstOrDefault();
+                user.Latitud = _posiciones[i].Lat;
+                user.Longitud = _posiciones[i].Lng;
+            }
+
+            BD.SaveChanges();
         }
 
 

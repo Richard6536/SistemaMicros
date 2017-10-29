@@ -36,22 +36,20 @@ namespace MicrosFormsGX.Ventanas.Historiales
 
         private void CargarTabla()
         {
-            historialesIdaVuelta.OrderBy(h => h.Id);
+            historialesIdaVuelta.OrderBy(h => h.Orden);
             datagridHistorial.Rows.Clear();
 
-            int c = 1;
             foreach (HistorialIdaVuelta historial in historialesIdaVuelta)
             {
                 if (historial.HoraInicio != historial.HoraTermino)
                 {
-                    CargarLinea(historial, c);
-                    c++;
+                    CargarLinea(historial);
                 }
             }
 
         }
 
-        private void CargarLinea(HistorialIdaVuelta h, int numeroRecorrido)
+        private void CargarLinea(HistorialIdaVuelta h)
         {
             DataGridViewRow row = new DataGridViewRow();
 
@@ -59,7 +57,7 @@ namespace MicrosFormsGX.Ventanas.Historiales
             string horaFinal = (h.HoraTermino + "").Split(' ')[1];
             string duracion = (h.DuracionRecorrido + "").Split('.')[0];
 
-            row.CreateCells(datagridHistorial, numeroRecorrido, horaInicio, horaFinal, duracion, h.PasajerosTransportados,
+            row.CreateCells(datagridHistorial, h.Orden, horaInicio, horaFinal, duracion, h.PasajerosTransportados,
                 "Ver historial paraderos");
 
             row.Tag = h.Id;

@@ -76,7 +76,7 @@ namespace MicrosFormsGX.Ventanas
 
         void IniciarMapa()
         {
-            gmapController.MapProvider = GMapProviders.GoogleMap;
+            gmapController.MapProvider = MapController.provider;
 
             gmapController.DragButton = MouseButtons.Left;
             gmapController.CanDragMap = true;

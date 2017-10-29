@@ -29,7 +29,7 @@ namespace MicrosFormsGX.Classes
         //imagenMarcadorParadero = new Bitmap(MicrosForms.Properties.Resources.marcadorParaderoMini);
         public static Bitmap marcadorParadero = new Bitmap(MicrosFormsGX.Properties.Resources.paradero2Mini);
         public static Bitmap marcadorMicro = new Bitmap(MicrosFormsGX.Properties.Resources.microMarkerMini);
-
+        public static GMapProvider provider = GMapProviders.GoogleTerrainMap;
 
         public static void CargarRutaEnMapa(Ruta _ruta, GMapControl _gmapController, GMapOverlay _paraderosOverlay, GMapOverlay _rutaOverlay, Color _colorRuta)
         {

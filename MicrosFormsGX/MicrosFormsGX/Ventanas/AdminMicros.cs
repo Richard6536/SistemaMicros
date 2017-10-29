@@ -119,6 +119,20 @@ namespace MicrosFormsGX.Ventanas
                 {
 
                     var forms = new EditarMicro(patenteMicro);
+
+                    Micro micro = Micro.BuscarPorPatente(patenteMicro);
+                    if(micro.MicroChoferId != null)
+                    {
+                        Usuario chofer = MicroChofer.GetChofer(micro.MicroChoferId.Value);
+
+                        if(chofer.TransmitiendoPosicion == true)
+                        {
+                            MetroMessageBox.Show(this, "No puede editar datos de esta micro mientras se encuentre en un recorrido.");
+                            return;
+                        }
+                    }
+                    
+
                     DialogResult result = FormManager.MostrarShowDialog(this, forms);
 
                     if (result == DialogResult.OK)

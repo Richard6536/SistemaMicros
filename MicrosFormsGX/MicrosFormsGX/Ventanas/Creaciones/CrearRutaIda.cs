@@ -24,6 +24,8 @@ namespace MicrosFormsGX.Ventanas.Creaciones
 {
     public partial class CrearRutaIda : MetroFramework.Forms.MetroForm
     {
+
+        int numeroIntentoDireccion = 5;
         LineaTP lineaDeRuta;
         RutaTP rutaVuelta;
 
@@ -65,7 +67,7 @@ namespace MicrosFormsGX.Ventanas.Creaciones
             MapController.CargarRutaEnMapaOffline(rutaVuelta, gmapController, paraderosVueltaOverlay, previewVueltaOverlay, Color.Blue);
 
             //Coordenada verticeFinal = Ruta.ObtenerVerticesDeInicioAFin(rutaVuelta).First();
-            Coordenada verticeFinal = rutaVuelta.listaCoordenadas.First();
+            Coordenada verticeFinal = rutaVuelta.listaCoordenadas.OrderBy(c => c.Orden).First();
 
             puntoFinal = new GMarkerGoogle(new PointLatLng(verticeFinal.Latitud, verticeFinal.Longitud), GMarkerGoogleType.blue_small);
             puntoFinal.ToolTipText = "Inicio ruta vuelta";
@@ -77,7 +79,7 @@ namespace MicrosFormsGX.Ventanas.Creaciones
 
         void IniciarMapa()
         {
-            gmapController.MapProvider = GMapProviders.GoogleMap;
+            gmapController.MapProvider = MapController.provider;
 
             gmapController.DragButton = MouseButtons.Left;
             gmapController.CanDragMap = true;
@@ -324,6 +326,14 @@ namespace MicrosFormsGX.Ventanas.Creaciones
                     int puntoAnterior = puntoActual - 1;
 
                     var rutasDireccion = GMapProviders.GoogleMap.GetDirections(out direccion, puntosClickeadosIda[puntoAnterior], puntosClickeadosIda[puntoActual], false, false, false, false, false);
+
+                    int c = 0;
+                    while (direccion == null && c < numeroIntentoDireccion)
+                    {
+                        rutasDireccion = GMapProviders.GoogleMap.GetDirections(out direccion, puntosClickeadosIda[puntoAnterior], puntosClickeadosIda[puntoActual], false, false, false, false, false);
+                        c++;
+                    }
+
                     if (direccion == null)
                     {
                         MessageBox.Show("No fue posible crear una ruta al lugar indicado.\nSe recomienda revisar su conexión a internet, por ser necesaria en la búsqueda de rutas.");

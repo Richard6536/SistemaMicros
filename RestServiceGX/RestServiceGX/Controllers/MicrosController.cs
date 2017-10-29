@@ -80,6 +80,58 @@ namespace RestServiceGX.Controllers
             return Ok();
         }
 
+        // POST: odata/Micros(5)/IniciarRecorridoV2
+        // parametros: IdUser
+        [HttpPost]
+        public bool IniciarRecorridoV2([FromODataUri] int key, ODataActionParameters parameters)
+        {
+            int idUser = (int)parameters["IdUser"];
+
+            Usuario user = db.Usuario.Where(u => u.Id == idUser).FirstOrDefault();
+            Micro micro = db.Micro.Where(m => m.Id == key).FirstOrDefault();
+
+            if (user.MicroChoferId == null)
+                return false;
+            if (user.MicroChofer1.Micro1.Id != micro.Id)
+                return false;
+
+            if (micro.LineaId != null && micro.MicroChoferId != null)
+            {
+                IniciarRecorridoHistorial(micro);
+
+                Ruta rIda = micro.Linea.Ruta;
+
+                Paradero primerParadero = rIda.Paradero.OrderBy(p => p.Orden).ToList()[0];
+                Coordenada primerCoordenada = rIda.Coordenada.Where(c => c.Orden == 0).FirstOrDefault();
+                Usuario chofer = micro.MicroChofer.Usuario;
+                chofer.TransmitiendoPosicion = true;
+
+                if (micro.MicroParaderoId != null)
+                {
+                    MicroParadero mp = micro.MicroParadero;
+                    db.MicroParadero.Remove(mp);
+                }
+
+                var geoMicro = new GeoCoordinate(micro.MicroChofer.Usuario.Latitud, micro.MicroChofer.Usuario.Longitud);
+                var geoParadero = new GeoCoordinate(primerParadero.Latitud, primerParadero.Longitud);
+
+                MicroParadero mpNuevo = new MicroParadero();
+                mpNuevo.Micro1 = micro;
+                mpNuevo.Paradero = primerParadero;
+                mpNuevo.DistanciaEntre = geoMicro.GetDistanceTo(geoParadero);
+
+                micro.MicroParadero = mpNuevo;
+                micro.Coordenada = primerCoordenada;
+
+                db.MicroParadero.Add(mpNuevo);
+                db.SaveChanges();
+            }
+
+            return true;
+        }
+
+
+
         private void IniciarRecorridoHistorial(Micro _micro)
         {
             List<HistorialDiario> hDiarios = _micro.HistorialDiario.ToList();

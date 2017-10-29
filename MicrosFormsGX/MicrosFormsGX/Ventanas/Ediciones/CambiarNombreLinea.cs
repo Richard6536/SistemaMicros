@@ -54,8 +54,12 @@ namespace MicrosFormsGX.Ventanas.Ediciones
 
             Linea repetido = Linea.BuscarLineaPorNombre(nuevoNombre);
 
-            if (repetido.Id == lineaActual.Id)
-                repetido = null; 
+
+            if (repetido != null)
+            {
+                if (repetido.Id == lineaActual.Id)
+                    repetido = null;
+            }
 
             string mensajeError = "";
 

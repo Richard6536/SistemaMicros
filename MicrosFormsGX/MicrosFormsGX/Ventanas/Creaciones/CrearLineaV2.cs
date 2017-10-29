@@ -25,6 +25,8 @@ namespace MicrosFormsGX.Ventanas.Creaciones
 {
     public partial class CrearLineaV2 : MetroFramework.Forms.MetroForm
     {
+        int numeroIntentosDireccion = 5;
+
         bool editandoMapa;
         bool editandoIda;
 
@@ -67,14 +69,14 @@ namespace MicrosFormsGX.Ventanas.Creaciones
 
         void IniciarMapa()
         {
-            gmapController.MapProvider = GMapProviders.GoogleMap;
+            gmapController.MapProvider = MapController.provider;
 
             gmapController.DragButton = MouseButtons.Left;
             gmapController.CanDragMap = true;
             gmapController.Position = new PointLatLng(latOsorno, lngOsorno);
 
-            gmapController.MinZoom = 4;
-            gmapController.MaxZoom = 19;  //19
+            gmapController.MinZoom = 4;//4 lejania
+            gmapController.MaxZoom = 25;  //19 cercania
             gmapController.Zoom = 14;
 
             gmapController.IgnoreMarkerOnMouseWheel = true;
@@ -154,7 +156,16 @@ namespace MicrosFormsGX.Ventanas.Creaciones
                     int puntoActual = puntosClickeadosIda.Count - 1;
                     int puntoAnterior = puntoActual - 1;
 
+
                     var rutasDireccion = GMapProviders.GoogleMap.GetDirections(out direccion, puntosClickeadosIda[puntoAnterior], puntosClickeadosIda[puntoActual], false, false, false, false, false);
+
+                    int c = 0;
+                    while(direccion == null && c < numeroIntentosDireccion)
+                    {
+                        rutasDireccion = GMapProviders.GoogleMap.GetDirections(out direccion, puntosClickeadosIda[puntoAnterior], puntosClickeadosIda[puntoActual], false, false, false, false, false);
+                        c++;
+                    }
+
                     if (direccion == null)
                     {
                         MetroMessageBox.Show(this,"No fue posible crear una ruta al lugar indicado.\nSe recomienda revisar su conexión a internet, por ser necesaria en la búsqueda de rutas.");
@@ -196,6 +207,13 @@ namespace MicrosFormsGX.Ventanas.Creaciones
                     anterior = puntosClickeadosIda.Last();
 
                 var rutasDireccion = GMapProviders.GoogleMap.GetDirections(out direccion, anterior, actual, false, false, false, false, false);
+
+                int c = 0;
+                while (direccion == null && c < numeroIntentosDireccion)
+                {
+                    rutasDireccion = GMapProviders.GoogleMap.GetDirections(out direccion, anterior, actual, false, false, false, false, false);
+                    c++;
+                }
 
                 if (direccion == null)
                 {
